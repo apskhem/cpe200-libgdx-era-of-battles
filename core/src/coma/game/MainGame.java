@@ -16,19 +16,20 @@ public class MainGame extends ApplicationAdapter {
 	// all game source will be here
 	private Renderer r;
 	private Image bg;
-	private Image base;
-	private Image opBase;
-	private OrthographicCamera cam;
+	private OrthographicCamera camera;
+
+	private Player user;
+	private Player foe;
 
 	private Music themeMusic;
 	
 	@Override
 	public void create() {
 		r = new Renderer();
-		cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		bg = new Image("game-bg.png");
-		base = new Image("base-era-1.png");
-		opBase = new Image("base-era-1.png");
+		user = new Player(false);
+		foe = new Player(true);
 
 		// theme music
 		themeMusic = Gdx.audio.newMusic(Gdx.files.internal("audio/theme.mp3"));
@@ -36,15 +37,10 @@ public class MainGame extends ApplicationAdapter {
 		themeMusic.setLooping(true);
 		themeMusic.setVolume(0.7f);
 
-		base.src.setPosition(-80, 0);
-		opBase.src.flip(true, false);
-		opBase.src.setPosition(1760, 0);
-
 		// set camera
-		cam.translate(cam.viewportWidth/2, cam.viewportHeight/2);
+		camera.translate(camera.viewportWidth/2, camera.viewportHeight/2);
 
-		r.AddComponents(bg, base, opBase);
-		r.AddCamera(cam);
+		r.AddComponents(camera, bg, user.base, foe.base);
 	}
 
 	@Override
@@ -55,17 +51,17 @@ public class MainGame extends ApplicationAdapter {
 
 		// input
 		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			if (cam.position.x > cam.viewportWidth / 2) {
-				cam.translate(-10f , 0);
+			if (camera.position.x > camera.viewportWidth / 2) {
+				camera.translate(-10f , 0);
 			}
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			if (cam.position.x < 2080 - cam.viewportWidth / 2) {
-				cam.translate(10f, 0);
+			if (camera.position.x < 2080 - camera.viewportWidth / 2) {
+				camera.translate(10f, 0);
 			}
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-			cam.position.x = cam.viewportWidth/2;
+			camera.position.x = camera.viewportWidth/2;
 		}
 		if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
 			System.out.println("clicked");

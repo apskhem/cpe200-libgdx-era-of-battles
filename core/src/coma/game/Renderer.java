@@ -16,15 +16,16 @@ public class Renderer {
         b = new SpriteBatch();
     }
 
-    public void AddComponents(Image ...renderObjects) {
-        for (final Image r : renderObjects) {
-            this.renderObjects.put(this.hashMaxIndex, r);
-            this.hashMaxIndex++;
+    public void AddComponents(Object ...renderObjects) {
+        for (final Object r : renderObjects) {
+            if (r instanceof Camera) {
+                this.camera = (Camera) r;
+            }
+            else if (r instanceof Image) {
+                this.renderObjects.put(this.hashMaxIndex, (Image) r);
+                this.hashMaxIndex++;
+            }
         }
-    }
-
-    public void AddCamera(Camera camera) {
-        this.camera = camera;
     }
 
     public void Update() {
