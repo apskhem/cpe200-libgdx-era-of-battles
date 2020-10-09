@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,24 +14,21 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class MainGame extends ApplicationAdapter {
 
 	// all game source will be here
-	Renderer r;
-	SpriteBatch batch;
-	BackgroundObject bg;
-	TextureObject base;
-	TextureObject opBase;
+	private Renderer r;
+	private Image bg;
+	private Image base;
+	private Image opBase;
+	private OrthographicCamera cam;
 
-	Music themeMusic;
+	private Music themeMusic;
 	
 	@Override
 	public void create() {
-		batch = new SpriteBatch();
-
 		r = new Renderer();
-		bg = new BackgroundObject("game-bg.png");
-		base = new TextureObject("base-era-1.png");
-		base.SetPosition(-80, 10);
-		opBase = new TextureObject("op-base-era-1.png");
-		opBase.SetPosition(1740, 10);
+		cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		bg = new Image("game-bg.png");
+		base = new Image("base-era-1.png");
+		opBase = new Image("base-era-1.png");
 
 		// theme music
 		themeMusic = Gdx.audio.newMusic(Gdx.files.internal("audio/theme.mp3"));
@@ -38,7 +36,15 @@ public class MainGame extends ApplicationAdapter {
 		themeMusic.setLooping(true);
 		themeMusic.setVolume(0.7f);
 
-		r.AddRenderableObjects(bg, base, opBase);
+		base.src.setPosition(-80, 0);
+		opBase.src.flip(true, false);
+		opBase.src.setPosition(1760, 0);
+
+		// set camera
+		cam.translate(cam.viewportWidth/2, cam.viewportHeight/2);
+
+		r.AddComponents(bg, base, opBase);
+		r.AddCamera(cam);
 	}
 
 	@Override
@@ -49,18 +55,21 @@ public class MainGame extends ApplicationAdapter {
 
 		// input
 		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			bg.SetTranslateX(bg.translateX - 10);
+			if (cam.position.x > cam.viewportWidth / 2) {
+				cam.translate(-10f , 0);
+			}
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			bg.SetTranslateX(bg.translateX + 10);
+			if (cam.position.x < 2080 - cam.viewportWidth / 2) {
+				cam.translate(10f, 0);
+			}
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+			cam.position.x = cam.viewportWidth/2;
 		}
 		if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
 			System.out.println("clicked");
 		}
-
-		// set textures translation
-		base.Translate(bg.translateX, 0);
-		opBase.Translate(bg.translateX, 0);
 
 		// float mouseYPercentage = Gdx.input.getY() / 600f;
 		// float mappedMouseY = 600 * (1 - mouseYPercentage);

@@ -1,32 +1,45 @@
 package coma.game;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.util.Hashtable;
 
 public class Renderer {
 
-    final SpriteBatch b;
-    final Hashtable<Integer, RenderableObject> renderObjects = new Hashtable();
-    int hashMaxIndex;
+    private final SpriteBatch b;
+    private final Hashtable<Integer, Image> renderObjects = new Hashtable();
+    private int hashMaxIndex;
+    private Camera camera;
 
     public Renderer() {
         b = new SpriteBatch();
     }
 
-    public void AddRenderableObjects(RenderableObject ...renderObjects) {
-        for (final RenderableObject r : renderObjects) {
+    public void AddComponents(Image ...renderObjects) {
+        for (final Image r : renderObjects) {
             this.renderObjects.put(this.hashMaxIndex, r);
             this.hashMaxIndex++;
         }
     }
 
+    public void AddCamera(Camera camera) {
+        this.camera = camera;
+    }
+
     public void Update() {
-        b.begin();
-        for (int i = 0; i < this.hashMaxIndex; i++) {
-            this.renderObjects.get(i).Render(b);
+        this.b.begin();
+
+        if (this.camera != null) {
+            this.camera.update();
+            this.b.setProjectionMatrix(this.camera.combined);
         }
-        b.end();
+
+        for (int i = 0; i < this.hashMaxIndex; i++) {
+            this.renderObjects.get(i).Render(this.b);
+        }
+
+        this.b.end();
     }
 
     public void Close() {
