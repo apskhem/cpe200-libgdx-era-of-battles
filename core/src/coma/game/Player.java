@@ -1,21 +1,22 @@
 package coma.game;
 
 public class Player {
-    public final Image base;
+    public final Image stronghold;
 
     public int cash;
     public int xp;
-    public byte era;
+    public byte era = 1;
+    public byte difficulty = 1;
 
     public Player(boolean isBot) {
-        this.base = new Image("base-era-1.png");
+        this.stronghold = new Image("base-era-1.png");
 
         if (isBot) {
-            this.base.src.flip(true, false);
-            this.base.src.setPosition(1760, 0);
+            this.stronghold.src.flip(true, false);
+            this.stronghold.src.setPosition(1760, 0);
         }
         else {
-            this.base.src.setPosition(-80, 0);
+            this.stronghold.src.setPosition(-80, 0);
         }
     }
 }
