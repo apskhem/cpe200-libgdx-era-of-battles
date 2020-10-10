@@ -3,14 +3,13 @@ package coma.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+
+import java.text.DecimalFormat;
 
 public class MainGame extends ApplicationAdapter {
 
@@ -35,6 +34,11 @@ public class MainGame extends ApplicationAdapter {
 	private Canvas unit5;
 	private Canvas unitUl;
 	private Canvas cashIcon;
+	private Canvas xpIcon;
+
+	private BitmapFont bitmapFont;
+	private TextBox cashText;
+	private TextBox xpText;
 
 	private Player user;
 	private Player foe;
@@ -42,6 +46,10 @@ public class MainGame extends ApplicationAdapter {
 	private Music themeMusic;
 	private Sound startSound;
 	private Sound menuClickSound;
+
+	// config
+	private final float CAMERA_SPEED = 10f;
+	private final float NORMAL_MUSIC_VOLUME = 0.7f;
 	
 	@Override
 	public void create() {
@@ -63,10 +71,15 @@ public class MainGame extends ApplicationAdapter {
 		unit5 = new Canvas("unit-5.png");
 		unitUl = new Canvas("unit-ul.png");
 		cashIcon = new Canvas("cash-icon.png");
+		xpIcon = new Canvas("xp-icon.png");
+		bitmapFont = new BitmapFont(Gdx.files.internal("fonts/kefa.fnt"), false);
+		cashText = new TextBox(bitmapFont);
+		xpText = new TextBox(bitmapFont);
 		ui = new UIController(camera);
-		user = new Player(false);
-		foe = new Player(true);
+		user = new Player(r,false);
+		foe = new Player(r,true);
 
+		// set ui position and group module
 		playBtn.SetPosition("center", camera.viewportHeight/2);
 		creditBtn.SetPosition("center", camera.viewportHeight/2 - 120);
 		musicBtn.SetPosition(886, 14);
@@ -75,7 +88,7 @@ public class MainGame extends ApplicationAdapter {
 		mode3.SetPosition(640, "center");
 		modeBanner.SetPosition("center", 440);
 		startBtn.SetPosition("center", 80);
-		startBtn.src.scale(-0.2f);
+		startBtn.SetScale(0.8f);
 		unit1.SetPosition(566, 524);
 		unit2.SetPosition(646, 524);
 		unit3.SetPosition(726, 524);
@@ -83,30 +96,43 @@ public class MainGame extends ApplicationAdapter {
 		unit5.SetPosition(886, 524);
 		unitUl.SetPosition(770, 430);
 		cashIcon.SetPosition(-28, 504);
-		cashIcon.src.scale(-0.75f);
+		cashIcon.SetScale(0.25f);
+		xpIcon.SetPosition(-28, 466);
+		xpIcon.SetScale(0.25f);
+
+		cashText.SetPosition(64, 580);
+		cashText.textContent = "0";
+		xpText.SetPosition(64, 540);
+		xpText.textContent = "0";
 
 		ui.AddBoxModule("start-menu", playBtn, creditBtn);
 		ui.AddBoxModule("mode-selection-menu", mode1, mode2, mode3, modeBanner, startBtn);
-		ui.AddBoxModule("in-game-menu", unit1, unit2, unit3, unit4, unit5, unitUl, cashIcon);
+		ui.AddBoxModule("in-game-menu", unit1, unit2, unit3, unit4, unit5, unitUl, cashIcon, xpIcon, cashText, xpText);
 		ui.GetBoxModule("in-game-menu").SetVisibility(false);
 		ui.GetBoxModule("mode-selection-menu").SetVisibility(false);
 
-		// theme music
+		// set sounds and music
 		themeMusic = Gdx.audio.newMusic(Gdx.files.internal("audio/theme.mp3"));
 		themeMusic.play();
 		themeMusic.setLooping(true);
-		themeMusic.setVolume(0.7f);
+		themeMusic.setVolume(NORMAL_MUSIC_VOLUME);
 
 		startSound = Gdx.audio.newSound(Gdx.files.internal("audio/start-game.mp3"));
 		menuClickSound = Gdx.audio.newSound(Gdx.files.internal("audio/menu-click.mp3"));
+		Unit.meleeHit1 = Gdx.audio.newSound(Gdx.files.internal("audio/melee-hit-1.mp3"));
+		Unit.meleeDie1 = Gdx.audio.newSound(Gdx.files.internal("audio/melee-die-1.mp3"));
+
+		Image.meleeUnit = new Image("melee-unit-era-1-1.png");
 
 		// set camera
 		camera.translate(camera.viewportWidth/2, camera.viewportHeight/2);
 
+		// set components
 		ui.AddComponents(playBtn, creditBtn, musicBtn, mode1, mode2, mode3, modeBanner, startBtn,
-				unit1, unit2, unit3, unit4, unit5, unitUl, cashIcon);
-		r.AddComponents(camera,bg, user.stronghold, foe.stronghold, playBtn, creditBtn, musicBtn,
-				mode1, mode2, mode3, modeBanner, startBtn, unit1, unit2, unit3, unit4, unit5, unitUl, cashIcon);
+				unit1, unit2, unit3, unit4, unit5, unitUl, cashIcon, xpIcon);
+		ui.AddComponents(cashText, xpText);
+		r.AddComponents(camera, cashText, xpText, bg, user.stronghold.image, foe.stronghold.image, playBtn, creditBtn, musicBtn,
+				mode1, mode2, mode3, modeBanner, startBtn, unit1, unit2, unit3, unit4, unit5, unitUl, cashIcon, xpIcon);
 	}
 
 	@Override
@@ -119,17 +145,47 @@ public class MainGame extends ApplicationAdapter {
 		if (GameStatus.isGameStarted) {
 			if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
 				if (camera.position.x > camera.viewportWidth / 2) {
-					camera.translate(-10f , 0);
+					camera.translate(-CAMERA_SPEED , 0);
 				}
 			}
 			if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
 				if (camera.position.x < 2080 - camera.viewportWidth / 2) {
-					camera.translate(10f, 0);
+					camera.translate(CAMERA_SPEED, 0);
 				}
 			}
-			if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+			if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
 				camera.position.x = camera.viewportWidth/2;
 			}
+			if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
+				user.SpawnMeleeUnit();
+			}
+			if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
+				user.SpawnRangedUnit();
+			}
+			if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)) {
+				user.SpawnCavalryUnit();
+			}
+			if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_4)) {
+				user.BuildTurret();
+			}
+			if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_5)) {
+				user.UpgradeStronghold();
+			}
+			if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_6)) {
+				user.UseUltimate();
+			}
+
+			// debugging
+			if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+				foe.SpawnMeleeUnit();
+			}
+
+			DecimalFormat df = new DecimalFormat("###,###,###");
+
+			cashText.textContent = df.format(user.cash);
+			xpText.textContent = df.format(user.xp);
+
+			foe.Awake();
 		}
 
 		// click event
@@ -140,6 +196,10 @@ public class MainGame extends ApplicationAdapter {
 			this.onclick(clientX, clientY);
 		}
 
+		// update user and foe
+		Player.Update(user, foe);
+
+		// update components
 		ui.Update();
 		r.Update();
 	}
@@ -151,6 +211,9 @@ public class MainGame extends ApplicationAdapter {
 		themeMusic.dispose();
 		startSound.dispose();
 		menuClickSound.dispose();
+		Unit.meleeHit1.dispose();
+
+		bitmapFont.dispose();
 	}
 
 	public void onkeypress(Input.Keys keys) {
@@ -162,9 +225,9 @@ public class MainGame extends ApplicationAdapter {
 			ui.GetBoxModule("mode-selection-menu").SetVisibility(true);
 			ui.GetBoxModule("start-menu").SetVisibility(false);
 
-			mode1.SetVisibility(true);
-			mode2.src.setColor(0.5f, 0.5f, 0.5f, 1);
-			mode3.src.setColor(0.5f, 0.5f, 0.5f, 1);
+			mode1.SetActive(true);
+			mode2.SetActive(false);
+			mode3.SetActive(false);
 
 			menuClickSound.play();
 		}
@@ -173,20 +236,20 @@ public class MainGame extends ApplicationAdapter {
 		}
 		else if (musicBtn.IsInBound(clientX, clientY)) {
 			if (themeMusic.getVolume() == 0) {
-				themeMusic.setVolume(0.7f);
-				musicBtn.SetVisibility(true);
+				themeMusic.setVolume(NORMAL_MUSIC_VOLUME);
+				musicBtn.SetActive(true);
 			}
 			else {
 				themeMusic.setVolume(0);
-				musicBtn.src.setColor(0.5f, 0.5f, 0.5f, 1);
+				musicBtn.SetActive(false);
 			}
 		}
 		else if (mode1.IsInBound(clientX, clientY)) {
 			if (foe.difficulty == 1) return;
 
-			mode1.SetVisibility(true);
-			mode2.src.setColor(0.5f, 0.5f, 0.5f, 1);
-			mode3.src.setColor(0.5f, 0.5f, 0.5f, 1);
+			mode1.SetActive(true);
+			mode2.SetActive(false);
+			mode3.SetActive(false);
 
 			foe.difficulty = 1;
 			menuClickSound.play();
@@ -194,9 +257,9 @@ public class MainGame extends ApplicationAdapter {
 		else if (mode2.IsInBound(clientX, clientY)) {
 			if (foe.difficulty == 2) return;
 
-			mode1.src.setColor(0.5f, 0.5f, 0.5f, 1);
-			mode2.SetVisibility(true);
-			mode3.src.setColor(0.5f, 0.5f, 0.5f, 1);
+			mode1.SetActive(false);
+			mode2.SetActive(true);
+			mode3.SetActive(false);
 
 			foe.difficulty = 2;
 			menuClickSound.play();
@@ -204,9 +267,9 @@ public class MainGame extends ApplicationAdapter {
 		else if (mode3.IsInBound(clientX, clientY)) {
 			if (foe.difficulty == 3) return;
 
-			mode1.src.setColor(0.5f, 0.5f, 0.5f, 1);
-			mode2.src.setColor(0.5f, 0.5f, 0.5f, 1);
-			mode3.SetVisibility(true);
+			mode1.SetActive(false);
+			mode2.SetActive(false);
+			mode3.SetActive(true);
 
 			foe.difficulty = 3;
 			menuClickSound.play();
@@ -215,8 +278,29 @@ public class MainGame extends ApplicationAdapter {
 			ui.GetBoxModule("mode-selection-menu").SetVisibility(false);
 			ui.GetBoxModule("in-game-menu").SetVisibility(true);
 
+			user.cash = 1000;
+			foe.cash = 200;
+
 			startSound.play();
 			GameStatus.isGameStarted = true;
+		}
+		else if (unit1.IsInBound(clientX, clientY)) {
+			user.SpawnMeleeUnit();
+		}
+		else if (unit2.IsInBound(clientX, clientY)) {
+			user.SpawnRangedUnit();
+		}
+		else if (unit3.IsInBound(clientX, clientY)) {
+			user.SpawnCavalryUnit();
+		}
+		else if (unit4.IsInBound(clientX, clientY)) {
+			user.BuildTurret();
+		}
+		else if (unit5.IsInBound(clientX, clientY)) {
+			user.UpgradeStronghold();
+		}
+		else if (unitUl.IsInBound(clientX, clientY)) {
+			user.UseUltimate();
 		}
 	}
 }

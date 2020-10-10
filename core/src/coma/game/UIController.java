@@ -2,13 +2,14 @@ package coma.game;
 
 import com.badlogic.gdx.graphics.Camera;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 public class UIController {
 
-    private final Hashtable<Integer, Canvas> canvasHashtable = new Hashtable();
+    private final ArrayList<Canvas> canvasObject = new ArrayList();
+    private final ArrayList<TextBox> textBoxes = new ArrayList();
     private final Hashtable<String, UIBoxModule> boxModuleHashtable = new Hashtable();
-    private int hashMaxIndex;
     private Camera camera;
 
     public UIController(Camera refCamera) {
@@ -17,12 +18,17 @@ public class UIController {
 
     public void AddComponents(Canvas ...canvases) {
         for (final Canvas canvas : canvases) {
-            this.canvasHashtable.put(this.hashMaxIndex, canvas);
-            this.hashMaxIndex++;
+            this.canvasObject.add(canvas);
         }
     }
 
-    public void AddBoxModule(String name, Canvas ...moduleList) {
+    public void AddComponents(TextBox ...textBoxes) {
+        for (final TextBox textBox : textBoxes) {
+            this.textBoxes.add(textBox);
+        }
+    }
+
+    public void AddBoxModule(String name, Renderable ...moduleList) {
         this.boxModuleHashtable.put(name, new UIBoxModule(moduleList));
     }
 
@@ -33,25 +39,27 @@ public class UIController {
     public void Update() {
         float dx = this.camera.position.x - this.camera.viewportWidth / 2;
 
-        for (int i = 0; i < this.hashMaxIndex; i++) {
-            final Canvas img = this.canvasHashtable.get(i);
-
+        for (final Canvas img : this.canvasObject) {
             img.src.setPosition(img.x + dx, img.y);
+        }
+
+        for (final TextBox textBox : this.textBoxes) {
+            textBox.translateX = dx;
         }
     }
 }
 
 class UIBoxModule {
 
-    private final Canvas[] moduleList;
+    private final Renderable[] moduleList;
 
-    public UIBoxModule(Canvas ...moduleList) {
+    public UIBoxModule(Renderable ...moduleList) {
         this.moduleList = moduleList;
     }
 
     public void SetVisibility(boolean value) {
-        for (final Canvas canvas : this.moduleList) {
-            canvas.SetVisibility(value);
+        for (final Renderable canvas : this.moduleList) {
+            canvas.isVisible = value;
         }
     }
 }
