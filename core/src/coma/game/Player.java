@@ -54,6 +54,8 @@ public class Player {
             u.image.SetPosition(this.SPAWN_POSITION_X, this.SPAWN_POSITION_Y);
 
             r.AddComponents(u.image);
+
+            if (!isBot) Unit.unitCall.play();
         }
     }
 
@@ -187,7 +189,7 @@ public class Player {
             final Unit l = playerL.units.get(0);
             final Unit r = playerR.units.get(0);
 
-            isOverlapped = l.image.src.getX() + l.image.src.getWidth() / 2 > r.image.src.getX();
+            isOverlapped = l.image.src.getX() + l.image.src.getWidth() / 1.4 > r.image.src.getX();
 
             // for unit
             if (isOverlapped) {

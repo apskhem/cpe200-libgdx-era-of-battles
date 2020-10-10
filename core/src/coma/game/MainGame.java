@@ -121,6 +121,7 @@ public class MainGame extends ApplicationAdapter {
 		menuClickSound = Gdx.audio.newSound(Gdx.files.internal("audio/menu-click.mp3"));
 		Unit.meleeHit1 = Gdx.audio.newSound(Gdx.files.internal("audio/melee-hit-1.mp3"));
 		Unit.meleeDie1 = Gdx.audio.newSound(Gdx.files.internal("audio/melee-die-1.mp3"));
+		Unit.unitCall = Gdx.audio.newSound(Gdx.files.internal("audio/call-unit.mp3"));
 
 		Image.meleeUnit = new Image("melee-unit-era-1-1.png");
 
@@ -212,6 +213,8 @@ public class MainGame extends ApplicationAdapter {
 		startSound.dispose();
 		menuClickSound.dispose();
 		Unit.meleeHit1.dispose();
+		Unit.meleeDie1.dispose();
+		Unit.unitCall.dispose();
 
 		bitmapFont.dispose();
 	}

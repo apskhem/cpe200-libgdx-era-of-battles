@@ -35,6 +35,7 @@ abstract class Unit extends GameObject {
     public static float MOVE_SPEED = 1.2f;
     public static Sound meleeHit1;
     public static Sound meleeDie1;
+    public static Sound unitCall;
 
     public Unit(Image img, int health, int attack, int cost) {
         super(img);
@@ -65,7 +66,8 @@ abstract class Unit extends GameObject {
             toAttackUnit.health -= this.attack;
 
             this.attackDelay = 100;
-            Unit.meleeHit1.play();
+
+            Unit.meleeHit1.setVolume(Unit.meleeHit1.play(), 0.5f);
         }
         else {
             this.attackDelay -= 2;
