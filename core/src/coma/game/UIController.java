@@ -3,11 +3,12 @@ package coma.game;
 import com.badlogic.gdx.graphics.Camera;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 
 public class UIController {
 
-    private final ArrayList<Canvas> canvasObject = new ArrayList();
+    private final ArrayList<Canvas> canvasObjects = new ArrayList();
     private final ArrayList<TextBox> textBoxes = new ArrayList();
     private final Hashtable<String, UIBoxModule> boxModuleHashtable = new Hashtable();
     private Camera camera;
@@ -17,15 +18,18 @@ public class UIController {
     }
 
     public void AddComponents(Canvas ...canvases) {
-        for (final Canvas canvas : canvases) {
-            this.canvasObject.add(canvas);
-        }
+        Collections.addAll(this.canvasObjects, canvases);
     }
 
     public void AddComponents(TextBox ...textBoxes) {
-        for (final TextBox textBox : textBoxes) {
-            this.textBoxes.add(textBox);
-        }
+        Collections.addAll(this.textBoxes, textBoxes);
+    }
+
+    public ArrayList<Object> GetComponents() {
+        final ArrayList<Object> outArr =  new ArrayList<Object>();
+        outArr.addAll(this.canvasObjects);
+        outArr.addAll(this.textBoxes);
+        return outArr;
     }
 
     public void AddBoxModule(String name, Renderable ...moduleList) {
@@ -39,7 +43,7 @@ public class UIController {
     public void Update() {
         float dx = this.camera.position.x - this.camera.viewportWidth / 2;
 
-        for (final Canvas img : this.canvasObject) {
+        for (final Canvas img : this.canvasObjects) {
             img.src.setPosition(img.x + dx, img.y);
         }
 

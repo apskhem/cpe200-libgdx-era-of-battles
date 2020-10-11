@@ -7,20 +7,40 @@ import com.badlogic.gdx.math.Vector3;
 
 public class Image extends Renderable {
 
-    public static Image meleeUnit;
+    public static Image meleeUnitEra1A;
+    public static Image meleeUnitEra1B;
+    public static Image meleeUnitEra1C;
+    public static Image meleeUnitEra1D;
+    public static Image meleeUnitEra1E;
+    public static Image meleeUnitEra1F;
+    public static Image meleeUnitEra1G;
+    public static Image rangedUnitEra1A;
+    public static Image rangedUnitEra1B;
+    public static Image rangedUnitEra1C;
+    public static Image rangedUnitEra1D;
+    public static Image rangedUnitEra1E;
+    public static Image rangedUnitEra1F;
+    public static Image rangedUnitEra1G;
+    public static Image unitHealthBar;
+    public static Image unitHealthBarInner;
 
-    public Vector3 position = new Vector3();
-    private final Texture t;
+    private final Texture texture;
     public final Sprite src;
+    public final int naturalWidth;
+    public final int naturalHeight;
 
     public Image(String internalPath) {
-        this.t = new Texture(internalPath);
-        this.src = new Sprite(this.t);
+        this.texture = new Texture(internalPath);
+        this.src = new Sprite(this.texture);
+        this.naturalWidth = this.texture.getWidth();
+        this.naturalHeight = this.texture.getHeight();
     }
 
     public Image(Sprite sprite) {
-        this.t = null;
+        this.texture = null;
         this.src = new Sprite(sprite);
+        this.naturalWidth = this.src.getTexture().getWidth();
+        this.naturalHeight = this.src.getTexture().getHeight();
     }
 
     public void SetPosition(float x, float y) {
@@ -34,17 +54,32 @@ public class Image extends Renderable {
     }
 
     public void Remove() {
-        if (this.t != null) {
-            this.t.dispose();
+        if (this.texture != null) {
+            this.texture.dispose();
         }
     }
 
-    public static Image GetMeleeUnitImage() {
-        return new Image(Image.meleeUnit.src);
+    public Image Clone() {
+        return  new Image(this.src);
     }
 
     public static void StaticDispose() {
-        Image.meleeUnit.t.dispose();
+        Image.meleeUnitEra1A.Remove();
+        Image.meleeUnitEra1B.Remove();
+        Image.meleeUnitEra1C.Remove();
+        Image.meleeUnitEra1D.Remove();
+        Image.meleeUnitEra1E.Remove();
+        Image.meleeUnitEra1F.Remove();
+        Image.meleeUnitEra1G.Remove();
+        Image.rangedUnitEra1A.Remove();
+        Image.rangedUnitEra1B.Remove();
+        Image.rangedUnitEra1C.Remove();
+        Image.rangedUnitEra1D.Remove();
+        Image.rangedUnitEra1E.Remove();
+        Image.rangedUnitEra1F.Remove();
+        Image.rangedUnitEra1G.Remove();
+        Image.unitHealthBar.Remove();
+        Image.unitHealthBarInner.Remove();
     }
 }
 
@@ -60,6 +95,10 @@ class Canvas extends Image {
 
     public Canvas(String internalPath) {
         super(internalPath);
+    }
+
+    public Canvas(Canvas canvas) {
+        super(canvas.src);
     }
 
     public void SetActive(boolean value) {

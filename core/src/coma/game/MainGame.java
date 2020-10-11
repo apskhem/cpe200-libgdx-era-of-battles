@@ -14,7 +14,6 @@ import java.text.DecimalFormat;
 public class MainGame extends ApplicationAdapter {
 
 	// all game source will be here
-	private Renderer r;
 	private Image bg;
 	private UIController ui;
 	private OrthographicCamera camera;
@@ -35,6 +34,9 @@ public class MainGame extends ApplicationAdapter {
 	private Canvas unitUl;
 	private Canvas cashIcon;
 	private Canvas xpIcon;
+	private Canvas healthBar;
+	private Canvas healthBarL;
+	private Canvas healthBarR;
 
 	private BitmapFont bitmapFont;
 	private TextBox cashText;
@@ -53,7 +55,6 @@ public class MainGame extends ApplicationAdapter {
 	
 	@Override
 	public void create() {
-		r = new Renderer();
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		bg = new Image("game-bg.png");
 		playBtn = new Canvas("play-btn.png");
@@ -72,12 +73,15 @@ public class MainGame extends ApplicationAdapter {
 		unitUl = new Canvas("unit-ul.png");
 		cashIcon = new Canvas("cash-icon.png");
 		xpIcon = new Canvas("xp-icon.png");
+		healthBar = new Canvas("health-bar.png");
+		healthBarL = new Canvas("health-bar-inner.png");
+		healthBarR = new Canvas(healthBarL);
 		bitmapFont = new BitmapFont(Gdx.files.internal("fonts/kefa.fnt"), false);
 		cashText = new TextBox(bitmapFont);
 		xpText = new TextBox(bitmapFont);
 		ui = new UIController(camera);
-		user = new Player(r,false);
-		foe = new Player(r,true);
+		user = new Player(false);
+		foe = new Player(true);
 
 		// set ui position and group module
 		playBtn.SetPosition("center", camera.viewportHeight/2);
@@ -99,6 +103,10 @@ public class MainGame extends ApplicationAdapter {
 		cashIcon.SetScale(0.25f);
 		xpIcon.SetPosition(-28, 466);
 		xpIcon.SetScale(0.25f);
+		healthBar.SetPosition("center", 14);
+		healthBarL.SetPosition(318, 18);
+		healthBarR.SetPosition(485, 18);
+		healthBarR.src.rotate(180);
 
 		cashText.SetPosition(64, 580);
 		cashText.textContent = "0";
@@ -107,7 +115,8 @@ public class MainGame extends ApplicationAdapter {
 
 		ui.AddBoxModule("start-menu", playBtn, creditBtn);
 		ui.AddBoxModule("mode-selection-menu", mode1, mode2, mode3, modeBanner, startBtn);
-		ui.AddBoxModule("in-game-menu", unit1, unit2, unit3, unit4, unit5, unitUl, cashIcon, xpIcon, cashText, xpText);
+		ui.AddBoxModule("in-game-menu", unit1, unit2, unit3, unit4, unit5, unitUl,
+				cashIcon, xpIcon, cashText, xpText, healthBar, healthBarL, healthBarR);
 		ui.GetBoxModule("in-game-menu").SetVisibility(false);
 		ui.GetBoxModule("mode-selection-menu").SetVisibility(false);
 
@@ -120,20 +129,35 @@ public class MainGame extends ApplicationAdapter {
 		startSound = Gdx.audio.newSound(Gdx.files.internal("audio/start-game.mp3"));
 		menuClickSound = Gdx.audio.newSound(Gdx.files.internal("audio/menu-click.mp3"));
 		Unit.meleeHit1 = Gdx.audio.newSound(Gdx.files.internal("audio/melee-hit-1.mp3"));
+		Unit.rangedHit1 = Gdx.audio.newSound(Gdx.files.internal("audio/ranged-hit-1.mp3"));
 		Unit.meleeDie1 = Gdx.audio.newSound(Gdx.files.internal("audio/melee-die-1.mp3"));
 		Unit.unitCall = Gdx.audio.newSound(Gdx.files.internal("audio/call-unit.mp3"));
 
-		Image.meleeUnit = new Image("melee-unit-era-1-1.png");
+		Image.meleeUnitEra1A = new Image("melee-unit-era-1-1.png");
+		Image.meleeUnitEra1B = new Image("melee-unit-era-1-2.png");
+		Image.meleeUnitEra1C = new Image("melee-unit-era-1-3.png");
+		Image.meleeUnitEra1D = new Image("melee-unit-era-1-4.png");
+		Image.meleeUnitEra1E = new Image("melee-unit-era-1-5.png");
+		Image.meleeUnitEra1F = new Image("melee-unit-era-1-6.png");
+		Image.meleeUnitEra1G = new Image("melee-unit-era-1-7.png");
+		Image.rangedUnitEra1A = new Image("ranged-unit-era-1-1.png");
+		Image.rangedUnitEra1B = new Image("ranged-unit-era-1-2.png");
+		Image.rangedUnitEra1C = new Image("ranged-unit-era-1-3.png");
+		Image.rangedUnitEra1D = new Image("ranged-unit-era-1-4.png");
+		Image.rangedUnitEra1E = new Image("ranged-unit-era-1-5.png");
+		Image.rangedUnitEra1F = new Image("ranged-unit-era-1-6.png");
+		Image.rangedUnitEra1G = new Image("ranged-unit-era-1-7.png");
+		Image.unitHealthBar = new Image("unit-health-bar.png");
+		Image.unitHealthBarInner = new Image("unit-health-bar-inner.png");
 
 		// set camera
 		camera.translate(camera.viewportWidth/2, camera.viewportHeight/2);
 
 		// set components
 		ui.AddComponents(playBtn, creditBtn, musicBtn, mode1, mode2, mode3, modeBanner, startBtn,
-				unit1, unit2, unit3, unit4, unit5, unitUl, cashIcon, xpIcon);
+				unit1, unit2, unit3, unit4, unit5, unitUl, cashIcon, xpIcon, healthBar, healthBarL, healthBarR);
 		ui.AddComponents(cashText, xpText);
-		r.AddComponents(camera, cashText, xpText, bg, user.stronghold.image, foe.stronghold.image, playBtn, creditBtn, musicBtn,
-				mode1, mode2, mode3, modeBanner, startBtn, unit1, unit2, unit3, unit4, unit5, unitUl, cashIcon, xpIcon);
+		Renderer.AddComponents(camera, bg, user.stronghold.image, foe.stronghold.image, ui.GetComponents());
 	}
 
 	@Override
@@ -181,11 +205,18 @@ public class MainGame extends ApplicationAdapter {
 				foe.SpawnMeleeUnit();
 			}
 
+			// update ui
 			DecimalFormat df = new DecimalFormat("###,###,###");
 
 			cashText.textContent = df.format(user.cash);
 			xpText.textContent = df.format(user.xp);
 
+			healthBarL.src.setBounds(0,0, user.stronghold.GetPercentageHealth(healthBarL.naturalWidth), healthBarL.naturalHeight);
+			healthBarR.src.setBounds(0,0, foe.stronghold.GetPercentageHealth(healthBarR.naturalWidth), healthBarR.naturalHeight);
+
+			Unit.UpdateDeadUnits();
+
+			foe.cash += 1;
 			foe.Awake();
 		}
 
@@ -202,17 +233,18 @@ public class MainGame extends ApplicationAdapter {
 
 		// update components
 		ui.Update();
-		r.Update();
+		Renderer.Update();
 	}
 	
 	@Override
 	public void dispose() {
-		r.Close();
+		Renderer.Close();
 
 		themeMusic.dispose();
 		startSound.dispose();
 		menuClickSound.dispose();
 		Unit.meleeHit1.dispose();
+		Unit.rangedHit1.dispose();
 		Unit.meleeDie1.dispose();
 		Unit.unitCall.dispose();
 

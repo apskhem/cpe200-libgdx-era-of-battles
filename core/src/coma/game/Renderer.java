@@ -8,64 +8,73 @@ import java.util.ArrayList;
 
 public class Renderer {
 
-    private final SpriteBatch b;
-    private final ArrayList<Image> renderObjects = new ArrayList();
-    private final ArrayList<TextBox> textObjects = new ArrayList();
-    private int arrSize;
-    private Camera camera;
+    private static final SpriteBatch b = new SpriteBatch();;
+    private static final ArrayList<Image> renderObjects = new ArrayList();
+    private static final ArrayList<Canvas> canvasObjects = new ArrayList<>();
+    private static final ArrayList<TextBox> textObjects = new ArrayList();
+    private static Camera camera;
 
-    public Renderer() {
-        b = new SpriteBatch();
-    }
-
-    public void AddComponents(Object ...renderObjects) {
+    public static void AddComponents(Object ...renderObjects) {
         for (final Object r : renderObjects) {
             if (r instanceof Camera) {
-                this.camera = (Camera) r;
+                Renderer.camera = (Camera) r;
+            }
+            else if (r instanceof Canvas) {
+                Renderer.canvasObjects.add((Canvas) r);
             }
             else if (r instanceof Image) {
-                this.renderObjects.add((Image) r);
-                this.arrSize++;
+                Renderer.renderObjects.add((Image) r);
             }
             else if (r instanceof TextBox) {
-                this.textObjects.add((TextBox) r);
+                Renderer.textObjects.add((TextBox) r);
+            }
+            else if (r instanceof ArrayList) {
+                Renderer.AddComponents(((ArrayList<?>) r).toArray(new Object[((ArrayList<?>) r).size()]));
             }
         }
     }
 
-    public void RemoveComponents(Image ...renderObjects) {
+    public static void RemoveComponents(Image ...renderObjects) {
         for (final Image r : renderObjects) {
-            if (this.renderObjects.remove(r)) arrSize--;
+            Renderer.renderObjects.remove(r);
         }
     }
 
-    public void Update() {
-        this.b.begin();
+    public static void Update() {
+        Renderer.b.begin();
 
         // camera
-        if (this.camera != null) {
-            this.camera.update();
-            this.b.setProjectionMatrix(this.camera.combined);
+        if (Renderer.camera != null) {
+            Renderer.camera.update();
+            Renderer.b.setProjectionMatrix(Renderer.camera.combined);
         }
 
-        // textures and sprites
-        for (int i = 0; i < this.arrSize; i++) {
-            this.renderObjects.get(i).Render(this.b);
+        // images and canvas
+        for (Image renderObject : Renderer.renderObjects) {
+            renderObject.Render(Renderer.b);
+        }
+
+        for (Canvas canvas : Renderer.canvasObjects) {
+            canvas.Render(Renderer.b);
         }
 
         // textboxes
-        for (int i = 0; i < this.textObjects.size(); i++) {
-            this.textObjects.get(i).Render(this.b);
+        for (TextBox textObject : Renderer.textObjects) {
+            textObject.Render(Renderer.b);
         }
 
-        this.b.end();
+        Renderer.b.end();
     }
 
-    public void Close() {
+    public static void Close() {
         b.dispose();
 
-        for (int i = 0; i < this.arrSize; i++) {
-            this.renderObjects.get(i).Remove();
+        for (Image renderObject : Renderer.renderObjects) {
+            renderObject.Remove();
+        }
+
+        for (Canvas canvas : Renderer.canvasObjects) {
+            canvas.Remove();
         }
 
         Image.StaticDispose();
