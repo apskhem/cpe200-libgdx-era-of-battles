@@ -6,5 +6,4 @@ public abstract class Renderable {
     public boolean isVisible = true;
 
     abstract void Render(SpriteBatch b);
-    abstract void Remove();
 }

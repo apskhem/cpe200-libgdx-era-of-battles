@@ -38,11 +38,11 @@ abstract class Unit extends GameObject {
     private byte moveAnimationDelay = Unit.ANIMATION_DELAY;
     protected byte animationState = 1;
     private byte deadDelay = 100;
-    protected byte flippingTranslateX = 0;
+    protected byte displacedTranslateX = 0;
 
     public static float MAX_MOVE = 1700;
     public static float MOVE_SPEED = 1.2f;
-    public static byte MELEE_ATTACK_DELAY = 50;
+    public static byte MELEE_ATTACK_DELAY = 44;
     public static byte RANGED_ATTACK_DELAY = 18;
     public static byte ANIMATION_DELAY = 10;
     public static Sound meleeHit1;
@@ -64,9 +64,9 @@ abstract class Unit extends GameObject {
     }
 
     public void SetPosition(float x, float y) {
-        this.image.src.setPosition(x, y);
-        this.healthBar.src.setPosition(x + this.image.naturalWidth / 2 - this.healthBar.naturalWidth / 2, y + 200);
-        this.healthBarInner.src.setPosition(1 + x + this.image.naturalWidth / 2 - this.healthBar.naturalWidth / 2, y + 201);
+        this.image.SetPosition(x, y);
+        this.healthBar.SetPosition(x + this.image.naturalWidth / 2 - this.healthBar.naturalWidth / 2, y + 200);
+        this.healthBarInner.SetPosition(1 + x + this.image.naturalWidth / 2 - this.healthBar.naturalWidth / 2, y + 201);
     }
 
     public void SetFlip(boolean value) {
@@ -129,10 +129,10 @@ abstract class Unit extends GameObject {
             // animate
             if (this.moveAnimationDelay < 0) {
                 if (this instanceof MeleeUnit) {
-                    this.attackDelay = this.moveAnimationDelay = (byte)(Unit.MELEE_ATTACK_DELAY - 10);
+                    this.moveAnimationDelay = (byte)(Unit.MELEE_ATTACK_DELAY - 8);
                 }
                 else {
-                    this.moveAnimationDelay = (byte)(Unit.MELEE_ATTACK_DELAY - 10);
+                    this.moveAnimationDelay = (byte)(Unit.RANGED_ATTACK_DELAY - 8);
                 }
 
                 this.SetAnimationStateTo(this.animationState == 4 ? 5 : 4);
@@ -170,17 +170,6 @@ abstract class Unit extends GameObject {
         }
     }
 
-    public void NormalAnimate(int delay) {
-        if (this.moveAnimationDelay < 0) {
-            this.moveAnimationDelay = (byte) delay;
-
-            this.NextAnimationState();
-        }
-        else {
-            this.moveAnimationDelay -= 1;
-        }
-    }
-
     public void NextAnimationState() {
         switch (this.animationState) {
             case 1: this.SetAnimationStateTo(2); break;
@@ -193,8 +182,9 @@ abstract class Unit extends GameObject {
     }
 
     abstract void SetAnimationStateTo(int state);
+    abstract short GetDeploymentCooldown();
 
-    // static method
+    // static methods
     public static void UpdateDeadUnits() {
         for (final Unit unit : Unit.deadUnits) {
             unit.Die();
@@ -202,6 +192,14 @@ abstract class Unit extends GameObject {
 
         Unit.deadUnits.removeAll(Unit.toRemoveDeadUnits);
         toRemoveDeadUnits.clear();
+    }
+
+    public static void ClearDeadUnitQueue() {
+        for (final Unit unit : Unit.deadUnits) {
+            Renderer.RemoveComponents(unit.image);
+        }
+
+        Unit.deadUnits.clear();
     }
 }
 
@@ -235,37 +233,37 @@ class MeleeUnit extends Unit {
             case 1: {
                 this.image.src.setTexture(Image.meleeUnitEra1A.src.getTexture());
 
-                this.image.src.setBounds(this.image.src.getX() - this.flippingTranslateX, this.image.src.getY(), 90, 180);
+                this.image.src.setBounds(this.image.src.getX() - this.displacedTranslateX, this.image.src.getY(), 90, 180);
 
-                this.flippingTranslateX = 0;
+                this.displacedTranslateX = 0;
             } break;
             case 2: {
                 this.image.src.setTexture(Image.meleeUnitEra1B.src.getTexture());
 
-                this.image.src.setBounds(this.image.src.getX() - this.flippingTranslateX, this.image.src.getY(), 90, 180);
+                this.image.src.setBounds(this.image.src.getX() - this.displacedTranslateX, this.image.src.getY(), 90, 180);
 
-                this.flippingTranslateX = 0;
+                this.displacedTranslateX = 0;
             } break;
             case 3: {
                 this.image.src.setTexture(Image.meleeUnitEra1C.src.getTexture());
 
-                this.image.src.setBounds(this.image.src.getX() - this.flippingTranslateX, this.image.src.getY(), 90, 180);
+                this.image.src.setBounds(this.image.src.getX() - this.displacedTranslateX, this.image.src.getY(), 90, 180);
 
-                this.flippingTranslateX = 0;
+                this.displacedTranslateX = 0;
             } break;
             case 4: {
                 this.image.src.setTexture(Image.meleeUnitEra1D.src.getTexture());
 
-                this.image.src.setBounds(this.image.src.getX() - this.flippingTranslateX, this.image.src.getY(), 90, 180);
+                this.image.src.setBounds(this.image.src.getX() - this.displacedTranslateX, this.image.src.getY(), 90, 180);
 
-                this.flippingTranslateX = 0;
+                this.displacedTranslateX = 0;
             } break;
             case 5: {
                 this.image.src.setTexture(Image.meleeUnitEra1E.src.getTexture());
 
-                this.image.src.setBounds(this.image.src.getX() - this.flippingTranslateX, this.image.src.getY(), 96, 202);
+                this.image.src.setBounds(this.image.src.getX() - this.displacedTranslateX, this.image.src.getY(), 96, 202);
 
-                this.flippingTranslateX = 0;
+                this.displacedTranslateX = 0;
             } break;
             case 6: {
                 this.image.src.setTexture(Image.meleeUnitEra1F.src.getTexture());
@@ -273,9 +271,7 @@ class MeleeUnit extends Unit {
                 if (this.isFlipped) {
                     this.image.src.setBounds(this.image.src.getX(), this.image.src.getY(), 135, this.image.naturalHeight);
 
-                    this.image.src.translateX(-55);
-
-                    this.flippingTranslateX = -55;
+                    this.image.src.translateX(this.displacedTranslateX = -55);
                 }
                 else {
                     this.image.src.setBounds(this.image.src.getX(), this.image.src.getY(), 135, this.image.naturalHeight);
@@ -284,9 +280,14 @@ class MeleeUnit extends Unit {
             case 7: {
                 this.image.src.setTexture(Image.meleeUnitEra1G.src.getTexture());
 
-                this.image.src.setBounds(this.image.src.getX() - this.flippingTranslateX, this.image.src.getY(), 90, 180);
+                this.image.src.setBounds(this.image.src.getX() - this.displacedTranslateX, this.image.src.getY(), 90, 180);
             } break;
         }
+    }
+
+    @Override
+    public short GetDeploymentCooldown() {
+        return 100;
     }
 }
 
@@ -320,39 +321,56 @@ class RangedUnit extends Unit {
             case 1: {
                 this.image.src.setTexture(Image.rangedUnitEra1A.src.getTexture());
 
-                this.image.src.setBounds(this.image.src.getX(), this.image.src.getY(), 90, 180);
+                this.image.src.setBounds(this.image.src.getX() - this.displacedTranslateX, this.image.src.getY(), 90, 180);
+
+                this.displacedTranslateX = 0;
             } break;
             case 2: {
                 this.image.src.setTexture(Image.rangedUnitEra1B.src.getTexture());
 
-                this.image.src.setBounds(this.image.src.getX(), this.image.src.getY(), 90, 180);
+                this.image.src.setBounds(this.image.src.getX() - this.displacedTranslateX, this.image.src.getY(), 90, 180);
+
+                this.displacedTranslateX = 0;
             } break;
             case 3: {
                 this.image.src.setTexture(Image.rangedUnitEra1C.src.getTexture());
 
-                this.image.src.setBounds(this.image.src.getX(), this.image.src.getY(), 90, 180);
+                this.image.src.setBounds(this.image.src.getX() - this.displacedTranslateX, this.image.src.getY(), 90, 180);
+
+                this.displacedTranslateX = 0;
             } break;
             case 4: {
                 this.image.src.setTexture(Image.rangedUnitEra1D.src.getTexture());
 
-                this.image.src.setBounds(this.image.src.getX(), this.image.src.getY(), 90, 180);
+                this.image.src.setBounds(this.image.src.getX() - this.displacedTranslateX, this.image.src.getY(), 90, 180);
+
+                this.displacedTranslateX = 0;
             } break;
             case 5: {
                 this.image.src.setTexture(Image.rangedUnitEra1E.src.getTexture());
 
                 this.image.src.setBounds(this.image.src.getX(), this.image.src.getY(), 90, 180);
+
+                this.image.src.translateX(this.displacedTranslateX = (byte)(isFlipped ? -8 : 8));
             } break;
             case 6: {
                 this.image.src.setTexture(Image.rangedUnitEra1F.src.getTexture());
 
-                this.image.src.setBounds(this.image.src.getX(), this.image.src.getY(), 90, 180);
+                this.image.src.setBounds(this.image.src.getX() - this.displacedTranslateX, this.image.src.getY(), 90, 180);
+
+                this.displacedTranslateX = 0;
             } break;
             case 7: {
                 this.image.src.setTexture(Image.rangedUnitEra1G.src.getTexture());
 
-                this.image.src.setBounds(this.image.src.getX(), this.image.src.getY(), 90, 180);
+                this.image.src.setBounds(this.image.src.getX() - this.displacedTranslateX, this.image.src.getY(), 90, 180);
             } break;
         }
+    }
+
+    @Override
+    public short GetDeploymentCooldown() {
+        return 130;
     }
 }
 
@@ -392,6 +410,11 @@ class CavalryUnit extends Unit {
             } break;
         }
     }
+
+    @Override
+    public short GetDeploymentCooldown() {
+        return 300;
+    }
 }
 
 /**
@@ -413,21 +436,43 @@ class Turret extends GameObject {
 class Stronghold extends GameObject {
 
     public short health;
-    public short maxHealth;
     public byte era;
 
     public Stronghold() {
-        super("base-era-1.png");
+        super(Image.strongholdEra1.Clone());
+    }
+
+    public short GetMaxHealth(byte era) {
+        switch (era) {
+            case 1: return 600;
+            case 2: return 2000;
+            case 3: return 5000;
+            case 4: return 10000;
+            default: return Short.MAX_VALUE;
+        }
     }
 
     public float GetPercentageHealth(float multiplier) {
         return this.health < 0
         ? 0
-        : this.health * multiplier / this.maxHealth;
+        : this.health * multiplier / this.GetMaxHealth(this.era);
     }
 
-    public void SetEra1() {
-        this.health = 600;
-        this.maxHealth = 600;
+    public void SetEra(byte era) {
+        this.era = era;
+        this.health = this.GetMaxHealth(this.era);
+
+        switch (era) {
+            case 1: this.image.src.setTexture(Image.strongholdEra1.src.getTexture()); break;
+            case 2: this.image.src.setTexture(Image.strongholdEra1.src.getTexture()); break;
+            case 3: this.image.src.setTexture(Image.strongholdEra1.src.getTexture()); break;
+            case 4: this.image.src.setTexture(Image.strongholdEra1.src.getTexture()); break;
+        }
+    }
+
+    public void NextEra() {
+        if (this.era == 4) return;
+
+        this.era++;
     }
 }

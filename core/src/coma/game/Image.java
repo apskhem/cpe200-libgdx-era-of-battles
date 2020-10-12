@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector3;
 
 public class Image extends Renderable {
 
+    public static Image strongholdEra1;
     public static Image meleeUnitEra1A;
     public static Image meleeUnitEra1B;
     public static Image meleeUnitEra1C;
@@ -34,6 +35,8 @@ public class Image extends Renderable {
         this.src = new Sprite(this.texture);
         this.naturalWidth = this.texture.getWidth();
         this.naturalHeight = this.texture.getHeight();
+
+        Renderer.AddImageTexture(this.texture);
     }
 
     public Image(Sprite sprite) {
@@ -53,33 +56,8 @@ public class Image extends Renderable {
         }
     }
 
-    public void Remove() {
-        if (this.texture != null) {
-            this.texture.dispose();
-        }
-    }
-
     public Image Clone() {
         return  new Image(this.src);
-    }
-
-    public static void StaticDispose() {
-        Image.meleeUnitEra1A.Remove();
-        Image.meleeUnitEra1B.Remove();
-        Image.meleeUnitEra1C.Remove();
-        Image.meleeUnitEra1D.Remove();
-        Image.meleeUnitEra1E.Remove();
-        Image.meleeUnitEra1F.Remove();
-        Image.meleeUnitEra1G.Remove();
-        Image.rangedUnitEra1A.Remove();
-        Image.rangedUnitEra1B.Remove();
-        Image.rangedUnitEra1C.Remove();
-        Image.rangedUnitEra1D.Remove();
-        Image.rangedUnitEra1E.Remove();
-        Image.rangedUnitEra1F.Remove();
-        Image.rangedUnitEra1G.Remove();
-        Image.unitHealthBar.Remove();
-        Image.unitHealthBarInner.Remove();
     }
 }
 
@@ -118,6 +96,13 @@ class Canvas extends Image {
         if (value < 0) return;
 
         this.src.scale(value - 1);
+    }
+
+    public void SetViewBox(float width, float height) {
+        width = Float.isNaN(width) ? this.naturalWidth : width;
+        height = Float.isNaN(height) ? this.naturalHeight : height;
+
+        this.src.setBounds(this.src.getX(), this.src.getY(), width, height);
     }
 
     @Override

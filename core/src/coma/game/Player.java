@@ -1,82 +1,74 @@
 package coma.game;
 
+import com.badlogic.gdx.utils.Queue;
+
 import java.util.ArrayList;
-import java.util.Queue;
-import java.util.concurrent.TimeUnit;
 
 public class Player {
 
     public final Stronghold stronghold = new Stronghold();
-    public final ArrayList<Unit> units = new ArrayList();
+    public final ArrayList<Unit> units = new ArrayList<>();
+    public final Queue<Unit> deploymentQueue = new Queue<>();
 
     // constants
     private final short SPAWN_POSITION_X;
-    private final short SPAWN_POSITION_Y = 52;
+    protected final short SPAWN_POSITION_Y = 52;
 
     // properties
     public int cash;
     public int xp;
     public byte era = 1;
-
-    // for bot
-    public boolean isBot;
-    public byte difficulty = 1;
-    public boolean isWaking = false;
-    public byte spawnDelay = 120;
+    public short deploymentCooldown;
+    public short ultimateCooldown = Player.ULTIMATE_COOLDOWN;
 
     // static
     public static final short LEFT_STRONGHOLD_POSITION_X = -80;
     public static final short RIGHT_STRONGHOLD_POSITION_X = 1760;
-    public static final short STRONGHOLD_POSITION_Y = 20;
+    public static final byte STRONGHOLD_POSITION_Y = 20;
+    public static final byte MAX_UNIT = 10;
+    public static final short ULTIMATE_COOLDOWN = 4000;
 
-    public Player(boolean isBot) {
-        this.isBot = isBot;
+    public Player() {
+        this.stronghold.SetEra(this.era);
+        this.SPAWN_POSITION_X = 120;
+        this.stronghold.image.SetPosition(Player.LEFT_STRONGHOLD_POSITION_X, Player.STRONGHOLD_POSITION_Y);
+    }
 
-        this.stronghold.SetEra1();
+    public void DeployUnit(Unit u) {
+        if (u == null) return;
 
-        if (isBot) {
-            this.SPAWN_POSITION_X = Player.RIGHT_STRONGHOLD_POSITION_X + 120;
-            this.stronghold.image.src.flip(true, false);
-            this.stronghold.image.src.setPosition(Player.RIGHT_STRONGHOLD_POSITION_X, Player.STRONGHOLD_POSITION_Y);
+        if (this.cash >= u.cost && this.units.size() + this.deploymentQueue.size < Player.MAX_UNIT) {
+            this.cash -= u.cost;
+
+            if (this.deploymentQueue.size == 0) this.deploymentCooldown = u.GetDeploymentCooldown();
+
+            this.deploymentQueue.addLast(u);
+        }
+    }
+
+    public void SpawnUnit(Unit u) {
+        if (u == null) return;
+
+        this.units.add(u);
+        u.SetPosition(this.SPAWN_POSITION_X, this.SPAWN_POSITION_Y);
+        Renderer.AddComponents(u.image, u.healthBar, u.healthBarInner);
+
+        Unit.unitCall.play();
+    }
+
+    public void ProcessUnitDeployment() {
+        if (this.deploymentQueue.size == 0) return;
+
+        if (this.deploymentCooldown == 0) {
+            final Unit u = this.deploymentQueue.removeFirst();
+
+            this.SpawnUnit(u);
+
+            if (this.deploymentQueue.size > 0) this.deploymentCooldown = this.deploymentQueue.first().GetDeploymentCooldown();
         }
         else {
-            this.SPAWN_POSITION_X = 120;
-            this.stronghold.image.src.setPosition(Player.LEFT_STRONGHOLD_POSITION_X, Player.STRONGHOLD_POSITION_Y);
+            this.deploymentCooldown -= 1;
         }
-    }
-
-    public void SpawnMeleeUnit() {
-        final MeleeUnit u = MeleeUnit.GetEra(this.era);
-
-        if (this.cash >= u.cost) {
-            this.cash -= u.cost;
-            if (isBot) u.SetFlip(true);
-
-            this.units.add(u);
-            u.SetPosition(this.SPAWN_POSITION_X, this.SPAWN_POSITION_Y);
-            Renderer.AddComponents(u.image, u.healthBar, u.healthBarInner);
-
-            if (!this.isBot) Unit.unitCall.play();
-        }
-    }
-
-    public void SpawnRangedUnit() {
-        final RangedUnit u = RangedUnit.GetEra(this.era);
-
-        if (this.cash >= u.cost) {
-            this.cash -= u.cost;
-            if (isBot) u.SetFlip(true);
-
-            this.units.add(u);
-            u.SetPosition(this.SPAWN_POSITION_X, this.SPAWN_POSITION_Y);
-            Renderer.AddComponents(u.image, u.healthBar, u.healthBarInner);
-
-            if (!this.isBot) Unit.unitCall.play();
-        }
-    }
-
-    public void SpawnCavalryUnit() {
-
     }
 
     public void BuildTurret() {
@@ -145,74 +137,24 @@ public class Player {
         return deadCost;
     }
 
-    // bot methods
-    public void Awake() {
-        this.isWaking = true;
-
-        switch (this.difficulty) {
-            case 1: this.Level1Automation(); break;
-            case 2: this.Level2Automation(); break;
-            case 3: this.Level3Automation(); break;
+    public void ClearAllUnits() {
+        for (final Unit unit : this.units) {
+            Renderer.RemoveComponents(unit.image, unit.healthBar, unit.healthBarInner);
         }
+
+        this.deploymentQueue.clear();
+        this.units.clear();
     }
 
-    private void Level1Automation() {
-        if (!this.isWaking) return;
-
-        if (this.spawnDelay < 4) {
-
-            if (this.units.size() < 5) {
-                this.SpawnMeleeUnit();
-            }
-
-            this.spawnDelay = 120;
-        }
-        else {
-            this.spawnDelay -= 1;
-        }
+    public void Setup() {
+        this.cash = 500;
+        this.xp = 0;
+        this.deploymentCooldown = 0;
+        this.ultimateCooldown = Player.ULTIMATE_COOLDOWN;
+        this.stronghold.SetEra(this.era = 1);
     }
 
-    private void Level2Automation() {
-        if (!this.isWaking) return;
-
-        if (this.spawnDelay < 4) {
-            if (this.units.size() < 5) {
-                int rand = (int)(Math.random() * 100);
-
-                if (rand < 50) {
-                    this.SpawnRangedUnit();
-                }
-                else {
-                    this.SpawnMeleeUnit();
-                }
-            }
-
-            this.spawnDelay = 120;
-        }
-        else {
-            this.spawnDelay -= 1;
-        }
-    }
-
-    private void Level3Automation() {
-        if (!this.isWaking) return;
-
-        if (this.spawnDelay < 4) {
-            if (this.units.size() < 5) {
-                this.SpawnMeleeUnit();
-            }
-
-            this.spawnDelay = 120;
-        }
-        else {
-            this.spawnDelay -= 1;
-        }
-    }
-
-    public void Halt() {
-        this.isWaking = false;
-    }
-
+    // static methods
     private static void QueuedRangedUnitAttack(Player player, GameObject toAttackUnit) {
         final Unit ul2 = player.units.size() > 1 ? player.units.get(1) : null;
         final Unit ul3 = player.units.size() > 2 ? player.units.get(2) : null;
@@ -221,7 +163,6 @@ public class Player {
         if (ul3 instanceof RangedUnit) ul3.Attack(toAttackUnit);
     }
 
-    // static method(s)
     public static void Update(Player playerL, Player playerR) {
         // check overlapping
         boolean isOverlapped = false;
@@ -244,7 +185,7 @@ public class Player {
             final Unit l = playerL.units.get(0);
 
             if (l.IsReachedMax()) {
-                if (l.Attack(playerR.stronghold)) playerL.xp += (int)(playerL.stronghold.maxHealth * Math.random() * 0.01f);
+                if (l.Attack(playerR.stronghold)) playerL.xp += (int)(playerL.stronghold.GetMaxHealth(playerL.era) * Math.random() * 0.01f);
 
                 Player.QueuedRangedUnitAttack(playerL, playerR.stronghold);
             }
@@ -253,16 +194,135 @@ public class Player {
             final Unit r = playerR.units.get(0);
 
             if (r.IsReachedMax()) {
-                if (r.Attack(playerL.stronghold)) playerR.xp += (int)(playerL.stronghold.maxHealth * Math.random() * 0.03f);
+                if (r.Attack(playerL.stronghold)) playerR.xp += (int)(playerL.stronghold.GetMaxHealth(playerL.era) * Math.random() * 0.03f);
 
                 Player.QueuedRangedUnitAttack(playerR, playerL.stronghold);
             }
         }
+
+        // unit deployment
+        playerR.ProcessUnitDeployment();
+        playerL.ProcessUnitDeployment();
+
+        // ultimate cooldown
+        if (playerL.ultimateCooldown > 0) playerL.ultimateCooldown -= 1;
+        if (playerR.ultimateCooldown > 0) playerR.ultimateCooldown -= 1;
 
         // playerL
         playerR.UpdateAfter(playerL.UpdateUnits(isOverlapped));
 
         // playerR
         playerL.UpdateAfter(playerR.UpdateUnits(isOverlapped));
+    }
+}
+
+class GameBot extends Player {
+
+    // constants
+    private final short SPAWN_POSITION_X;
+
+    public byte difficulty = 1;
+    public boolean isWaking = false;
+    public byte spawnDelay = 120;
+
+    public GameBot() {
+        this.SPAWN_POSITION_X = Player.RIGHT_STRONGHOLD_POSITION_X + 120;
+        this.stronghold.image.src.flip(true, false);
+        this.stronghold.image.SetPosition(Player.RIGHT_STRONGHOLD_POSITION_X, Player.STRONGHOLD_POSITION_Y);
+    }
+
+    @Override
+    public void SpawnUnit(Unit u) {
+        if (u == null) return;
+
+        u.SetFlip(true);
+
+        this.units.add(u);
+        u.SetPosition(this.SPAWN_POSITION_X, this.SPAWN_POSITION_Y);
+        Renderer.AddComponents(u.image, u.healthBar, u.healthBarInner);
+    }
+
+    @Override
+    public void UpdateAfter(int rawCost) {
+        switch (this.difficulty) {
+            case 1: {
+                this.cash += (int)(rawCost * 1.5);
+                this.xp += (int)(rawCost * Math.random() * 0.3f + rawCost * 0.05f);
+            } break;
+            case 2: {
+                this.cash += (int)(rawCost * 2.2);
+                this.xp += (int)(rawCost * Math.random() * 0.4f + rawCost * 0.06f);
+            } break;
+            case 3: {
+                this.cash += (int)(rawCost * 3.1);
+                this.xp += (int)(rawCost * Math.random() * 0.5f + rawCost * 0.07f);
+            } break;
+        }
+    }
+
+    public void Awake() {
+        this.isWaking = true;
+
+        switch (this.difficulty) {
+            case 1: this.Level1Automation(); break;
+            case 2: this.Level2Automation(); break;
+            case 3: this.Level3Automation(); break;
+        }
+    }
+
+    private void Level1Automation() {
+        if (!this.isWaking) return;
+
+        if (this.spawnDelay < 0) {
+            if (this.units.size() < Player.MAX_UNIT) {
+                this.DeployUnit(MeleeUnit.GetEra(this.era));
+            }
+
+            this.spawnDelay = 120;
+        }
+        else {
+            this.spawnDelay -= 1;
+        }
+    }
+
+    private void Level2Automation() {
+        if (!this.isWaking) return;
+
+        if (this.spawnDelay < 0) {
+            if (this.units.size() < Player.MAX_UNIT) {
+                int rand = (int)(Math.random() * 100);
+
+                if (rand < 50) {
+                    this.DeployUnit(RangedUnit.GetEra(this.era));
+                }
+                else {
+                    this.DeployUnit(MeleeUnit.GetEra(this.era));
+                }
+            }
+
+            this.spawnDelay = 120;
+        }
+        else {
+            this.spawnDelay -= 1;
+        }
+    }
+
+    private void Level3Automation() {
+        if (!this.isWaking) return;
+
+        if (this.spawnDelay < 0) {
+            if (this.units.size() < Player.MAX_UNIT) {
+                this.DeployUnit(MeleeUnit.GetEra(this.era));
+            }
+
+            this.spawnDelay = 120;
+        }
+        else {
+            this.spawnDelay -= 1;
+        }
+    }
+
+    public void Halt() {
+        this.isWaking = false;
     }
 }

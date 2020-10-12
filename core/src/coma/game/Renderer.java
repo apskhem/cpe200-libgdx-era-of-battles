@@ -1,6 +1,7 @@
 package coma.game;
 
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -9,10 +10,15 @@ import java.util.ArrayList;
 public class Renderer {
 
     private static final SpriteBatch b = new SpriteBatch();;
-    private static final ArrayList<Image> renderObjects = new ArrayList();
+    private static final ArrayList<Texture> textureContainer = new ArrayList<>();
+    private static final ArrayList<Image> renderObjects = new ArrayList<>();
     private static final ArrayList<Canvas> canvasObjects = new ArrayList<>();
-    private static final ArrayList<TextBox> textObjects = new ArrayList();
+    private static final ArrayList<TextBox> textObjects = new ArrayList<>();
     private static Camera camera;
+
+    public static void AddImageTexture(Texture texture) {
+        Renderer.textureContainer.add(texture);
+    }
 
     public static void AddComponents(Object ...renderObjects) {
         for (final Object r : renderObjects) {
@@ -69,14 +75,10 @@ public class Renderer {
     public static void Close() {
         b.dispose();
 
-        for (Image renderObject : Renderer.renderObjects) {
-            renderObject.Remove();
+        for (Texture texture : Renderer.textureContainer) {
+            texture.dispose();
         }
 
-        for (Canvas canvas : Renderer.canvasObjects) {
-            canvas.Remove();
-        }
-
-        Image.StaticDispose();
+        Renderer.textureContainer.clear();
     }
 }
