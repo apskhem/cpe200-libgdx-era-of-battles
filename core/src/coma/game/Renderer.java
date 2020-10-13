@@ -1,24 +1,17 @@
 package coma.game;
 
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.util.ArrayList;
 
 public class Renderer {
 
-    private static final SpriteBatch b = new SpriteBatch();;
-    private static final ArrayList<Texture> textureContainer = new ArrayList<>();
+    private static final SpriteBatch b = Asset.LoadSpriteBatch();
     private static final ArrayList<Image> renderObjects = new ArrayList<>();
     private static final ArrayList<Canvas> canvasObjects = new ArrayList<>();
     private static final ArrayList<TextBox> textObjects = new ArrayList<>();
     private static Camera camera;
-
-    public static void AddImageTexture(Texture texture) {
-        Renderer.textureContainer.add(texture);
-    }
 
     public static void AddComponents(Object ...renderObjects) {
         for (final Object r : renderObjects) {
@@ -35,7 +28,7 @@ public class Renderer {
                 Renderer.textObjects.add((TextBox) r);
             }
             else if (r instanceof ArrayList) {
-                Renderer.AddComponents(((ArrayList<?>) r).toArray(new Object[((ArrayList<?>) r).size()]));
+                Renderer.AddComponents(((ArrayList<?>) r).toArray());
             }
         }
     }
@@ -70,15 +63,5 @@ public class Renderer {
         }
 
         Renderer.b.end();
-    }
-
-    public static void Close() {
-        b.dispose();
-
-        for (Texture texture : Renderer.textureContainer) {
-            texture.dispose();
-        }
-
-        Renderer.textureContainer.clear();
     }
 }

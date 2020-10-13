@@ -7,6 +7,7 @@ import java.util.ArrayList;
 public class Player {
 
     public final Stronghold stronghold = new Stronghold();
+    public final ArrayList<Turret> turrets = new ArrayList<>();
     public final ArrayList<Unit> units = new ArrayList<>();
     public final Queue<Unit> deploymentQueue = new Queue<>();
 
@@ -18,15 +19,15 @@ public class Player {
     public int cash;
     public int xp;
     public byte era = 1;
-    public short deploymentCooldown;
-    public short ultimateCooldown = Player.ULTIMATE_COOLDOWN;
+    public short deploymentDelay;
+    public short ultimateDelay = Player.ULTIMATE_LOADING_DELAY;
 
     // static
     public static final short LEFT_STRONGHOLD_POSITION_X = -80;
     public static final short RIGHT_STRONGHOLD_POSITION_X = 1760;
     public static final byte STRONGHOLD_POSITION_Y = 20;
     public static final byte MAX_UNIT = 10;
-    public static final short ULTIMATE_COOLDOWN = 4000;
+    public static final short ULTIMATE_LOADING_DELAY = 4000;
 
     public Player() {
         this.stronghold.SetEra(this.era);
@@ -40,7 +41,7 @@ public class Player {
         if (this.cash >= u.cost && this.units.size() + this.deploymentQueue.size < Player.MAX_UNIT) {
             this.cash -= u.cost;
 
-            if (this.deploymentQueue.size == 0) this.deploymentCooldown = u.GetDeploymentCooldown();
+            if (this.deploymentQueue.size == 0) this.deploymentDelay = u.GetDeploymentDelay();
 
             this.deploymentQueue.addLast(u);
         }
@@ -53,26 +54,35 @@ public class Player {
         u.SetPosition(this.SPAWN_POSITION_X, this.SPAWN_POSITION_Y);
         Renderer.AddComponents(u.image, u.healthBar, u.healthBarInner);
 
-        Unit.unitCall.play();
+        MainGame.unitCall.play();
     }
 
     public void ProcessUnitDeployment() {
         if (this.deploymentQueue.size == 0) return;
 
-        if (this.deploymentCooldown == 0) {
+        if (this.deploymentDelay == 0) {
             final Unit u = this.deploymentQueue.removeFirst();
 
             this.SpawnUnit(u);
 
-            if (this.deploymentQueue.size > 0) this.deploymentCooldown = this.deploymentQueue.first().GetDeploymentCooldown();
+            if (this.deploymentQueue.size > 0) this.deploymentDelay = this.deploymentQueue.first().GetDeploymentDelay();
         }
         else {
-            this.deploymentCooldown -= 1;
+            this.deploymentDelay -= 1;
         }
     }
 
-    public void BuildTurret() {
+    public void BuildTurret(Turret turret) {
+        if (turret == null) return;
 
+        if (this.cash >= turret.cost && this.turrets.size() < 2) {
+            this.turrets.add(turret);
+
+            turret.image.SetPosition(65, this.turrets.size() == 1 ? 260 : 340);
+            Renderer.AddComponents(turret.image);
+
+            MainGame.unitCall.play();
+        }
     }
 
     public void UpgradeStronghold() {
@@ -104,7 +114,11 @@ public class Player {
                 Renderer.RemoveComponents(u.healthBar, u.healthBarInner);
                 Unit.deadUnits.add(u);
 
-                Unit.meleeDie1.play();
+                MainGame.meleeDie1.play();
+
+                if (u instanceof CavalryUnit && u.era == 1) {
+                    MainGame.cavalryDie1.setVolume(MainGame.cavalryDie1.play(), 0.3f);
+                }
             }
         }
 
@@ -123,10 +137,12 @@ public class Player {
             }
             // in queue units
             else {
-                if (currentUnit.moveX + currentUnit.image.src.getWidth() < inFrontUnit.moveX) {
+                if (currentUnit.moveX + currentUnit.image.naturalWidth < inFrontUnit.moveX) {
+                    currentUnit.isMoving = true;
                     currentUnit.Move();
                 }
                 else {
+                    currentUnit.isMoving = false;
                     if (!((i == 1 || i == 2) && currentUnit instanceof RangedUnit)) {
                         currentUnit.SetAnimationStateTo(1);
                     }
@@ -149,18 +165,18 @@ public class Player {
     public void Setup() {
         this.cash = 500;
         this.xp = 0;
-        this.deploymentCooldown = 0;
-        this.ultimateCooldown = Player.ULTIMATE_COOLDOWN;
+        this.deploymentDelay = 0;
+        this.ultimateDelay = Player.ULTIMATE_LOADING_DELAY;
         this.stronghold.SetEra(this.era = 1);
     }
 
     // static methods
     private static void QueuedRangedUnitAttack(Player player, GameObject toAttackUnit) {
-        final Unit ul2 = player.units.size() > 1 ? player.units.get(1) : null;
-        final Unit ul3 = player.units.size() > 2 ? player.units.get(2) : null;
+        final Unit u2 = player.units.size() > 1 ? player.units.get(1) : null;
+        final Unit u3 = player.units.size() > 2 ? player.units.get(2) : null;
 
-        if (ul2 instanceof RangedUnit) ul2.Attack(toAttackUnit);
-        if (ul3 instanceof RangedUnit) ul3.Attack(toAttackUnit);
+        if (u2 instanceof RangedUnit && !u2.isMoving) u2.Attack(toAttackUnit);
+        if (u3 instanceof RangedUnit && !u3.isMoving) u3.Attack(toAttackUnit);
     }
 
     public static void Update(Player playerL, Player playerR) {
@@ -170,7 +186,7 @@ public class Player {
             final Unit ul1 = playerL.units.get(0);
             final Unit ur1 = playerR.units.get(0);
 
-            isOverlapped = ul1.image.src.getX() + ul1.image.src.getWidth() / 1.2 > ur1.image.src.getX();
+            isOverlapped = ul1.image.src.getX() + ul1.image.naturalWidth / 1.2 > ur1.image.src.getX();
 
             // for front unit
             if (isOverlapped) {
@@ -200,13 +216,22 @@ public class Player {
             }
         }
 
+        // turret firing
+        for (final Turret turret : playerL.turrets) {
+            if (playerR.units.size() > 0) turret.Attack(playerR.units.get(0));
+        }
+
+        for (final Turret turret : playerR.turrets) {
+            if (playerL.units.size() > 0) turret.Attack(playerL.units.get(0));
+        }
+
         // unit deployment
         playerR.ProcessUnitDeployment();
         playerL.ProcessUnitDeployment();
 
-        // ultimate cooldown
-        if (playerL.ultimateCooldown > 0) playerL.ultimateCooldown -= 1;
-        if (playerR.ultimateCooldown > 0) playerR.ultimateCooldown -= 1;
+        // ultimate delay
+        if (playerL.ultimateDelay > 0) playerL.ultimateDelay -= 1;
+        if (playerR.ultimateDelay > 0) playerR.ultimateDelay -= 1;
 
         // playerL
         playerR.UpdateAfter(playerL.UpdateUnits(isOverlapped));
@@ -240,6 +265,21 @@ class GameBot extends Player {
         this.units.add(u);
         u.SetPosition(this.SPAWN_POSITION_X, this.SPAWN_POSITION_Y);
         Renderer.AddComponents(u.image, u.healthBar, u.healthBarInner);
+    }
+
+    @Override
+    public void BuildTurret(Turret turret) {
+        if (turret == null) return;
+
+        if (this.cash >= turret.cost && this.turrets.size() < 2) {
+            this.turrets.add(turret);
+
+            turret.SetFlip(true);
+            turret.image.SetPosition(1935, this.turrets.size() == 1 ? 260 : 340);
+            Renderer.AddComponents(turret.image);
+
+            MainGame.unitCall.play();
+        }
     }
 
     @Override

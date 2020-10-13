@@ -13,76 +13,110 @@ import java.text.DecimalFormat;
 
 public class MainGame extends ApplicationAdapter {
 	// all game sources will be here
-	private Image bg;
-	private UIController ui;
-	private OrthographicCamera camera;
+	public static Image bg;
+	public static UIController ui;
+	public static OrthographicCamera camera;
 
-	private Canvas playBtn;
-	private Canvas creditBtn;
-	private Canvas musicBtn;
-	private Canvas mode1;
-	private Canvas mode2;
-	private Canvas mode3;
-	private Canvas modeBanner;
-	private Canvas startBtn;
-	private Canvas menuBtn;
-	private Canvas restartBtn;
-	private Canvas unit1;
-	private Canvas unit2;
-	private Canvas unit3;
-	private Canvas unit4;
-	private Canvas unit5;
-	private Canvas unitUl;
-	private Canvas cashIcon;
-	private Canvas xpIcon;
-	private Canvas healthBar;
-	private Canvas healthBarL;
-	private Canvas healthBarR;
-	private Canvas queueBar;
-	private Canvas unitQueueBarInner;
-	private Canvas ultimateBarInner;
+	public static Canvas devLogo;
+	public static Canvas gameLogo;
+	public static Canvas playBtn;
+	public static Canvas creditBtn;
+	public static Canvas musicBtn;
+	public static Canvas mode1;
+	public static Canvas mode2;
+	public static Canvas mode3;
+	public static Canvas modeBanner;
+	public static Canvas startBtn;
+	public static Canvas menuBtn;
+	public static Canvas restartBtn;
+	public static Canvas unit1;
+	public static Canvas unit2;
+	public static Canvas unit3;
+	public static Canvas unit4;
+	public static Canvas unit5;
+	public static Canvas unitUl;
+	public static Canvas cashIcon;
+	public static Canvas xpIcon;
+	public static Canvas healthBar;
+	public static Canvas healthBarL;
+	public static Canvas healthBarR;
+	public static Canvas queueBar;
+	public static Canvas unitQueueBarInner;
+	public static Canvas ultimateBarInner;
+	public static Canvas victoryBanner;
+	public static Canvas defeatBanner;
 
-	private BitmapFont bitmapFont;
-	private TextBox cashText;
-	private TextBox xpText;
-	private TextBox unitCapText;
+	public static BitmapFont bitmapFont;
+	public static TextBox cashText;
+	public static TextBox xpText;
+	public static TextBox unitCapText;
 
-	private Player user;
-	private GameBot foe;
+	public static final Image[] strongholdImages = new Image[4];
+	public static final Image[] turretImages = new Image[4];
+	public static final Image[][] meleeUnitImages = new Image[4][7];
+	public static final Image[][] rangedUnitImages = new Image[4][7];
+	public static final Image[][] cavalryUnitImages = new Image[4][7];
+	public static Image unitHealthBar;
+	public static Image unitHealthBarInner;
 
-	private Music themeMusic;
-	private Sound startSound;
-	private Sound menuClickSound;
-	private Sound newEraSound;
+	public static Player user;
+	public static GameBot foe;
+
+	public static Music themeMusic;
+	public static Sound devLogoSound;
+	public static Sound startSound;
+	public static Sound menuClickSound;
+	public static Sound newEraSound;
+	public static Sound winSound;
+	public static Sound loseSound;
+	public static Sound meleeHit1;
+	public static Sound rangedHit1;
+	public static Sound cavalryHit1;
+	public static Sound meleeDie1;
+	public static Sound cavalryDie1;
+	public static Sound unitCall;
 
 	// config
-	private final float CAMERA_SPEED = 10f;
-	private final float NORMAL_MUSIC_VOLUME = 0.7f;
+	private static final float CAMERA_SPEED = 10f;
+	private static final float MUSIC_VOLUME = 0.7f;
 	
 	@Override
 	public void create() {
 		// load global images
-		Image.strongholdEra1 = new Image("base-era-1.png");
-		Image.meleeUnitEra1A = new Image("melee-unit-era-1-1.png");
-		Image.meleeUnitEra1B = new Image("melee-unit-era-1-2.png");
-		Image.meleeUnitEra1C = new Image("melee-unit-era-1-3.png");
-		Image.meleeUnitEra1D = new Image("melee-unit-era-1-4.png");
-		Image.meleeUnitEra1E = new Image("melee-unit-era-1-5.png");
-		Image.meleeUnitEra1F = new Image("melee-unit-era-1-6.png");
-		Image.meleeUnitEra1G = new Image("melee-unit-era-1-7.png");
-		Image.rangedUnitEra1A = new Image("ranged-unit-era-1-1.png");
-		Image.rangedUnitEra1B = new Image("ranged-unit-era-1-2.png");
-		Image.rangedUnitEra1C = new Image("ranged-unit-era-1-3.png");
-		Image.rangedUnitEra1D = new Image("ranged-unit-era-1-4.png");
-		Image.rangedUnitEra1E = new Image("ranged-unit-era-1-5.png");
-		Image.rangedUnitEra1F = new Image("ranged-unit-era-1-6.png");
-		Image.rangedUnitEra1G = new Image("ranged-unit-era-1-7.png");
-		Image.unitHealthBar = new Image("unit-health-bar.png");
-		Image.unitHealthBarInner = new Image("unit-health-bar-inner.png");
+		for (byte era = 0; era < 1; era++) {
+			strongholdImages[0] = new Image("base-era-" + (era + 1) + ".png");
+		}
+
+		for (byte era = 0; era < 1; era++) {
+			turretImages[0] = new Image("turret-era-" + (era + 1) + ".png");
+		}
+
+		for (byte era = 0; era < 1; era++) {
+			for (byte mov = 0; mov < meleeUnitImages[era].length; mov++) {
+				meleeUnitImages[era][mov] = new Image("melee-unit-era-" + (era + 1) + "-" + (mov + 1) + ".png");
+			}
+		}
+
+		for (byte era = 0; era < 1; era++) {
+			for (byte mov = 0; mov < rangedUnitImages[era].length; mov++) {
+				rangedUnitImages[era][mov] = new Image("ranged-unit-era-" + (era + 1) + "-" + (mov + 1) + ".png");
+			}
+		}
+
+		for (byte era = 0; era < 1; era++) {
+			for (byte mov = 0; mov < cavalryUnitImages[era].length; mov++) {
+				cavalryUnitImages[era][mov] = new Image("cavalry-unit-era-" + (era + 1) + "-" + (mov + 1) + ".png");
+			}
+		}
+
+		unitHealthBar = new Image("unit-health-bar.png");
+		unitHealthBarInner = new Image("unit-health-bar-inner.png");
 
 		// set fields
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		bg = new Image("game-bg.png");
+		devLogo = new Canvas("dev-logo.png");
+		gameLogo = new Canvas("game-logo.png");
 		playBtn = new Canvas("play-btn.png");
 		creditBtn = new Canvas("credit-btn.png");
 		musicBtn = new Canvas("music-btn.png");
@@ -107,9 +141,9 @@ public class MainGame extends ApplicationAdapter {
 		queueBar = new Canvas("queue-bar.png");
 		unitQueueBarInner = new Canvas("unit-queue-bar-inner.png");
 		ultimateBarInner = new Canvas("ultimate-bar-inner.png");
-		GameStatus.victoryBanner = new Canvas("victory.png");
-		GameStatus.defeatBanner = new Canvas("defeat.png");
-		bitmapFont = new BitmapFont(Gdx.files.internal("fonts/kefa.fnt"), false);
+		victoryBanner = new Canvas("victory.png");
+		defeatBanner = new Canvas("defeat.png");
+		bitmapFont = Asset.LoadBitmapFont("fonts/kefa.fnt", false);
 		cashText = new TextBox(bitmapFont);
 		xpText = new TextBox(bitmapFont);
 		unitCapText = new TextBox(bitmapFont);
@@ -118,9 +152,11 @@ public class MainGame extends ApplicationAdapter {
 		foe = new GameBot();
 
 		// set ui position and group module
+		gameLogo.SetPosition("center", 400);
 		playBtn.SetPosition("center", camera.viewportHeight/2);
 		creditBtn.SetPosition("center", camera.viewportHeight/2 - 120);
 		musicBtn.SetPosition(886, 14);
+		musicBtn.isVisible = false;
 		mode1.SetPosition(80, "center");
 		mode2.SetPosition("center", "center");
 		mode3.SetPosition(640, "center");
@@ -148,49 +184,52 @@ public class MainGame extends ApplicationAdapter {
 		queueBar.SetPosition(566, 492);
 		unitQueueBarInner.SetPosition(567, 500);
 		ultimateBarInner.SetPosition(567,493);
-		GameStatus.victoryBanner.SetPosition("center", 180);
-		GameStatus.defeatBanner.SetPosition("center", 180);
+		victoryBanner.SetPosition("center", 180);
+		defeatBanner.SetPosition("center", 180);
 
 		cashText.SetPosition(64, 580);
 		cashText.textContent = "0";
 		xpText.SetPosition(64, 540);
 		xpText.textContent = "0";
 		unitCapText.SetPosition(22, 500);
-		unitCapText.textContent = "0/10";
+		unitCapText.textContent = "0/NaN";
 
-		ui.AddBoxModule("start-menu", playBtn, creditBtn);
+		ui.AddBoxModule("start-menu", gameLogo, playBtn, creditBtn);
 		ui.AddBoxModule("mode-selection-menu", mode1, mode2, mode3, modeBanner, startBtn, menuBtn);
 		ui.AddBoxModule("in-game-menu", unit1, unit2, unit3, unit4, unit5, unitUl,
 				cashIcon, xpIcon, cashText, xpText, unitCapText, healthBar, healthBarL, healthBarR, queueBar,
 				unitQueueBarInner, ultimateBarInner);
-		ui.AddBoxModule("game-over-menu", restartBtn, menuBtn, GameStatus.victoryBanner, GameStatus.defeatBanner);
+		ui.AddBoxModule("game-over-menu", restartBtn, menuBtn, victoryBanner, defeatBanner);
+		ui.GetBoxModule("start-menu").SetVisibility(false);
 		ui.GetBoxModule("game-over-menu").SetVisibility(false);
 		ui.GetBoxModule("in-game-menu").SetVisibility(false);
 		ui.GetBoxModule("mode-selection-menu").SetVisibility(false);
 
 		// set sounds and music
-		themeMusic = Gdx.audio.newMusic(Gdx.files.internal("audio/theme.mp3"));
-		themeMusic.play();
+		themeMusic = Asset.LoadMusic("audio/theme.mp3");
 		themeMusic.setLooping(true);
-		themeMusic.setVolume(NORMAL_MUSIC_VOLUME);
+		themeMusic.setVolume(MUSIC_VOLUME);
 
-		startSound = Gdx.audio.newSound(Gdx.files.internal("audio/start-game.mp3"));
-		menuClickSound = Gdx.audio.newSound(Gdx.files.internal("audio/menu-click.mp3"));
-		newEraSound = Gdx.audio.newSound(Gdx.files.internal("audio/new-era.mp3"));
-		GameStatus.winSound = Gdx.audio.newSound(Gdx.files.internal("audio/win.mp3"));
-		GameStatus.loseSound = Gdx.audio.newSound(Gdx.files.internal("audio/lose.mp3"));
-		Unit.meleeHit1 = Gdx.audio.newSound(Gdx.files.internal("audio/melee-hit-1.mp3"));
-		Unit.rangedHit1 = Gdx.audio.newSound(Gdx.files.internal("audio/ranged-hit-1.mp3"));
-		Unit.meleeDie1 = Gdx.audio.newSound(Gdx.files.internal("audio/melee-die-1.mp3"));
-		Unit.unitCall = Gdx.audio.newSound(Gdx.files.internal("audio/call-unit.mp3"));
+		devLogoSound = Asset.LoadSound("audio/dev-logo.mp3");
+		startSound = Asset.LoadSound("audio/start-game.mp3");
+		menuClickSound = Asset.LoadSound("audio/menu-click.mp3");
+		newEraSound = Asset.LoadSound("audio/new-era.mp3");
+		winSound = Asset.LoadSound("audio/win.mp3");
+		loseSound = Asset.LoadSound("audio/lose.mp3");
+		meleeHit1 = Asset.LoadSound("audio/melee-hit-1.mp3");
+		rangedHit1 = Asset.LoadSound("audio/ranged-hit-1.mp3");
+		cavalryHit1 = Asset.LoadSound("audio/cavalry-hit-1.mp3");
+		meleeDie1 = Asset.LoadSound("audio/melee-die-1.mp3");
+		cavalryDie1 = Asset.LoadSound("audio/cavalry-die-1.mp3");
+		unitCall = Asset.LoadSound("audio/call-unit.mp3");
 
 		// set camera
 		camera.translate(camera.viewportWidth/2, camera.viewportHeight/2);
 
 		// set components
-		ui.AddComponents(playBtn, creditBtn, musicBtn, mode1, mode2, mode3, modeBanner, startBtn, restartBtn, menuBtn,
+		ui.AddComponents(devLogo, gameLogo, playBtn, creditBtn, musicBtn, mode1, mode2, mode3, modeBanner, startBtn, restartBtn, menuBtn,
 				unit1, unit2, unit3, unit4, unit5, unitUl, cashIcon, xpIcon, healthBar, healthBarL, healthBarR, queueBar,
-				unitQueueBarInner, ultimateBarInner, GameStatus.victoryBanner, GameStatus.defeatBanner);
+				unitQueueBarInner, ultimateBarInner, victoryBanner, defeatBanner);
 		ui.AddComponents(cashText, xpText, unitCapText);
 		Renderer.AddComponents(camera, bg, user.stronghold.image, foe.stronghold.image, ui.GetComponents());
 	}
@@ -201,6 +240,8 @@ public class MainGame extends ApplicationAdapter {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+		Intro.Play();
+
 		// keyboard event
 		if (GameStatus.isGameStarted) {
 			this.onkeypress();
@@ -208,25 +249,35 @@ public class MainGame extends ApplicationAdapter {
 			// update user ui
 			DecimalFormat df = new DecimalFormat("###,###,###");
 
+			// text
 			cashText.textContent = df.format(user.cash);
 			xpText.textContent = df.format(user.xp);
 			unitCapText.textContent = user.units.size() + "/" + Player.MAX_UNIT;
 
+			// unit icons
 			unit1.SetActive(user.cash > MeleeUnit.GetEra(user.era).cost);
 			unit2.SetActive(user.cash > RangedUnit.GetEra(user.era).cost);
-			unit3.SetActive(false);
-			unit4.SetActive(false);
+			unit3.SetActive(user.cash > CavalryUnit.GetEra(user.era).cost);
+			unit4.SetActive(user.cash > Turret.GetEra(user.era).cost);
 			unit5.SetActive(false);
-			unitUl.SetActive(user.ultimateCooldown <= 0);
+			unitUl.SetActive(user.ultimateDelay <= 0);
 
-			final float cd = user.deploymentQueue.size > 0 ? user.deploymentQueue.first().GetDeploymentCooldown() : 100;
+			// delay bars
+			final float cd = user.deploymentQueue.size > 0 ? user.deploymentQueue.first().GetDeploymentDelay() : 100;
 
-			unitQueueBarInner.SetViewBox((1 - (user.deploymentCooldown / cd)) * 198, Float.NaN);
-			ultimateBarInner.SetViewBox((1 - user.ultimateCooldown / (float) Player.ULTIMATE_COOLDOWN) * 198, Float.NaN);
+			unitQueueBarInner.SetViewBox((1 - (user.deploymentDelay / cd)) * 198, Float.NaN);
+			ultimateBarInner.SetViewBox((1 - user.ultimateDelay / (float) Player.ULTIMATE_LOADING_DELAY) * 198, Float.NaN);
 			healthBarL.SetViewBox(user.stronghold.GetPercentageHealth(healthBarL.naturalWidth), Float.NaN);
 			healthBarR.SetViewBox(foe.stronghold.GetPercentageHealth(healthBarR.naturalWidth), Float.NaN);
 
+			// update fading units
 			Unit.UpdateDeadUnits();
+
+			// update user and foe
+			Player.Update(user, foe);
+
+			// check game over
+			GameStatus.CheckGameOver(user, foe, ui);
 
 			// update foe
 			foe.Awake();
@@ -240,12 +291,6 @@ public class MainGame extends ApplicationAdapter {
 			this.onclick(clientX, clientY);
 		}
 
-		// update user and foe
-		Player.Update(user, foe);
-
-		// check game over
-		GameStatus.CheckGameOver(user, foe, ui);
-
 		// update components
 		ui.Update();
 		Renderer.Update();
@@ -253,19 +298,7 @@ public class MainGame extends ApplicationAdapter {
 	
 	@Override
 	public void dispose() {
-		Renderer.Close();
-
-		// sounds dispose
-		themeMusic.dispose();
-		startSound.dispose();
-		menuClickSound.dispose();
-		Unit.meleeHit1.dispose();
-		Unit.rangedHit1.dispose();
-		Unit.meleeDie1.dispose();
-		Unit.unitCall.dispose();
-
-		// font dispose
-		bitmapFont.dispose();
+		Asset.Unload();
 	}
 
 	public void onkeypress() {
@@ -289,16 +322,24 @@ public class MainGame extends ApplicationAdapter {
 			user.DeployUnit(RangedUnit.GetEra(user.era));
 		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_3)) {
-			user.DeployUnit(MeleeUnit.GetEra(user.era));
+			user.DeployUnit(CavalryUnit.GetEra(user.era));
 		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_4)) {
-			user.BuildTurret();
+			user.BuildTurret(Turret.GetEra(user.era));
 		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_5)) {
 			user.UpgradeStronghold();
 		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_6)) {
 			user.UseUltimate();
+		}
+
+		// debugging
+		if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+			foe.BuildTurret(Turret.GetEra(user.era));
+		}
+		if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
+			user.cash += 1000;
 		}
 	}
 
@@ -307,9 +348,9 @@ public class MainGame extends ApplicationAdapter {
 			ui.GetBoxModule("mode-selection-menu").SetVisibility(true);
 			ui.GetBoxModule("start-menu").SetVisibility(false);
 
-			mode1.SetActive(true);
-			mode2.SetActive(false);
-			mode3.SetActive(false);
+			mode1.SetActive(foe.difficulty == 1);
+			mode2.SetActive(foe.difficulty == 2);
+			mode3.SetActive(foe.difficulty == 3);
 
 			menuClickSound.play();
 		}
@@ -317,14 +358,9 @@ public class MainGame extends ApplicationAdapter {
 			menuClickSound.play();
 		}
 		else if (musicBtn.IsInBound(clientX, clientY)) {
-			if (themeMusic.getVolume() == 0) {
-				themeMusic.setVolume(NORMAL_MUSIC_VOLUME);
-				musicBtn.SetActive(true);
-			}
-			else {
-				themeMusic.setVolume(0);
-				musicBtn.SetActive(false);
-			}
+			final boolean t = themeMusic.getVolume() == 0;
+			themeMusic.setVolume(t ? MUSIC_VOLUME : 0);
+			musicBtn.SetActive(t);
 		}
 		else if (mode1.IsInBound(clientX, clientY)) {
 			if (foe.difficulty == 1) return;
@@ -370,16 +406,16 @@ public class MainGame extends ApplicationAdapter {
 			ui.GetBoxModule("start-menu").SetVisibility(true);
 			ui.GetBoxModule("mode-selection-menu").SetVisibility(false);
 			ui.GetBoxModule("game-over-menu").SetVisibility(false);
-			GameStatus.victoryBanner.isVisible = false;
-			GameStatus.defeatBanner.isVisible = false;
+			victoryBanner.isVisible = false;
+			defeatBanner.isVisible = false;
 
 			menuClickSound.play();
 		}
 		else if (restartBtn.IsInBound(clientX, clientY)) {
 			ui.GetBoxModule("in-game-menu").SetVisibility(true);
 			ui.GetBoxModule("game-over-menu").SetVisibility(false);
-			GameStatus.victoryBanner.isVisible = false;
-			GameStatus.defeatBanner.isVisible = false;
+			victoryBanner.isVisible = false;
+			defeatBanner.isVisible = false;
 
 			user.Setup();
 			foe.Setup();
@@ -394,10 +430,10 @@ public class MainGame extends ApplicationAdapter {
 			user.DeployUnit(RangedUnit.GetEra(user.era));
 		}
 		else if (unit3.IsInBound(clientX, clientY)) {
-			user.DeployUnit(MeleeUnit.GetEra(user.era));
+			user.DeployUnit(CavalryUnit.GetEra(user.era));
 		}
 		else if (unit4.IsInBound(clientX, clientY)) {
-			user.BuildTurret();
+			user.BuildTurret(Turret.GetEra(user.era));
 		}
 		else if (unit5.IsInBound(clientX, clientY)) {
 			user.UpgradeStronghold();
