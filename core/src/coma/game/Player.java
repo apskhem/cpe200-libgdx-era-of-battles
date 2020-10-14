@@ -250,6 +250,7 @@ class GameBot extends Player {
     public byte difficulty = 1;
     public boolean isWaking = false;
     public byte decisionDelay = 120;
+    public byte state = 1;
 
     public static final byte DECISION_DELAY = 120;
 
@@ -314,13 +315,40 @@ class GameBot extends Player {
         }
     }
 
+    public void CurState() {
+        switch (this.era){
+            case 1:
+                if(this.cash >= 0)  state = 1;
+                else if (this.cash >= 1000) state = 2;
+                else state = 3;
+            case 2:
+                if(this.cash >= 0)  state = 1;
+                else if (this.cash >= 2000) state = 2;
+                else state = 3;
+            case 3:
+                if(this.cash >= 0)  state = 1;
+                else if (this.cash >= 5000) state = 2;
+                else state = 3;
+        }
+//        switch(state){
+//            case 1: this.Level1Automation(); break;
+//            case 2: this.Level2Automation(); break;
+//            case 3: this.Level3Automation(); break;
+//        }
+    }
+
     private void Level1Automation() {
         if (!this.isWaking) return;
 
         if (this.decisionDelay < 0) {
             // game bot decision fired >> write decision commands here
             if (this.units.size() < Player.MAX_UNIT) {
-                this.DeployUnit(MeleeUnit.GetEra(this.era));
+
+                int idx = (int)(Math.random() * 100);      // random idx for choosing unit
+
+                if(idx >= 0 && idx < 40)   this.DeployUnit(MeleeUnit.GetEra(this.era));
+                else if (idx >= 40 && idx < 80 )    this.DeployUnit(RangedUnit.GetEra(this.era));
+                else this.DeployUnit(CavalryUnit.GetEra(this.era));
             }
 
             this.decisionDelay = GameBot.DECISION_DELAY;
@@ -336,14 +364,11 @@ class GameBot extends Player {
         if (this.decisionDelay < 0) {
             // game bot decision fired >> write decision commands here
             if (this.units.size() < Player.MAX_UNIT) {
-                int rand = (int)(Math.random() * 100);
+                int idx = (int)(Math.random() * 100);      // random idx for choosing unit
 
-                if (rand < 50) {
-                    this.DeployUnit(RangedUnit.GetEra(this.era));
-                }
-                else {
-                    this.DeployUnit(MeleeUnit.GetEra(this.era));
-                }
+                if(idx >= 0 && idx < 35)   this.DeployUnit(MeleeUnit.GetEra(this.era));
+                else if (idx >= 35 && idx < 70 )    this.DeployUnit(RangedUnit.GetEra(this.era));
+                else this.DeployUnit(CavalryUnit.GetEra(this.era));
             }
 
             this.decisionDelay = GameBot.DECISION_DELAY;
@@ -358,9 +383,11 @@ class GameBot extends Player {
 
         if (this.decisionDelay < 0) {
             // game bot decision fired >> write decision commands here
-            if (this.units.size() < Player.MAX_UNIT) {
-                this.DeployUnit(MeleeUnit.GetEra(this.era));
-            }
+            int idx = (int)(Math.random() * 100);      // random idx for choosing unit
+
+            if(idx >= 0 && idx < 30)   this.DeployUnit(MeleeUnit.GetEra(this.era));
+            else if (idx >= 30 && idx < 60)    this.DeployUnit(RangedUnit.GetEra(this.era));
+            else this.DeployUnit(CavalryUnit.GetEra(this.era));
 
             this.decisionDelay = GameBot.DECISION_DELAY;
         }
