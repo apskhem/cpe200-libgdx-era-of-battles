@@ -11,15 +11,8 @@ public abstract class GameObject {
 
     public final Image image;
 
-    public boolean isFlipped = false;
-
     public GameObject(String internalPath) {
         this.image = new Image(internalPath);
-    }
-
-    public void SetFlip(boolean value) {
-        this.isFlipped = value;
-        this.image.src.setFlip(value, false);
     }
 
     public GameObject(Image image) {
@@ -88,9 +81,9 @@ abstract class Unit extends GameObject {
         // normal moving
         if (moveX < Unit.MAX_MOVE) {
             moveX += Unit.MOVE_SPEED;
-            this.image.Move(this.isFlipped ? -Unit.MOVE_SPEED : Unit.MOVE_SPEED, 0);
-            this.healthBar.Move(this.isFlipped ? -Unit.MOVE_SPEED : Unit.MOVE_SPEED, 0);
-            this.healthBarInner.Move(this.isFlipped ? -Unit.MOVE_SPEED : Unit.MOVE_SPEED, 0);
+            this.image.Move(this.image.isFlipped ? -Unit.MOVE_SPEED : Unit.MOVE_SPEED, 0);
+            this.healthBar.Move(this.image.isFlipped ? -Unit.MOVE_SPEED : Unit.MOVE_SPEED, 0);
+            this.healthBarInner.Move(this.image.isFlipped ? -Unit.MOVE_SPEED : Unit.MOVE_SPEED, 0);
 
             if (this.animationState > 3) this.animationState = 3;
 
@@ -258,7 +251,7 @@ class MeleeUnit extends Unit {
             case 6: {
                 this.image.SetSize(135, Float.NaN);
 
-                if (this.isFlipped) this.image.Move(this.displacedTranslateX = -55, 0);
+                if (this.image.isFlipped) this.image.Move(this.displacedTranslateX = -55, 0);
             } break;
         }
     }
@@ -312,7 +305,7 @@ class RangedUnit extends Unit {
             case 5: {
                 this.image.SetSize(Float.NaN, Float.NaN);
 
-                this.image.Move(this.displacedTranslateX = (byte)(isFlipped ? -8 : 8), 0);
+                this.image.Move(this.displacedTranslateX = (byte)(this.image.isFlipped ? -8 : 8), 0);
             } break;
         }
     }
@@ -400,8 +393,8 @@ class Turret extends GameObject {
     public void Attack(Unit unit) {
         if (unit == null) return;
 
-        final float dl = Math.abs(this.image.src.getX() - unit.image.src.getX());
-        final float dh = Math.abs(this.image.src.getY() - unit.image.src.getY());
+        final float dl = Math.abs(this.image.GetTransform().x - unit.image.GetTransform().x);
+        final float dh = Math.abs(this.image.GetTransform().y - unit.image.GetTransform().y);
 
         if (dl < Turret.ATTACK_RANGE) {
             if (this.attackDelay < 0) {
@@ -410,7 +403,7 @@ class Turret extends GameObject {
 
                 unit.health -= this.attack;
 
-                this.image.SetRotation((float) deg * (this.isFlipped ? 1 : -1));
+                this.image.SetRotation((float) deg * (this.image.isFlipped ? 1 : -1));
 
                 this.attackDelay = Turret.ATTACK_DELAY;
 

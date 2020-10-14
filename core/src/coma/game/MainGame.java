@@ -180,7 +180,7 @@ public class MainGame extends ApplicationAdapter {
 		healthBar.SetPosition("center", 14);
 		healthBarL.SetPosition(318, 18);
 		healthBarR.SetPosition(485, 18);
-		healthBarR.src.rotate(180);
+		healthBarR.SetRotation(180);
 		queueBar.SetPosition(566, 492);
 		unitQueueBarInner.SetPosition(567, 500);
 		ultimateBarInner.SetPosition(567,493);
@@ -340,6 +340,9 @@ public class MainGame extends ApplicationAdapter {
 		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
 			user.cash += 1000;
+		}
+		if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+			foe.cash += 1000;
 		}
 	}
 

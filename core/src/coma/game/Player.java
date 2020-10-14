@@ -72,14 +72,15 @@ public class Player {
         }
     }
 
-    public void BuildTurret(Turret turret) {
-        if (turret == null) return;
+    public void BuildTurret(Turret t) {
+        if (t == null) return;
 
-        if (this.cash >= turret.cost && this.turrets.size() < 2) {
-            this.turrets.add(turret);
+        if (this.cash >= t.cost && this.turrets.size() < 2) {
+            this.cash -= t.cost;
+            this.turrets.add(t);
 
-            turret.image.SetPosition(65, this.turrets.size() == 1 ? 260 : 340);
-            Renderer.AddComponents(turret.image);
+            t.image.SetPosition(65, this.turrets.size() == 1 ? 260 : 340);
+            Renderer.AddComponents(t.image);
 
             MainGame.unitCall.play();
         }
@@ -158,8 +159,13 @@ public class Player {
             Renderer.RemoveComponents(unit.image, unit.healthBar, unit.healthBarInner);
         }
 
+        for (final Turret turret : this.turrets) {
+            Renderer.RemoveComponents(turret.image);
+        }
+
         this.deploymentQueue.clear();
         this.units.clear();
+        this.turrets.clear();
     }
 
     public void Setup() {
@@ -186,7 +192,7 @@ public class Player {
             final Unit ul1 = playerL.units.get(0);
             final Unit ur1 = playerR.units.get(0);
 
-            isOverlapped = ul1.image.src.getX() + ul1.image.naturalWidth / 1.2 > ur1.image.src.getX();
+            isOverlapped = ul1.image.GetTransform().x + ul1.image.naturalWidth / 1.2 > ur1.image.GetTransform().x;
 
             // for front unit
             if (isOverlapped) {
@@ -197,22 +203,17 @@ public class Player {
                 Player.QueuedRangedUnitAttack(playerR, ul1);
             }
         }
-        else if (playerL.units.size() != 0) {
-            final Unit l = playerL.units.get(0);
+        else if (playerL.units.size() != 0 || playerR.units.size() != 0) {
+            final Player attacker = playerL.units.size() != 0 ? playerL : playerR;
+            final Player defender = playerL.units.size() != 0 ? playerR : playerL;
+            final Unit u = attacker.units.get(0);
 
-            if (l.IsReachedMax()) {
-                if (l.Attack(playerR.stronghold)) playerL.xp += (int)(playerL.stronghold.GetMaxHealth(playerL.era) * Math.random() * 0.01f);
+            if (u.IsReachedMax()) {
+                if (u.Attack(defender.stronghold)) {
+                    attacker.xp += (int)(defender.stronghold.GetMaxHealth(defender.era) * Math.random() * 0.01f);
+                }
 
-                Player.QueuedRangedUnitAttack(playerL, playerR.stronghold);
-            }
-        }
-        else if (playerR.units.size() != 0) {
-            final Unit r = playerR.units.get(0);
-
-            if (r.IsReachedMax()) {
-                if (r.Attack(playerL.stronghold)) playerR.xp += (int)(playerL.stronghold.GetMaxHealth(playerL.era) * Math.random() * 0.03f);
-
-                Player.QueuedRangedUnitAttack(playerR, playerL.stronghold);
+                Player.QueuedRangedUnitAttack(attacker, defender.stronghold);
             }
         }
 
@@ -248,11 +249,13 @@ class GameBot extends Player {
 
     public byte difficulty = 1;
     public boolean isWaking = false;
-    public byte spawnDelay = 120;
+    public byte decisionDelay = 120;
+
+    public static final byte DECISION_DELAY = 120;
 
     public GameBot() {
         this.SPAWN_POSITION_X = Player.RIGHT_STRONGHOLD_POSITION_X + 120;
-        this.stronghold.image.src.flip(true, false);
+        this.stronghold.image.FlipHorizontal();
         this.stronghold.image.SetPosition(Player.RIGHT_STRONGHOLD_POSITION_X, Player.STRONGHOLD_POSITION_Y);
     }
 
@@ -260,7 +263,7 @@ class GameBot extends Player {
     public void SpawnUnit(Unit u) {
         if (u == null) return;
 
-        u.SetFlip(true);
+        u.image.FlipHorizontal();
 
         this.units.add(u);
         u.SetPosition(this.SPAWN_POSITION_X, this.SPAWN_POSITION_Y);
@@ -268,15 +271,16 @@ class GameBot extends Player {
     }
 
     @Override
-    public void BuildTurret(Turret turret) {
-        if (turret == null) return;
+    public void BuildTurret(Turret t) {
+        if (t == null) return;
 
-        if (this.cash >= turret.cost && this.turrets.size() < 2) {
-            this.turrets.add(turret);
+        if (this.cash >= t.cost && this.turrets.size() < 2) {
+            this.cash -= t.cost;
+            this.turrets.add(t);
 
-            turret.SetFlip(true);
-            turret.image.SetPosition(1935, this.turrets.size() == 1 ? 260 : 340);
-            Renderer.AddComponents(turret.image);
+            t.image.FlipHorizontal();
+            t.image.SetPosition(1935, this.turrets.size() == 1 ? 260 : 340);
+            Renderer.AddComponents(t.image);
 
             MainGame.unitCall.play();
         }
@@ -313,22 +317,24 @@ class GameBot extends Player {
     private void Level1Automation() {
         if (!this.isWaking) return;
 
-        if (this.spawnDelay < 0) {
+        if (this.decisionDelay < 0) {
+            // game bot decision fired >> write decision commands here
             if (this.units.size() < Player.MAX_UNIT) {
                 this.DeployUnit(MeleeUnit.GetEra(this.era));
             }
 
-            this.spawnDelay = 120;
+            this.decisionDelay = GameBot.DECISION_DELAY;
         }
         else {
-            this.spawnDelay -= 1;
+            this.decisionDelay -= 1;
         }
     }
 
     private void Level2Automation() {
         if (!this.isWaking) return;
 
-        if (this.spawnDelay < 0) {
+        if (this.decisionDelay < 0) {
+            // game bot decision fired >> write decision commands here
             if (this.units.size() < Player.MAX_UNIT) {
                 int rand = (int)(Math.random() * 100);
 
@@ -340,25 +346,26 @@ class GameBot extends Player {
                 }
             }
 
-            this.spawnDelay = 120;
+            this.decisionDelay = GameBot.DECISION_DELAY;
         }
         else {
-            this.spawnDelay -= 1;
+            this.decisionDelay -= 1;
         }
     }
 
     private void Level3Automation() {
         if (!this.isWaking) return;
 
-        if (this.spawnDelay < 0) {
+        if (this.decisionDelay < 0) {
+            // game bot decision fired >> write decision commands here
             if (this.units.size() < Player.MAX_UNIT) {
                 this.DeployUnit(MeleeUnit.GetEra(this.era));
             }
 
-            this.spawnDelay = 120;
+            this.decisionDelay = GameBot.DECISION_DELAY;
         }
         else {
-            this.spawnDelay -= 1;
+            this.decisionDelay -= 1;
         }
     }
 

@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 public abstract class Renderable {
     public boolean isVisible = true;
@@ -17,6 +19,7 @@ class Image extends Renderable {
     protected final Sprite src;
     public final int naturalWidth;
     public final int naturalHeight;
+    public boolean isFlipped;
 
     public Image(String internalPath) {
         this.texture = Asset.LoadTexture(internalPath);
@@ -32,8 +35,28 @@ class Image extends Renderable {
         this.naturalHeight = this.src.getTexture().getHeight();
     }
 
+    public void FlipHorizontal() {
+        this.src.setFlip(!this.src.isFlipX(), this.src.isFlipY());
+
+        this.isFlipped = this.src.isFlipX() || this.src.isFlipY();
+    }
+
+    public void FlipVertical() {
+        this.src.setFlip(this.src.isFlipX(), !this.src.isFlipY());
+
+        this.isFlipped = this.src.isFlipX() || this.src.isFlipY();
+    }
+
     public void Move(float x, float y) {
         this.src.translate(x, y);
+    }
+
+    public Vector2 GetTransform() {
+        final Vector2 v = new Vector2();
+        v.x = this.src.getX();
+        v.y = this.src.getY();
+
+        return v;
     }
 
     public void SetOpacity(float value) {
