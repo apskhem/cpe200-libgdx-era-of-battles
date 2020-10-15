@@ -25,6 +25,9 @@ public class GameStatus {
         if (isWon) MainGame.winSound.play();
         else MainGame.loseSound.play();
 
+        MainGame.gameSpeed = 1;
+        MainGame.speedBtn.SetActive(false);
+
         MainGame.victoryBanner.isVisible = isWon;
         MainGame.defeatBanner.isVisible = !isWon;
     }

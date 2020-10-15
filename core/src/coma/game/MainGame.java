@@ -22,6 +22,7 @@ public class MainGame extends ApplicationAdapter {
 	public static Canvas playBtn;
 	public static Canvas creditBtn;
 	public static Canvas musicBtn;
+	public static Canvas speedBtn;
 	public static Canvas mode1;
 	public static Canvas mode2;
 	public static Canvas mode3;
@@ -37,6 +38,7 @@ public class MainGame extends ApplicationAdapter {
 	public static Canvas unitUl;
 	public static Canvas cashIcon;
 	public static Canvas xpIcon;
+	public static final Canvas[] unitQueueIcons = new Canvas[10];
 	public static Canvas healthBar;
 	public static Canvas healthBarL;
 	public static Canvas healthBarR;
@@ -56,11 +58,16 @@ public class MainGame extends ApplicationAdapter {
 	public static final Image[][] meleeUnitImages = new Image[4][7];
 	public static final Image[][] rangedUnitImages = new Image[4][7];
 	public static final Image[][] cavalryUnitImages = new Image[4][7];
+	public static final Image[] unitQueueImages = new Image[3];
+	public static final Image[] ultimateBannerImages = new Image[4];
 	public static Image unitHealthBar;
 	public static Image unitHealthBarInner;
 
 	public static Player user;
 	public static GameBot foe;
+
+	public static float deltaTime;
+	public static byte gameSpeed = 1;
 
 	public static Music themeMusic;
 	public static Sound devLogoSound;
@@ -83,12 +90,12 @@ public class MainGame extends ApplicationAdapter {
 	@Override
 	public void create() {
 		// load global images
-		for (byte era = 0; era < 1; era++) {
-			strongholdImages[0] = new Image("base-era-" + (era + 1) + ".png");
+		for (byte era = 0; era < strongholdImages.length; era++) {
+			strongholdImages[era] = new Image("base-era-" + (era + 1) + ".png");
 		}
 
 		for (byte era = 0; era < 1; era++) {
-			turretImages[0] = new Image("turret-era-" + (era + 1) + ".png");
+			turretImages[era] = new Image("turret-era-" + (era + 1) + ".png");
 		}
 
 		for (byte era = 0; era < 1; era++) {
@@ -109,6 +116,14 @@ public class MainGame extends ApplicationAdapter {
 			}
 		}
 
+		for (byte t = 0; t < unitQueueImages.length; t++) {
+			unitQueueImages[t] = new Image("unit-queue-" + (t + 1) + ".png");
+		}
+
+		for (byte era = 0; era < 1; era++) {
+			ultimateBannerImages[era] = new Image("unit-ul-" + (era + 1) + ".png");
+		}
+
 		unitHealthBar = new Image("unit-health-bar.png");
 		unitHealthBarInner = new Image("unit-health-bar-inner.png");
 
@@ -120,6 +135,7 @@ public class MainGame extends ApplicationAdapter {
 		playBtn = new Canvas("play-btn.png");
 		creditBtn = new Canvas("credit-btn.png");
 		musicBtn = new Canvas("music-btn.png");
+		speedBtn = new Canvas("speed-btn.png");
 		mode1 = new Canvas("mode-1.png");
 		mode2 = new Canvas("mode-2.png");
 		mode3 = new Canvas("mode-3.png");
@@ -132,9 +148,12 @@ public class MainGame extends ApplicationAdapter {
 		unit3 = new Canvas("unit-3.png");
 		unit4 = new Canvas("unit-4.png");
 		unit5 = new Canvas("unit-5.png");
-		unitUl = new Canvas("unit-ul.png");
+		unitUl = new Canvas(ultimateBannerImages[0]);
 		cashIcon = new Canvas("cash-icon.png");
 		xpIcon = new Canvas("xp-icon.png");
+		for (byte i = 0; i < unitQueueIcons.length; i++) {
+			unitQueueIcons[i] = new Canvas(unitQueueImages[0].Clone());
+		}
 		healthBar = new Canvas("health-bar.png");
 		healthBarL = new Canvas("health-bar-inner.png");
 		healthBarR = new Canvas(healthBarL);
@@ -157,6 +176,8 @@ public class MainGame extends ApplicationAdapter {
 		creditBtn.SetPosition("center", camera.viewportHeight/2 - 120);
 		musicBtn.SetPosition(886, 14);
 		musicBtn.isVisible = false;
+		speedBtn.SetPosition(14, 14);
+		speedBtn.SetActive(false);
 		mode1.SetPosition(80, "center");
 		mode2.SetPosition("center", "center");
 		mode3.SetPosition(640, "center");
@@ -177,6 +198,11 @@ public class MainGame extends ApplicationAdapter {
 		cashIcon.SetScale(0.25f);
 		xpIcon.SetPosition(-28, 466);
 		xpIcon.SetScale(0.25f);
+		unitQueueIcons[0].SetPosition(566, 450);
+		for (byte i = 0; i < unitQueueIcons.length; i++) {
+			unitQueueIcons[i].SetPosition(566 + 20 * i, 462);
+			unitQueueIcons[i].isVisible = false;
+		}
 		healthBar.SetPosition("center", 14);
 		healthBarL.SetPosition(318, 18);
 		healthBarR.SetPosition(485, 18);
@@ -196,9 +222,11 @@ public class MainGame extends ApplicationAdapter {
 
 		ui.AddBoxModule("start-menu", gameLogo, playBtn, creditBtn);
 		ui.AddBoxModule("mode-selection-menu", mode1, mode2, mode3, modeBanner, startBtn, menuBtn);
-		ui.AddBoxModule("in-game-menu", unit1, unit2, unit3, unit4, unit5, unitUl,
+		ui.AddBoxModule("in-game-menu", speedBtn, unit1, unit2, unit3, unit4, unit5, unitUl,
 				cashIcon, xpIcon, cashText, xpText, unitCapText, healthBar, healthBarL, healthBarR, queueBar,
-				unitQueueBarInner, ultimateBarInner);
+				unitQueueBarInner, ultimateBarInner, unitQueueIcons[0], unitQueueIcons[1], unitQueueIcons[2],
+				unitQueueIcons[3], unitQueueIcons[4], unitQueueIcons[5], unitQueueIcons[6], unitQueueIcons[7],
+				unitQueueIcons[8], unitQueueIcons[9]);
 		ui.AddBoxModule("game-over-menu", restartBtn, menuBtn, victoryBanner, defeatBanner);
 		ui.GetBoxModule("start-menu").SetVisibility(false);
 		ui.GetBoxModule("game-over-menu").SetVisibility(false);
@@ -228,8 +256,10 @@ public class MainGame extends ApplicationAdapter {
 
 		// set components
 		ui.AddComponents(devLogo, gameLogo, playBtn, creditBtn, musicBtn, mode1, mode2, mode3, modeBanner, startBtn, restartBtn, menuBtn,
-				unit1, unit2, unit3, unit4, unit5, unitUl, cashIcon, xpIcon, healthBar, healthBarL, healthBarR, queueBar,
-				unitQueueBarInner, ultimateBarInner, victoryBanner, defeatBanner);
+				speedBtn, unit1, unit2, unit3, unit4, unit5, unitUl, cashIcon, xpIcon, healthBar, healthBarL, healthBarR, queueBar,
+				unitQueueBarInner, ultimateBarInner, victoryBanner, defeatBanner, unitQueueIcons[0], unitQueueIcons[1],
+				unitQueueIcons[2], unitQueueIcons[3], unitQueueIcons[4], unitQueueIcons[5], unitQueueIcons[6],
+				unitQueueIcons[7], unitQueueIcons[8], unitQueueIcons[9]);
 		ui.AddComponents(cashText, xpText, unitCapText);
 		Renderer.AddComponents(camera, bg, user.stronghold.image, foe.stronghold.image, ui.GetComponents());
 	}
@@ -239,6 +269,9 @@ public class MainGame extends ApplicationAdapter {
 		// background color
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+		// set deltaTime
+		deltaTime = (float) Gdx.graphics.getDeltaTime() * 60.606f * gameSpeed;
 
 		Intro.Play();
 
@@ -255,11 +288,11 @@ public class MainGame extends ApplicationAdapter {
 			unitCapText.textContent = user.units.size() + "/" + Player.MAX_UNIT;
 
 			// unit icons
-			unit1.SetActive(user.cash > MeleeUnit.GetEra(user.era).cost);
-			unit2.SetActive(user.cash > RangedUnit.GetEra(user.era).cost);
-			unit3.SetActive(user.cash > CavalryUnit.GetEra(user.era).cost);
-			unit4.SetActive(user.cash > Turret.GetEra(user.era).cost);
-			unit5.SetActive(false);
+			unit1.SetActive(user.cash >= MeleeUnit.GetEra(user.era).cost);
+			unit2.SetActive(user.cash >= RangedUnit.GetEra(user.era).cost);
+			unit3.SetActive(user.cash >= CavalryUnit.GetEra(user.era).cost);
+			unit4.SetActive(user.cash >= Turret.GetEra(user.era).cost);
+			unit5.SetActive(user.era < 4 && user.xp >= Stronghold.GetRequiredXp((byte)(user.era + 1)));
 			unitUl.SetActive(user.ultimateDelay <= 0);
 
 			// delay bars
@@ -269,6 +302,21 @@ public class MainGame extends ApplicationAdapter {
 			ultimateBarInner.SetViewBox((1 - user.ultimateDelay / (float) Player.ULTIMATE_LOADING_DELAY) * 198, Float.NaN);
 			healthBarL.SetViewBox(user.stronghold.GetPercentageHealth(healthBarL.naturalWidth), Float.NaN);
 			healthBarR.SetViewBox(foe.stronghold.GetPercentageHealth(healthBarR.naturalWidth), Float.NaN);
+
+			// queue ui
+			for (byte i = 0; i < unitQueueIcons.length; i++) {
+				if (i < user.deploymentQueue.size) {
+					final Unit qu = user.deploymentQueue.get(i);
+					unitQueueIcons[i].isVisible = true;
+
+					if (qu instanceof MeleeUnit) unitQueueIcons[i].SetTexture(unitQueueImages[0]);
+					if (qu instanceof RangedUnit) unitQueueIcons[i].SetTexture(unitQueueImages[1]);
+					if (qu instanceof CavalryUnit) unitQueueIcons[i].SetTexture(unitQueueImages[2]);
+				}
+				else {
+					unitQueueIcons[i].isVisible = false;
+				}
+			}
 
 			// update fading units
 			Unit.UpdateDeadUnits();
@@ -303,13 +351,22 @@ public class MainGame extends ApplicationAdapter {
 
 	public void onkeypress() {
 		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			if (camera.position.x > camera.viewportWidth / 2) {
-				camera.translate(-CAMERA_SPEED , 0);
+			final float dm = CAMERA_SPEED * deltaTime / gameSpeed;
+			if (camera.position.x - dm > camera.viewportWidth / 2) {
+
+				camera.translate(-dm, 0);
+			}
+			else {
+				camera.position.x = camera.viewportWidth / 2;
 			}
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			if (camera.position.x < 2080 - camera.viewportWidth / 2) {
-				camera.translate(CAMERA_SPEED, 0);
+			final float dm = CAMERA_SPEED * deltaTime / gameSpeed;
+			if (camera.position.x + dm < 2080 - camera.viewportWidth / 2) {
+				camera.translate(dm, 0);
+			}
+			else {
+				camera.position.x = 2080 - camera.viewportWidth / 2;
 			}
 		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
@@ -333,6 +390,16 @@ public class MainGame extends ApplicationAdapter {
 		if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_6)) {
 			user.UseUltimate();
 		}
+		if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
+			final boolean t = gameSpeed == 1;
+			gameSpeed = (byte) (t ? 2 : 1);
+			speedBtn.SetActive(t);
+		}
+		if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
+			final boolean t = themeMusic.getVolume() == 0;
+			themeMusic.setVolume(t ? MUSIC_VOLUME : 0);
+			musicBtn.SetActive(t);
+		}
 
 		// debugging
 		if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
@@ -343,6 +410,9 @@ public class MainGame extends ApplicationAdapter {
 		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
 			foe.cash += 1000;
+		}
+		if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+			user.stronghold.image.SetTexture(strongholdImages[1]);
 		}
 	}
 
@@ -445,6 +515,11 @@ public class MainGame extends ApplicationAdapter {
 		}
 		else if (unitUl.IsInBound(clientX, clientY)) {
 			user.UseUltimate();
+		}
+		else if (speedBtn.IsInBound(clientX, clientY)) {
+			final boolean t = gameSpeed == 1;
+			gameSpeed = (byte) (t ? 2 : 1);
+			speedBtn.SetActive(t);
 		}
 	}
 }

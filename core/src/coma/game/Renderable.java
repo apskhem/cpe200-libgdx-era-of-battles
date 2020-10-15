@@ -111,7 +111,7 @@ class Canvas extends Image {
         super(internalPath);
     }
 
-    public Canvas(Canvas canvas) {
+    public Canvas(Image canvas) {
         super(canvas);
     }
 

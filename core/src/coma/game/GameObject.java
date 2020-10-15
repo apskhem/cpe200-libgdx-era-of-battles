@@ -36,13 +36,13 @@ abstract class Unit extends GameObject {
     public final byte era;
     public boolean isMoving;
 
-    protected byte attackDelay = Unit.MELEE_ATTACK_DELAY;
-    private byte moveAnimationDelay = Unit.ANIMATION_DELAY;
+    protected float attackDelay = Unit.MELEE_ATTACK_DELAY;
+    private float moveAnimationDelay = Unit.ANIMATION_DELAY;
+    private float deadDelay = 100;
     protected byte animationState = 1;
-    private byte deadDelay = 100;
     protected byte displacedTranslateX = 0;
 
-    public static float MAX_MOVE = 1700;
+    public static float MAX_MOVE = 1790;
     public static float MOVE_SPEED = 1.2f;
     public static byte MELEE_ATTACK_DELAY = 44;
     public static byte RANGED_ATTACK_DELAY = 18;
@@ -70,7 +70,7 @@ abstract class Unit extends GameObject {
     }
 
     public boolean IsReachedMax() {
-        return moveX >= Unit.MAX_MOVE;
+        return moveX >= Unit.MAX_MOVE - this.image.naturalWidth;
     }
 
     public void UpdateHealthBar() {
@@ -79,11 +79,13 @@ abstract class Unit extends GameObject {
 
     public void Move() {
         // normal moving
-        if (moveX < Unit.MAX_MOVE) {
-            moveX += Unit.MOVE_SPEED;
-            this.image.Move(this.image.isFlipped ? -Unit.MOVE_SPEED : Unit.MOVE_SPEED, 0);
-            this.healthBar.Move(this.image.isFlipped ? -Unit.MOVE_SPEED : Unit.MOVE_SPEED, 0);
-            this.healthBarInner.Move(this.image.isFlipped ? -Unit.MOVE_SPEED : Unit.MOVE_SPEED, 0);
+        if (moveX < Unit.MAX_MOVE - this.image.naturalWidth) {
+            final float mov = Unit.MOVE_SPEED * MainGame.deltaTime;
+
+            moveX += mov;
+            this.image.Move((this.image.isFlipped ? -mov : mov), 0);
+            this.healthBar.Move(this.image.isFlipped ? -mov : mov, 0);
+            this.healthBarInner.Move(this.image.isFlipped ? -mov : mov, 0);
 
             if (this.animationState > 3) this.animationState = 3;
 
@@ -97,23 +99,23 @@ abstract class Unit extends GameObject {
 
         if (this.attackDelay < 0) {
             if (toAttackUnit instanceof Unit) {
-                ((Unit) toAttackUnit).health -= this.attack + this.attack * Math.random() * 0.05f;
+                ((Unit) toAttackUnit).health -= Mathf.CalError(this.attack, 0.05f);
             }
             else if (toAttackUnit instanceof Stronghold) {
-                ((Stronghold) toAttackUnit).health -= this.attack + this.attack * Math.random() * 0.05f;
+                ((Stronghold) toAttackUnit).health -= Mathf.CalError(this.attack, 0.05f);
             }
 
             // instance cases
             if (this instanceof MeleeUnit) {
-                this.attackDelay = (byte)(Unit.MELEE_ATTACK_DELAY - Unit.MELEE_ATTACK_DELAY * Math.random() * 0.1f);
+                this.attackDelay = (byte) Mathf.CalError(Unit.MELEE_ATTACK_DELAY, 0.1f);
                 MainGame.meleeHit1.setVolume(MainGame.meleeHit1.play(), 0.5f);
             }
             else if (this instanceof RangedUnit) {
-                this.attackDelay = (byte)(Unit.RANGED_ATTACK_DELAY - Unit.RANGED_ATTACK_DELAY * Math.random() * 0.1f);
+                this.attackDelay = (byte) Mathf.CalError(Unit.RANGED_ATTACK_DELAY, 0.1f);
                 MainGame.rangedHit1.setVolume(MainGame.rangedHit1.play(), 0.5f);
             }
             else if (this instanceof CavalryUnit) {
-                this.attackDelay = (byte)(Unit.CAVALRY_ATTACK_DELAY - Unit.CAVALRY_ATTACK_DELAY * Math.random() * 0.1f);
+                this.attackDelay = (byte) Mathf.CalError(Unit.CAVALRY_ATTACK_DELAY, 0.1f);
                 MainGame.cavalryHit1.setVolume(MainGame.cavalryHit1.play(), 0.5f);
             }
 
@@ -138,11 +140,11 @@ abstract class Unit extends GameObject {
                 this.SetAnimationStateTo(this.animationState == 4 ? 5 : 4);
             }
             else {
-                this.moveAnimationDelay -= 1;
+                this.moveAnimationDelay -= MainGame.deltaTime;
             }
 
             // count down attacking
-            if (this.animationState == 4 || this.animationState == 5) this.attackDelay -= 1;
+            if (this.animationState == 4 || this.animationState == 5) this.attackDelay -= MainGame.deltaTime;
 
             return false;
         }
@@ -155,7 +157,7 @@ abstract class Unit extends GameObject {
         }
         else {
             this.image.SetOpacity(this.deadDelay/100f);
-            this.deadDelay -= 1;
+            this.deadDelay -= MainGame.deltaTime;
         }
     }
 
@@ -166,7 +168,7 @@ abstract class Unit extends GameObject {
             this.NextAnimationState();
         }
         else {
-            this.moveAnimationDelay -= 1;
+            this.moveAnimationDelay -= MainGame.deltaTime;
         }
     }
 
@@ -410,7 +412,7 @@ class Turret extends GameObject {
                 MainGame.rangedHit1.setVolume(MainGame.rangedHit1.play(), 0.5f);
             }
             else {
-                this.attackDelay -= 1;
+                this.attackDelay -= MainGame.deltaTime;
             }
         }
     }
@@ -430,14 +432,35 @@ class Turret extends GameObject {
  */
 class Stronghold extends GameObject {
 
-    public short health;
-    public byte era;
+    public short health = this.GetMaxHealth((byte) 1);
+    public byte era = 1;
 
     public Stronghold() {
         super(MainGame.strongholdImages[0].Clone());
     }
 
-    public short GetMaxHealth(byte era) {
+    public float GetPercentageHealth(float multiplier) {
+        return this.health < 0
+        ? 0
+        : this.health * multiplier / Stronghold.GetMaxHealth(this.era);
+    }
+
+    public void UpgradeTo(byte era) {
+        final float oHealthPercentage = this.health / (float) Stronghold.GetMaxHealth(this.era);
+
+        this.era = era;
+        this.health = (short)(Stronghold.GetMaxHealth(this.era) * oHealthPercentage);
+        this.image.SetTexture(MainGame.strongholdImages[era - 1]);
+    }
+
+    public void SetEra(byte era) {
+        this.era = era;
+        this.health = Stronghold.GetMaxHealth(this.era);
+        this.image.SetTexture(MainGame.strongholdImages[era - 1]);
+    }
+
+    // static methods
+    public static short GetMaxHealth(byte era) {
         switch (era) {
             case 1: return 600;
             case 2: return 2000;
@@ -447,15 +470,13 @@ class Stronghold extends GameObject {
         }
     }
 
-    public float GetPercentageHealth(float multiplier) {
-        return this.health < 0
-        ? 0
-        : this.health * multiplier / this.GetMaxHealth(this.era);
-    }
-
-    public void SetEra(byte era) {
-        this.era = era;
-        this.health = this.GetMaxHealth(this.era);
-        this.image.SetTexture(MainGame.strongholdImages[era - 1]);
+    public static short GetRequiredXp(byte era) {
+        switch (era) {
+            case 1: return 1000;
+            case 2: return 3500;
+            case 3: return 9000;
+            case 4: return 30000;
+            default: return Short.MAX_VALUE;
+        }
     }
 }

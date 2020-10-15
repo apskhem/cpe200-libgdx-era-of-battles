@@ -19,8 +19,8 @@ public class Player {
     public int cash;
     public int xp;
     public byte era = 1;
-    public short deploymentDelay;
-    public short ultimateDelay = Player.ULTIMATE_LOADING_DELAY;
+    public float deploymentDelay;
+    public float ultimateDelay = Player.ULTIMATE_LOADING_DELAY;
 
     // static
     public static final short LEFT_STRONGHOLD_POSITION_X = -80;
@@ -60,7 +60,7 @@ public class Player {
     public void ProcessUnitDeployment() {
         if (this.deploymentQueue.size == 0) return;
 
-        if (this.deploymentDelay == 0) {
+        if (this.deploymentDelay <= 0) {
             final Unit u = this.deploymentQueue.removeFirst();
 
             this.SpawnUnit(u);
@@ -68,7 +68,7 @@ public class Player {
             if (this.deploymentQueue.size > 0) this.deploymentDelay = this.deploymentQueue.first().GetDeploymentDelay();
         }
         else {
-            this.deploymentDelay -= 1;
+            this.deploymentDelay -= MainGame.deltaTime;
         }
     }
 
@@ -87,11 +87,18 @@ public class Player {
     }
 
     public void UpgradeStronghold() {
+        if (this.era < 4 && this.xp >= Stronghold.GetRequiredXp((byte)(this.era + 1))) {
+            this.era++;
 
+            this.stronghold.UpgradeTo(this.era);
+        }
     }
 
     public void UseUltimate() {
+        if (this.ultimateDelay <= 0) {
 
+            this.ultimateDelay = Player.ULTIMATE_LOADING_DELAY;
+        }
     }
 
     public void UpdateAfter(int rawCost) {
@@ -231,8 +238,8 @@ public class Player {
         playerL.ProcessUnitDeployment();
 
         // ultimate delay
-        if (playerL.ultimateDelay > 0) playerL.ultimateDelay -= 1;
-        if (playerR.ultimateDelay > 0) playerR.ultimateDelay -= 1;
+        if (playerL.ultimateDelay > 0) playerL.ultimateDelay -= MainGame.deltaTime;
+        if (playerR.ultimateDelay > 0) playerR.ultimateDelay -= MainGame.deltaTime;
 
         // playerL
         playerR.UpdateAfter(playerL.UpdateUnits(isOverlapped));
@@ -255,7 +262,7 @@ class GameBot extends Player {
     public static final byte DECISION_DELAY = 120;
 
     public GameBot() {
-        this.SPAWN_POSITION_X = Player.RIGHT_STRONGHOLD_POSITION_X + 120;
+        this.SPAWN_POSITION_X = Player.RIGHT_STRONGHOLD_POSITION_X + 210;
         this.stronghold.image.FlipHorizontal();
         this.stronghold.image.SetPosition(Player.RIGHT_STRONGHOLD_POSITION_X, Player.STRONGHOLD_POSITION_Y);
     }
@@ -267,7 +274,7 @@ class GameBot extends Player {
         u.image.FlipHorizontal();
 
         this.units.add(u);
-        u.SetPosition(this.SPAWN_POSITION_X, this.SPAWN_POSITION_Y);
+        u.SetPosition(this.SPAWN_POSITION_X - u.image.naturalWidth, this.SPAWN_POSITION_Y);
         Renderer.AddComponents(u.image, u.healthBar, u.healthBarInner);
     }
 
@@ -282,8 +289,6 @@ class GameBot extends Player {
             t.image.FlipHorizontal();
             t.image.SetPosition(1935, this.turrets.size() == 1 ? 260 : 340);
             Renderer.AddComponents(t.image);
-
-            MainGame.unitCall.play();
         }
     }
 
@@ -308,92 +313,75 @@ class GameBot extends Player {
     public void Awake() {
         this.isWaking = true;
 
-        switch (this.difficulty) {
-            case 1: this.Level1Automation(); break;
-            case 2: this.Level2Automation(); break;
-            case 3: this.Level3Automation(); break;
-        }
-    }
-
-    public void CurState() {
-        switch (this.era){
-            case 1:
-                if(this.cash >= 0)  state = 1;
-                else if (this.cash >= 1000) state = 2;
-                else state = 3;
-            case 2:
-                if(this.cash >= 0)  state = 1;
-                else if (this.cash >= 2000) state = 2;
-                else state = 3;
-            case 3:
-                if(this.cash >= 0)  state = 1;
-                else if (this.cash >= 5000) state = 2;
-                else state = 3;
-        }
-//        switch(state){
-//            case 1: this.Level1Automation(); break;
-//            case 2: this.Level2Automation(); break;
-//            case 3: this.Level3Automation(); break;
-//        }
-    }
-
-    private void Level1Automation() {
-        if (!this.isWaking) return;
-
         if (this.decisionDelay < 0) {
-            // game bot decision fired >> write decision commands here
-            if (this.units.size() < Player.MAX_UNIT) {
-
-                int idx = (int)(Math.random() * 100);      // random idx for choosing unit
-
-                if(idx >= 0 && idx < 40)   this.DeployUnit(MeleeUnit.GetEra(this.era));
-                else if (idx >= 40 && idx < 80 )    this.DeployUnit(RangedUnit.GetEra(this.era));
-                else this.DeployUnit(CavalryUnit.GetEra(this.era));
+            switch (this.CalculatedDecisionState()) { // << old: this.diffulty
+                case 1: this.Level1Automation(); break;
+                case 2: this.Level2Automation(); break;
+                case 3: this.Level3Automation(); break;
             }
 
             this.decisionDelay = GameBot.DECISION_DELAY;
         }
         else {
-            this.decisionDelay -= 1;
+            this.decisionDelay -= MainGame.deltaTime;
+        }
+    }
+
+    public byte CalculatedDecisionState() {
+        switch (this.era){
+            case 1:
+                if (this.cash >= 1000) state = 2;
+                else if (this.cash >= 0) state = 1;
+                else state = 3;
+            case 2:
+                if(this.cash >= 2000)  state = 2;
+                else if (this.cash >= 0) state = 1;
+                else state = 3;
+            case 3:
+                if(this.cash >= 5000) state = 2;
+                else if (this.cash >= 0) state = 1;
+                else state = 3;
+        }
+
+        return this.state;
+    }
+
+    private void Level1Automation() {
+        if (!this.isWaking) return;
+
+        // game bot decision fired >> write decision commands here
+        if (this.units.size() < Player.MAX_UNIT) {
+
+            int idx = (int)(Math.random() * 100);      // random idx for choosing unit
+
+            if(idx >= 0 && idx < 40)   this.DeployUnit(MeleeUnit.GetEra(this.era));
+            else if (idx >= 40 && idx < 80 )    this.DeployUnit(RangedUnit.GetEra(this.era));
+            else this.DeployUnit(CavalryUnit.GetEra(this.era));
         }
     }
 
     private void Level2Automation() {
         if (!this.isWaking) return;
 
-        if (this.decisionDelay < 0) {
-            // game bot decision fired >> write decision commands here
-            if (this.units.size() < Player.MAX_UNIT) {
-                int idx = (int)(Math.random() * 100);      // random idx for choosing unit
+        // game bot decision fired >> write decision commands here
+        if (this.units.size() < Player.MAX_UNIT) {
+            int idx = (int)(Math.random() * 100);      // random idx for choosing unit
 
-                if(idx >= 0 && idx < 35)   this.DeployUnit(MeleeUnit.GetEra(this.era));
-                else if (idx >= 35 && idx < 70 )    this.DeployUnit(RangedUnit.GetEra(this.era));
-                else this.DeployUnit(CavalryUnit.GetEra(this.era));
-            }
-
-            this.decisionDelay = GameBot.DECISION_DELAY;
-        }
-        else {
-            this.decisionDelay -= 1;
+            if(idx >= 0 && idx < 35)   this.DeployUnit(MeleeUnit.GetEra(this.era));
+            else if (idx >= 35 && idx < 70 )    this.DeployUnit(RangedUnit.GetEra(this.era));
+            else this.DeployUnit(CavalryUnit.GetEra(this.era));
         }
     }
 
     private void Level3Automation() {
         if (!this.isWaking) return;
 
-        if (this.decisionDelay < 0) {
-            // game bot decision fired >> write decision commands here
-            int idx = (int)(Math.random() * 100);      // random idx for choosing unit
+        // game bot decision fired >> write decision commands here
+        int idx = (int)(Math.random() * 100);      // random idx for choosing unit
 
-            if(idx >= 0 && idx < 30)   this.DeployUnit(MeleeUnit.GetEra(this.era));
-            else if (idx >= 30 && idx < 60)    this.DeployUnit(RangedUnit.GetEra(this.era));
-            else this.DeployUnit(CavalryUnit.GetEra(this.era));
-
-            this.decisionDelay = GameBot.DECISION_DELAY;
-        }
-        else {
-            this.decisionDelay -= 1;
-        }
+        if(idx >= 0 && idx < 30)   this.DeployUnit(MeleeUnit.GetEra(this.era));
+        else if (idx >= 30 && idx < 60)    this.DeployUnit(RangedUnit.GetEra(this.era));
+        else this.DeployUnit(CavalryUnit.GetEra(this.era));
     }
 
     public void Halt() {
