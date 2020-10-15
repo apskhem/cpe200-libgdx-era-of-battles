@@ -384,6 +384,22 @@ class GameBot extends Player {
         else this.DeployUnit(CavalryUnit.GetEra(this.era));
     }
 
+    public void setTurret() {
+        if (!this.isWaking) return;
+
+        if(this.units.size() > 5) {
+
+            switch (this.era) {
+                case 1:
+                    if (this.cash >= 1000) this.BuildTurret(Turret.GetEra(this.era)); break;
+                case 2:
+                    if (this.cash >= 3000) this.BuildTurret(Turret.GetEra(this.era)); break;
+                case 3:
+                    if (this.cash >= 5000) this.BuildTurret(Turret.GetEra(this.era)); break;
+            }
+        }
+    }
+
     public void Halt() {
         this.isWaking = false;
     }
