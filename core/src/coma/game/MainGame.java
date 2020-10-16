@@ -62,6 +62,7 @@ public class MainGame extends ApplicationAdapter {
 	public static final Image[] ultimateBannerImages = new Image[4];
 	public static Image unitHealthBar;
 	public static Image unitHealthBarInner;
+	public static Image [] ultimateImages = new Image[4];
 
 	public static Player user;
 	public static GameBot foe;
@@ -123,6 +124,8 @@ public class MainGame extends ApplicationAdapter {
 		for (byte era = 0; era < 1; era++) {
 			ultimateBannerImages[era] = new Image("unit-ul-" + (era + 1) + ".png");
 		}
+
+		ultimateImages[0] = new Image("ultimate1.png");
 
 		unitHealthBar = new Image("unit-health-bar.png");
 		unitHealthBarInner = new Image("unit-health-bar-inner.png");

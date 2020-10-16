@@ -96,7 +96,7 @@ public class Player {
 
     public void UseUltimate() {
         if (this.ultimateDelay <= 0) {
-
+            new Ultimate();
             this.ultimateDelay = Player.ULTIMATE_LOADING_DELAY;
         }
     }
@@ -315,9 +315,24 @@ class GameBot extends Player {
 
         if (this.decisionDelay < 0) {
             switch (this.CalculatedDecisionState()) { // << old: this.diffulty
-                case 1: this.Level1Automation(); break;
-                case 2: this.Level2Automation(); break;
-                case 3: this.Level3Automation(); break;
+                case 1: {
+                    this.Level1Automation();
+                    this.setTurret();
+                    this.botUltimate();
+                    break;
+                }
+                case 2: {
+                    this.Level2Automation();
+                    this.setTurret();
+                    this.botUltimate();
+                    break;
+                }
+                case 3: {
+                    this.Level3Automation();
+                    this.setTurret();
+                    this.botUltimate();
+                    break;
+                }
             }
 
             this.decisionDelay = GameBot.DECISION_DELAY;
@@ -346,6 +361,7 @@ class GameBot extends Player {
         return this.state;
     }
 
+    // implement front unit to be malee more
     private void Level1Automation() {
         if (!this.isWaking) return;
 
@@ -397,6 +413,17 @@ class GameBot extends Player {
                 case 3:
                     if (this.cash >= 5000) this.BuildTurret(Turret.GetEra(this.era)); break;
             }
+        }
+    }
+
+    public void botUltimate(){
+        switch(this.difficulty){
+            case 1:
+                if (this.ultimateDelay + 1000 <= 0) this.UseUltimate(); break;
+            case 2:
+                if(this.ultimateDelay +500 <= 0) this.UseUltimate(); break;
+            case 3:
+                if(this.ultimateDelay <= 0) this.UseUltimate(); break;
         }
     }
 

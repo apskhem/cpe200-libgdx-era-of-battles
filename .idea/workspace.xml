@@ -5,6 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="844ff65d-8b91-45ba-bbac-71ea5e0740a1" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/assets/arrow.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/assets/laser_beam.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/assets/rock.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/coma/game/MainGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/coma/game/MainGame.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/coma/game/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/coma/game/Player.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -16,6 +21,13 @@
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
     </projectState>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -82,5 +94,9 @@
       <screen x="0" y="23" width="1440" height="809" />
     </state>
     <state width="1398" height="204" key="GridCell.Tab.0.right/0.23.1440.809@0.23.1440.809" timestamp="1602679475705" />
+    <state x="418" y="60" width="604" height="735" key="find.popup" timestamp="1602818803565">
+      <screen x="0" y="23" width="1440" height="809" />
+    </state>
+    <state x="418" y="60" width="604" height="735" key="find.popup/0.23.1440.809@0.23.1440.809" timestamp="1602818803565" />
   </component>
 </project>
