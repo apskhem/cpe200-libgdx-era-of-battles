@@ -62,9 +62,10 @@ public class MainGame extends ApplicationAdapter {
 	public static final Image[] unitQueueImages = new Image[3];
 	public static final Image[] ultimateBannerImages = new Image[4];
 	public static final Image[] ultimateImages = new Image[4];
+	public static ImageRegion explosionImageRegion;
+	public static Image ulPlane;
 	public static Image unitHealthBar;
 	public static Image unitHealthBarInner;
-	public static Image ultimatePlane;
 
 	public static Player user;
 	public static GameBot foe;
@@ -131,9 +132,10 @@ public class MainGame extends ApplicationAdapter {
 			ultimateImages[era] = new Image("ultimate-" + (era + 1) + ".png");
 		}
 
+		explosionImageRegion = new ImageRegion("explosion-region.png", 128, 128, 4, 4);
+		ulPlane = new Image("ul-plane.png");
 		unitHealthBar = new Image("unit-health-bar.png");
 		unitHealthBarInner = new Image("unit-health-bar-inner.png");
-		ultimatePlane = new Image("unit-health-bar.png");
 
 		// set fields
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -180,6 +182,7 @@ public class MainGame extends ApplicationAdapter {
 		foe = new GameBot();
 
 		// set ui position and group module
+
 		gameLogo.SetPosition("center", 400);
 		playBtn.SetPosition("center", camera.viewportHeight/2);
 		creditBtn.SetPosition("center", camera.viewportHeight/2 - 120);
@@ -428,9 +431,6 @@ public class MainGame extends ApplicationAdapter {
 		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
 			user.ultimateDelay = 0;
-		}
-		if (Gdx.input.isKeyJustPressed((Input.Keys.M))){
-			user.xp += 1000;
 		}
 	}
 

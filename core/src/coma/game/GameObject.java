@@ -74,7 +74,9 @@ abstract class Unit extends GameObject {
     }
 
     public void UpdateHealthBar() {
-        this.healthBarInner.SetSize(this.health * this.healthBarInner.naturalWidth / (float) this.maxHealth, Float.NaN);
+        this.healthBarInner.SetSize(
+                this.health > 0 ? this.health * this.healthBarInner.naturalWidth / (float) this.maxHealth : 0,
+                Float.NaN);
     }
 
     public void Move() {

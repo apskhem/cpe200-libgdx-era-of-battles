@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import org.w3c.dom.ranges.RangeException;
 
 public abstract class Renderable {
     public boolean isVisible = true;
@@ -94,6 +95,63 @@ class Image extends Renderable {
 
     public Image Clone() {
         return  new Image(this);
+    }
+}
+
+class ImageRegion extends Image {
+
+    public int regionWidth = 0;
+    public int regionHeight = 0;
+    public int currentIRegionIndex = 0;
+    public int currentJRegionIndex = 0;
+    public int maxIRegionIndex = 0;
+    public int maxJRegionIndex = 0;
+    public float tempTimer;
+
+    public ImageRegion(String internalPath, int width, int height, int maxI, int maxJ) {
+        super(internalPath);
+
+        this.regionWidth = width;
+        this.regionHeight = height;
+        this.maxIRegionIndex = maxI;
+        this.maxJRegionIndex = maxJ;
+
+        this.src.setRegion(0, 0, width, height);
+        this.src.setBounds(0,0, width, height);
+    }
+
+    public ImageRegion(Image image, int width, int height, int maxI, int maxJ) {
+        super(image);
+
+        this.regionWidth = width;
+        this.regionHeight = height;
+        this.maxIRegionIndex = maxI;
+        this.maxJRegionIndex = maxJ;
+
+        this.src.setRegion(0, 0, width, height);
+        this.src.setBounds(0,0, width, height);
+    }
+
+    public void NextRegion() {
+        if (this.currentIRegionIndex + 1 == this.maxIRegionIndex) {
+            this.currentJRegionIndex = (this.currentJRegionIndex + 1) % this.maxJRegionIndex;
+        }
+
+        this.currentIRegionIndex = (this.currentIRegionIndex + 1) % this.maxIRegionIndex;
+
+        this.src.setRegion(
+                this.regionWidth * this.currentIRegionIndex,
+                this.regionHeight * this.currentJRegionIndex,
+                this.regionWidth,
+                this.regionHeight);
+    }
+
+    public boolean IsAtTheEnd() {
+        return this.currentIRegionIndex + 1 == this.maxIRegionIndex && this.currentJRegionIndex + 1 == this.maxJRegionIndex;
+    }
+
+    public ImageRegion Clone() {
+        return  new ImageRegion(this, this.regionWidth, this.regionHeight, this.maxIRegionIndex, this.maxJRegionIndex);
     }
 }
 

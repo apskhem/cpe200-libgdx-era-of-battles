@@ -114,7 +114,7 @@ public class Player {
 
         if (this.ultimateDelay > 0) this.ultimateDelay -= MainGame.deltaTime;
 
-        if (this.ultimateCaller != null) this.ultimateCaller.ContinueUltimate();
+        if (this.ultimateCaller != null) this.ultimateCaller.Update();
 
         // check dead units
         int deadCost = 0;
