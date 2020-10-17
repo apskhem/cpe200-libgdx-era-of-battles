@@ -64,6 +64,7 @@ public class MainGame extends ApplicationAdapter {
 	public static final Image[] ultimateImages = new Image[4];
 	public static Image unitHealthBar;
 	public static Image unitHealthBarInner;
+	public static Image ultimatePlane;
 
 	public static Player user;
 	public static GameBot foe;
@@ -132,6 +133,7 @@ public class MainGame extends ApplicationAdapter {
 
 		unitHealthBar = new Image("unit-health-bar.png");
 		unitHealthBarInner = new Image("unit-health-bar-inner.png");
+		ultimatePlane = new Image("unit-health-bar.png");
 
 		// set fields
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -426,6 +428,9 @@ public class MainGame extends ApplicationAdapter {
 		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
 			user.ultimateDelay = 0;
+		}
+		if (Gdx.input.isKeyJustPressed((Input.Keys.M))){
+			user.xp += 1000;
 		}
 	}
 

@@ -10,7 +10,7 @@ public class Ultimate {
 
     //constant
     public static short SPAWN_POS_Y = 550;  //for era 3 plane around 530
-    public static short EXPLODE_POS_Y = 0;
+    public static short EXPLODE_POS_Y = 50;
     public static short SPAWN_POS_XMIN = 0;
     public static short SPAWN_POS_XMAX = 960;
 
@@ -22,7 +22,14 @@ public class Ultimate {
         switch (era) {
             case 1: n = Mathf.CalRange(10, 15); break;
             case 2: n = Mathf.CalRange(25, 30); break;
-            case 3: n = Mathf.CalRange(15, 25); break;
+            case 3: {
+                n = Mathf.CalRange(15, 25);
+
+//                UltimateObj plane = new UltimateObj();
+//                plane.SetPosition(0,Ultimate.SPAWN_POS_Y);
+//                Renderer.AddComponents(plane.image);
+
+            } break;
             case 4: n = Mathf.CalRange(30, 35); break;
             default: throw new RangeException((short) 0, "Wrong parameter input.");
         }
@@ -53,7 +60,7 @@ public class Ultimate {
         // new distance calculation and checking explosion
         for (final UltimateObj obj : this.ultimateSpawnContainer) {
             if (obj.movedDistanceY < Ultimate.EXPLODE_POS_Y) {
-                obj.ultimateExplode();
+                obj.ultimateExplode((byte)obj.era);
                 Renderer.RemoveComponents(obj.image);
 
                 //++ DO SOMETHING WITH TARGET
@@ -91,7 +98,7 @@ class UltimateObj extends GameObject{
     public float movedDistanceX = 0;
     public float movedDistanceY = Ultimate.SPAWN_POS_Y;
 
-    public static float MOVE_SPEED_X = 1.2f;
+    public static float MOVE_SPEED_X;
     public static float MOVE_SPEED_Y = 2.2f;
 
     public short era;
@@ -103,68 +110,64 @@ class UltimateObj extends GameObject{
         this.era = era;
     }
 
+    public UltimateObj(){
+        super(MainGame.ultimatePlane.Clone());
+    }
+
     public void ultimateMove() {
         switch (this.era) {
             case 1 : // meteor
 
             case 2 : { // arrow
 
-//                float distanceX = Mathf.CalRange(-50, 50);
-//
-//                MOVE_SPEED_X = distanceX / MainGame.deltaTime;
-//
-//                if(movedDistanceY > this.image.naturalHeight){
-//                    final float moveX = this.MOVE_SPEED_X * MainGame.deltaTime;
-//                    final float moveY = this.MOVE_SPEED_Y * MainGame.deltaTime;
-//
-//                    movedDistanceX += moveX;
-//                    movedDistanceY -= moveY;
-//                }
+                final float moveY = this.MOVE_SPEED_Y * MainGame.deltaTime;
+                final float DistanceX = Mathf.CalRange(-50, 50);
+
+                this.MOVE_SPEED_X = 1.1f;
+
+                float moveX = this.MOVE_SPEED_X * MainGame.deltaTime;
+
+                movedDistanceX += moveX;
+                movedDistanceY -= moveY;
+                this.image.Move(moveX, -moveY);
             } break;
             case 3 : { // missile
 
-//                float distanceX = Mathf.CalRange(-50, 50);
-//
-//                MOVE_SPEED_X = distanceX / MainGame.deltaTime;
+                MOVE_SPEED_X = 1.1f; //same as plane
 
-                final float moveY = this.MOVE_SPEED_Y * MainGame.deltaTime;
+                final float moveX = this.MOVE_SPEED_X * MainGame.deltaTime;
 
-                movedDistanceY -= moveY;
-                this.image.Move(0, -moveY);
-
-            } break;
-//                float distanceX = Mathf.CalRange(0,50);
-//
-//                MOVE_SPEED_X = distanceX / MainGame.deltaTime;
-//
-//                if(movedDistanceY > this.image.naturalHeight){
-//                    final float moveX = this.MOVE_SPEED_X * MainGame.deltaTime;
-//                    final float moveY = this.MOVE_SPEED_Y * MainGame.deltaTime;
-//
-//                    movedDistanceX += moveX;
-//                    movedDistanceY -= moveY;
-//                }
-//            } break;
+                movedDistanceX += moveX;
+                this.image.Move(moveX, 0);
+           } break;
 
             case 4 : { // laser beam
                 final float moveX = this.MOVE_SPEED_X * MainGame.deltaTime;
 
                 movedDistanceX += moveX;
+                this.image.Move(moveX,0);
             }
         }
-
-        final float moveY = this.MOVE_SPEED_Y * MainGame.deltaTime;
-
-        movedDistanceY -= moveY;
-        this.image.Move(0, -moveY);
     }
 
-    public void ultimateExplode() {
-        //explode & send damage to in-area opponent troops
-        //era 1 explode
-        //era 2 more arrow
-        //era 3 explode
-        //era 4 laser beam
+    public void ultimateExplode(byte era) {
+        switch(era){
+            case 1: {
+
+            } break;
+
+            case 2: {
+
+            } break;
+
+            case 3:{
+
+            } break;
+
+            case 4:{
+
+            } break;
+        }
     }
 
     public void calDmg() {
