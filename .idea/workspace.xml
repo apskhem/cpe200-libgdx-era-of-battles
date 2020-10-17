@@ -16,14 +16,28 @@
       <change beforePath="$PROJECT_DIR$/.gradle/5.4.1/javaCompile/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.4.1/javaCompile/taskHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/coma/game/GameBot.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/coma/game/GameBot.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/coma/game/MainGame.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/coma/game/MainGame.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/coma/game/Player.class" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/classes/java/main/coma/game/Player.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/assets/arrow.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/assets/rock.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/assets/ultimate1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/assets/ultimate3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/assets/ultimate4.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/coma/game/CavalryUnit.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/coma/game/GameBot.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/coma/game/GameStatus.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/coma/game/Intro.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/coma/game/MainGame.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/coma/game/MeleeUnit.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/coma/game/Player.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/coma/game/RangedUnit.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/coma/game/Stronghold.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/coma/game/Turret.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/coma/game/Ultimate.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/coma/game/UltimateObj.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/build/classes/java/main/coma/game/Unit.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/core/build/libs/core-1.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/core/build/libs/core-1.0.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/coma/game/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/coma/game/Player.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/coma/game/MainGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/coma/game/MainGame.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/coma/game/Ultimate.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/coma/game/Ultimate.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/desktop/build/resources/main/arrow.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/desktop/build/resources/main/laser_beam.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/desktop/build/resources/main/rock.png" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -96,25 +110,55 @@
       <screen x="0" y="23" width="1440" height="809" />
     </state>
     <state x="408" y="170" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.23.1440.809@0.23.1440.809" timestamp="1602905857790" />
-    <state width="1398" height="204" key="GridCell.Tab.0.bottom" timestamp="1602906622493">
+    <state width="1398" height="174" key="GridCell.Tab.0.bottom" timestamp="1602926878186">
       <screen x="0" y="23" width="1440" height="809" />
     </state>
-    <state width="1398" height="204" key="GridCell.Tab.0.bottom/0.23.1440.809@0.23.1440.809" timestamp="1602906622493" />
-    <state width="1398" height="204" key="GridCell.Tab.0.center" timestamp="1602906622493">
+    <state width="1398" height="174" key="GridCell.Tab.0.bottom/0.23.1440.809@0.23.1440.809" timestamp="1602926878186" />
+    <state width="1398" height="174" key="GridCell.Tab.0.center" timestamp="1602926878186">
       <screen x="0" y="23" width="1440" height="809" />
     </state>
-    <state width="1398" height="204" key="GridCell.Tab.0.center/0.23.1440.809@0.23.1440.809" timestamp="1602906622493" />
-    <state width="1398" height="204" key="GridCell.Tab.0.left" timestamp="1602906622492">
+    <state width="1398" height="174" key="GridCell.Tab.0.center/0.23.1440.809@0.23.1440.809" timestamp="1602926878186" />
+    <state width="1398" height="174" key="GridCell.Tab.0.left" timestamp="1602926878185">
       <screen x="0" y="23" width="1440" height="809" />
     </state>
-    <state width="1398" height="204" key="GridCell.Tab.0.left/0.23.1440.809@0.23.1440.809" timestamp="1602906622492" />
-    <state width="1398" height="204" key="GridCell.Tab.0.right" timestamp="1602906622493">
+    <state width="1398" height="174" key="GridCell.Tab.0.left/0.23.1440.809@0.23.1440.809" timestamp="1602926878185" />
+    <state width="1398" height="174" key="GridCell.Tab.0.right" timestamp="1602926878186">
       <screen x="0" y="23" width="1440" height="809" />
     </state>
-    <state width="1398" height="204" key="GridCell.Tab.0.right/0.23.1440.809@0.23.1440.809" timestamp="1602906622493" />
+    <state width="1398" height="174" key="GridCell.Tab.0.right/0.23.1440.809@0.23.1440.809" timestamp="1602926878186" />
+    <state width="1398" height="258" key="GridCell.Tab.1.bottom" timestamp="1602918273098">
+      <screen x="0" y="23" width="1440" height="809" />
+    </state>
+    <state width="1398" height="258" key="GridCell.Tab.1.bottom/0.23.1440.809@0.23.1440.809" timestamp="1602918273098" />
+    <state width="1398" height="258" key="GridCell.Tab.1.center" timestamp="1602918273097">
+      <screen x="0" y="23" width="1440" height="809" />
+    </state>
+    <state width="1398" height="258" key="GridCell.Tab.1.center/0.23.1440.809@0.23.1440.809" timestamp="1602918273097" />
+    <state width="1398" height="258" key="GridCell.Tab.1.left" timestamp="1602918273097">
+      <screen x="0" y="23" width="1440" height="809" />
+    </state>
+    <state width="1398" height="258" key="GridCell.Tab.1.left/0.23.1440.809@0.23.1440.809" timestamp="1602918273097" />
+    <state width="1398" height="258" key="GridCell.Tab.1.right" timestamp="1602918273098">
+      <screen x="0" y="23" width="1440" height="809" />
+    </state>
+    <state width="1398" height="258" key="GridCell.Tab.1.right/0.23.1440.809@0.23.1440.809" timestamp="1602918273098" />
+    <state x="257" y="170" width="925" height="617" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1602916096529">
+      <screen x="0" y="23" width="1440" height="809" />
+    </state>
+    <state x="257" y="170" width="925" height="617" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.23.1440.809@0.23.1440.809" timestamp="1602916096529" />
     <state x="418" y="60" width="604" height="735" key="find.popup" timestamp="1602818803565">
       <screen x="0" y="23" width="1440" height="809" />
     </state>
     <state x="418" y="60" width="604" height="735" key="find.popup/0.23.1440.809@0.23.1440.809" timestamp="1602818803565" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.NullPointerException" package="java.lang" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

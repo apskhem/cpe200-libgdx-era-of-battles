@@ -126,6 +126,10 @@ public class MainGame extends ApplicationAdapter {
 			ultimateBannerImages[era] = new Image("unit-ul-" + (era + 1) + ".png");
 		}
 
+		for (byte era = 0; era < 4; era++) {
+			ultimateImages[era] = new Image("ultimate-" + (era + 1) + ".png");
+		}
+
 		unitHealthBar = new Image("unit-health-bar.png");
 		unitHealthBarInner = new Image("unit-health-bar-inner.png");
 
