@@ -97,7 +97,7 @@ public class Player {
 
     public void UseUltimate() {
         if (this.ultimateDelay <= 0) {
-            this.ultimateCaller = new Ultimate();
+            this.ultimateCaller = new Ultimate(this.era);
             this.ultimateDelay = Player.ULTIMATE_LOADING_DELAY;
         }
     }

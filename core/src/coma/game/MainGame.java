@@ -425,7 +425,7 @@ public class MainGame extends ApplicationAdapter {
 			user.stronghold.image.SetTexture(strongholdImages[1]);
 		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
-			new Ultimate();
+			user.ultimateDelay = 0;
 		}
 	}
 

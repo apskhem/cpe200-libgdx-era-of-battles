@@ -2,27 +2,29 @@ package coma.game;
 
 public class Intro {
 
-    private static float soundPlay = 80;
-    private static float soundTime = 200;
+    private static float soundPlayDelay = 80;
+    private static float soundPlaying = 200;
     private static float fadingTime = 100;
     private static final float MAX_FADING = 100;
+    private static boolean isSoundPlayed = false;
     private static boolean isDone = false;
 
     public static void Play() {
         if (Intro.isDone) return;
 
-        if (soundPlay == 0) {
+        if (soundPlayDelay <= 0 && !isSoundPlayed) {
             MainGame.devLogoSound.play();
-            soundPlay -= MainGame.deltaTime;
+            soundPlayDelay -= MainGame.deltaTime;
+            isSoundPlayed = true;
         }
-        else if (soundPlay > 0) {
-            soundPlay -= 1;
+        else if (soundPlayDelay > 0) {
+            soundPlayDelay -= MainGame.deltaTime;
             return;
         }
 
         // sound playing phase
-        if (soundTime >= 0) {
-            soundTime -= 1;
+        if (soundPlaying >= 0) {
+            soundPlaying -= MainGame.deltaTime;
             return;
         }
 

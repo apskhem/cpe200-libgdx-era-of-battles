@@ -1,5 +1,7 @@
 package coma.game;
 
+import org.w3c.dom.ranges.RangeException;
+
 import java.util.ArrayList;
 
 public class Ultimate {
@@ -15,45 +17,32 @@ public class Ultimate {
     public Player target;
     public Player caller;
 
-    public Ultimate() {
-        nUltimateProcess((byte) 2);  //nullpointerX here when use parameter caller.era
+    public Ultimate(byte era) {
+        int n;
+        switch (era) {
+            case 1: n = Mathf.CalRange(10, 15); break;
+            case 2: n = Mathf.CalRange(25, 30); break;
+            case 3: n = Mathf.CalRange(15, 25); break;
+            case 4: n = Mathf.CalRange(30, 35); break;
+            default: throw new RangeException((short) 0, "Wrong parameter input.");
+        }
 
+        for (int i = 0; i < n; i++) {
+            UltimateObj obj = new UltimateObj(era);
+            this.SpawnUltimateObj(obj);
+            this.ultimateSpawnContainer.add(obj);
+        }
     }
 
     private void SpawnUltimateObj(UltimateObj obj){
         if(obj == null) return;
 
-        int x = Mathf.CalRange(240, 1760);     //border of x-axis screen
+        int x = Mathf.CalRange(240, 1760); //border of x-axis screen
 
         obj.SetPosition(x, SPAWN_POS_Y);
         Renderer.AddComponents(obj.image);
 
-//        MainGame  if อยากใส่เพลง
-    }
-
-    private void nUltimateProcess(byte era){
-        int n = 0;
-        switch(era) {
-            case 1: {
-                n = Mathf.CalRange(10, 15);
-            }
-            break;
-            case 2: {
-                n = Mathf.CalRange(25, 30);
-            }
-            break;
-            case 3: {
-                n = Mathf.CalRange(15, 25);
-            } break;
-            case 4 : {
-                n = Mathf.CalRange(30, 35);
-            } break;
-        }
-        for (int i = 0; i < n; i++) {
-            UltimateObj obj = new UltimateObj(era);
-            SpawnUltimateObj(obj);
-            ultimateSpawnContainer.add(obj);
-        }
+        // MainGame  if อยากใส่เพลง
     }
 
     public void ContinueUltimate() {
@@ -64,7 +53,8 @@ public class Ultimate {
         // new distance calculation and checking explosion
         for (final UltimateObj obj : this.ultimateSpawnContainer) {
             if (obj.movedDistanceY < Ultimate.EXPLODE_POS_Y) {
-                //obj.ultimateExplode();
+                obj.ultimateExplode();
+                Renderer.RemoveComponents(obj.image);
 
                 //++ DO SOMETHING WITH TARGET
 
@@ -77,6 +67,7 @@ public class Ultimate {
 
         // remove all exploded obj
         this.ultimateSpawnContainer.removeAll(explodedUltimateObjects);
+
 
         // destroy ultimate caller zero objs are in container
         if (this.ultimateSpawnContainer.size() == 0) this.caller.ultimateCaller = null;
@@ -101,19 +92,19 @@ class UltimateObj extends GameObject{
     public float movedDistanceY = Ultimate.SPAWN_POS_Y;
 
     public static float MOVE_SPEED_X = 1.2f;
-    public static float MOVE_SPEED_Y = 1.2f;
+    public static float MOVE_SPEED_Y = 2.2f;
 
     public short era;
 
     short damage;
 
     public UltimateObj(byte era) {
-        super(MainGame.ultimateImages[era].Clone());
+        super(MainGame.ultimateImages[era - 1].Clone());
         this.era = era;
     }
 
     public void ultimateMove() {
-        switch(this.era){
+        switch (this.era) {
             case 1 : // meteor
 
             case 2 : { // arrow
@@ -130,7 +121,6 @@ class UltimateObj extends GameObject{
 //                    movedDistanceY -= moveY;
 //                }
             } break;
-
             case 3 : { // missile
 
 //                float distanceX = Mathf.CalRange(-50, 50);
@@ -143,14 +133,6 @@ class UltimateObj extends GameObject{
                 this.image.Move(0, -moveY);
 
             } break;
-
-
-
-
-
-
-
-
 //                float distanceX = Mathf.CalRange(0,50);
 //
 //                MOVE_SPEED_X = distanceX / MainGame.deltaTime;
@@ -165,25 +147,29 @@ class UltimateObj extends GameObject{
 //            } break;
 
             case 4 : { // laser beam
-                if(movedDistanceX < this.image.naturalWidth){
-                    final float moveX = this.MOVE_SPEED_X * MainGame.deltaTime;
+                final float moveX = this.MOVE_SPEED_X * MainGame.deltaTime;
 
-                    movedDistanceX += moveX;
-                }
+                movedDistanceX += moveX;
             }
-    }
-
-//    public void ultimateExplode() {
-//        //explode & send damage to in-area opponent troops
-//        //era 1 explode
-//        //era 2 more arrow
-//        //era 3 explode
-//        //era 4 laser beam
-
-    }
-
-    public void calDmg(){
         }
+
+        final float moveY = this.MOVE_SPEED_Y * MainGame.deltaTime;
+
+        movedDistanceY -= moveY;
+        this.image.Move(0, -moveY);
+    }
+
+    public void ultimateExplode() {
+        //explode & send damage to in-area opponent troops
+        //era 1 explode
+        //era 2 more arrow
+        //era 3 explode
+        //era 4 laser beam
+    }
+
+    public void calDmg() {
+
+    }
 
     public void SetPosition(float x, float y) {
         this.image.SetPosition(x, y);
