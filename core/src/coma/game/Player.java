@@ -361,18 +361,50 @@ class GameBot extends Player {
         return this.state;
     }
 
-    // implement front unit to be malee more
+    private boolean isMeleeFront(){
+
+        if (this.units.size() == 0)  return false;
+        else{
+
+            final Unit u1 = this.units.get(this.units.size()-1);
+
+            if (u1 instanceof RangedUnit) return false;
+            else return true;
+        }
+    }
+
+    private void BotStrategy(int idx){
+        if (idx >= 0 && idx < 40) {
+            this.DeployUnit(MeleeUnit.GetEra(this.era));
+            isMeleeFront();
+        }
+        else if (idx >= 40 && idx < 70) {
+            this.DeployUnit(RangedUnit.GetEra(this.era));
+            isMeleeFront();
+        }
+        else {
+            this.DeployUnit(CavalryUnit.GetEra(this.era));
+            isMeleeFront();
+        }
+    }
+
     private void Level1Automation() {
         if (!this.isWaking) return;
 
         // game bot decision fired >> write decision commands here
         if (this.units.size() < Player.MAX_UNIT) {
 
-            int idx = (int)(Math.random() * 100);      // random idx for choosing unit
+            int idx = (int)Mathf.CalRange(0,100);      // random idx for choosing unit
 
-            if(idx >= 0 && idx < 40)   this.DeployUnit(MeleeUnit.GetEra(this.era));
-            else if (idx >= 40 && idx < 80 )    this.DeployUnit(RangedUnit.GetEra(this.era));
-            else this.DeployUnit(CavalryUnit.GetEra(this.era));
+            if(!isMeleeFront()){
+                BotStrategy(idx);
+            }
+            else{
+                if (idx >= 0 && idx < 40) this.DeployUnit(MeleeUnit.GetEra(this.era));
+                else if (idx >= 40 && idx < 80) this.DeployUnit(RangedUnit.GetEra(this.era));
+                else this.DeployUnit(CavalryUnit.GetEra(this.era));
+            }
+            isMeleeFront();
         }
     }
 
@@ -383,9 +415,15 @@ class GameBot extends Player {
         if (this.units.size() < Player.MAX_UNIT) {
             int idx = (int)(Math.random() * 100);      // random idx for choosing unit
 
-            if(idx >= 0 && idx < 35)   this.DeployUnit(MeleeUnit.GetEra(this.era));
-            else if (idx >= 35 && idx < 70 )    this.DeployUnit(RangedUnit.GetEra(this.era));
-            else this.DeployUnit(CavalryUnit.GetEra(this.era));
+            if(!isMeleeFront()){
+                BotStrategy(idx);
+            }
+            else{
+                if (idx >= 0 && idx < 35) this.DeployUnit(MeleeUnit.GetEra(this.era));
+                else if (idx >= 35 && idx < 70) this.DeployUnit(RangedUnit.GetEra(this.era));
+                else this.DeployUnit(CavalryUnit.GetEra(this.era));
+            }
+            isMeleeFront();
         }
     }
 
@@ -395,16 +433,23 @@ class GameBot extends Player {
         // game bot decision fired >> write decision commands here
         int idx = (int)(Math.random() * 100);      // random idx for choosing unit
 
-        if(idx >= 0 && idx < 30)   this.DeployUnit(MeleeUnit.GetEra(this.era));
-        else if (idx >= 30 && idx < 60)    this.DeployUnit(RangedUnit.GetEra(this.era));
-        else this.DeployUnit(CavalryUnit.GetEra(this.era));
+        if (!isMeleeFront()){
+            BotStrategy(idx);
+        }
+        else{
+            if (idx >= 0 && idx < 30) this.DeployUnit(MeleeUnit.GetEra(this.era));
+            else if (idx >= 30 && idx < 60) this.DeployUnit(RangedUnit.GetEra(this.era));
+            else this.DeployUnit(CavalryUnit.GetEra(this.era));
+        }
+        isMeleeFront();
     }
 
-    public void setTurret() {
+    private void setTurret() {
         if (!this.isWaking) return;
 
-        if(this.units.size() > 5) {
+        if(this.units.size() > 4) {
 
+            // unit must be > 4 and cash is enough for build turret and spawn troops in the future
             switch (this.era) {
                 case 1:
                     if (this.cash >= 1000) this.BuildTurret(Turret.GetEra(this.era)); break;
@@ -416,8 +461,9 @@ class GameBot extends Player {
         }
     }
 
-    public void botUltimate(){
+    private void botUltimate(){
         switch(this.difficulty){
+            // may be bug in case 1 and 2
             case 1:
                 if (this.ultimateDelay + 1000 <= 0) this.UseUltimate(); break;
             case 2:

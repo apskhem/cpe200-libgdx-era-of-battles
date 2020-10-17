@@ -2,9 +2,9 @@ package coma.game;
 
 import java.util.ArrayList;
 
-public class Ultimate<ultimateObj> {
+public class Ultimate {
 
-    public final ArrayList<ultimateObj> nUltimate = new ArrayList<>();
+    public final ArrayList<UltimateObj> nUltimate = new ArrayList<>();
 
     //constant
     private static short ULTIMATE_SPAWN_POS_Y = 600;
@@ -31,14 +31,29 @@ public class Ultimate<ultimateObj> {
 }
 
 class UltimateObj extends GameObject{
+
+    //constant
+    private final short vectorY = -600;
+
     short damage;
 
     public UltimateObj(byte era){
         super(MainGame.ultimateImages[era].Clone());
     }
 
-    public void move(){
-        
+    public void ultimateMove(){
+
     }
+
+    public void ultimateExplode(){
+        if(vectorY == 0){
+            //explode & send damage to in-area opponent troops
+            //era 1 explode
+            //era 2 more arrow
+            //era 3 explode
+            //era 4 laser beam
+        }
+    }
+
 
 }
