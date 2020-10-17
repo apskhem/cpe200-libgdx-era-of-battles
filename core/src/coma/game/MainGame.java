@@ -19,6 +19,7 @@ public class MainGame extends ApplicationAdapter {
 
 	public static Canvas devLogo;
 	public static Canvas gameLogo;
+	public static Canvas creditBanner;
 	public static Canvas playBtn;
 	public static Canvas creditBtn;
 	public static Canvas musicBtn;
@@ -60,9 +61,9 @@ public class MainGame extends ApplicationAdapter {
 	public static final Image[][] cavalryUnitImages = new Image[4][7];
 	public static final Image[] unitQueueImages = new Image[3];
 	public static final Image[] ultimateBannerImages = new Image[4];
+	public static final Image[] ultimateImages = new Image[4];
 	public static Image unitHealthBar;
 	public static Image unitHealthBarInner;
-	public static Image [] ultimateImages = new Image[4];
 
 	public static Player user;
 	public static GameBot foe;
@@ -125,8 +126,6 @@ public class MainGame extends ApplicationAdapter {
 			ultimateBannerImages[era] = new Image("unit-ul-" + (era + 1) + ".png");
 		}
 
-		ultimateImages[0] = new Image("ultimate1.png");
-
 		unitHealthBar = new Image("unit-health-bar.png");
 		unitHealthBarInner = new Image("unit-health-bar-inner.png");
 
@@ -135,6 +134,7 @@ public class MainGame extends ApplicationAdapter {
 		bg = new Image("game-bg.png");
 		devLogo = new Canvas("dev-logo.png");
 		gameLogo = new Canvas("game-logo.png");
+		creditBanner = new Canvas("credit.png");
 		playBtn = new Canvas("play-btn.png");
 		creditBtn = new Canvas("credit-btn.png");
 		musicBtn = new Canvas("music-btn.png");
@@ -177,6 +177,8 @@ public class MainGame extends ApplicationAdapter {
 		gameLogo.SetPosition("center", 400);
 		playBtn.SetPosition("center", camera.viewportHeight/2);
 		creditBtn.SetPosition("center", camera.viewportHeight/2 - 120);
+		creditBanner.SetPosition("center", 5);
+		creditBanner.isVisible = false;
 		musicBtn.SetPosition(886, 14);
 		musicBtn.isVisible = false;
 		speedBtn.SetPosition(14, 14);
@@ -258,7 +260,7 @@ public class MainGame extends ApplicationAdapter {
 		camera.translate(camera.viewportWidth/2, camera.viewportHeight/2);
 
 		// set components
-		ui.AddComponents(devLogo, gameLogo, playBtn, creditBtn, musicBtn, mode1, mode2, mode3, modeBanner, startBtn, restartBtn, menuBtn,
+		ui.AddComponents(devLogo, gameLogo, playBtn, creditBtn, creditBanner, musicBtn, mode1, mode2, mode3, modeBanner, startBtn, restartBtn, menuBtn,
 				speedBtn, unit1, unit2, unit3, unit4, unit5, unitUl, cashIcon, xpIcon, healthBar, healthBarL, healthBarR, queueBar,
 				unitQueueBarInner, ultimateBarInner, victoryBanner, defeatBanner, unitQueueIcons[0], unitQueueIcons[1],
 				unitQueueIcons[2], unitQueueIcons[3], unitQueueIcons[4], unitQueueIcons[5], unitQueueIcons[6],
@@ -300,8 +302,9 @@ public class MainGame extends ApplicationAdapter {
 
 			// delay bars
 			final float cd = user.deploymentQueue.size > 0 ? user.deploymentQueue.first().GetDeploymentDelay() : 100;
+			final float b = user.deploymentDelay / cd < 0 ? 0 : user.deploymentDelay / cd;
 
-			unitQueueBarInner.SetViewBox((1 - (user.deploymentDelay / cd)) * 198, Float.NaN);
+			unitQueueBarInner.SetViewBox((1 - b) * unitQueueBarInner.naturalWidth, Float.NaN);
 			ultimateBarInner.SetViewBox((1 - user.ultimateDelay / (float) Player.ULTIMATE_LOADING_DELAY) * 198, Float.NaN);
 			healthBarL.SetViewBox(user.stronghold.GetPercentageHealth(healthBarL.naturalWidth), Float.NaN);
 			healthBarR.SetViewBox(foe.stronghold.GetPercentageHealth(healthBarR.naturalWidth), Float.NaN);
@@ -417,6 +420,9 @@ public class MainGame extends ApplicationAdapter {
 		if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
 			user.stronghold.image.SetTexture(strongholdImages[1]);
 		}
+		if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
+			new Ultimate();
+		}
 	}
 
 	public void onclick(int clientX, int clientY) {
@@ -431,6 +437,15 @@ public class MainGame extends ApplicationAdapter {
 			menuClickSound.play();
 		}
 		else if (creditBtn.IsInBound(clientX, clientY)) {
+			ui.GetBoxModule("start-menu").SetVisibility(false);
+			creditBanner.isVisible = true;
+
+			menuClickSound.play();
+		}
+		else if (creditBanner.IsInBound(clientX, clientY)) {
+			ui.GetBoxModule("start-menu").SetVisibility(true);
+			creditBanner.isVisible = false;
+
 			menuClickSound.play();
 		}
 		else if (musicBtn.IsInBound(clientX, clientY)) {

@@ -6,16 +6,17 @@ import java.util.ArrayList;
 
 public class Player {
 
-    public final Stronghold stronghold = new Stronghold();
-    public final ArrayList<Turret> turrets = new ArrayList<>();
-    public final ArrayList<Unit> units = new ArrayList<>();
-    public final Queue<Unit> deploymentQueue = new Queue<>();
-
     // constants
     private final short SPAWN_POSITION_X;
     protected final short SPAWN_POSITION_Y = 52;
 
     // properties
+    public final Stronghold stronghold = new Stronghold();
+    public final ArrayList<Turret> turrets = new ArrayList<>();
+    public final ArrayList<Unit> units = new ArrayList<>();
+    public final Queue<Unit> deploymentQueue = new Queue<>();
+    public Ultimate ultimateCaller;
+
     public int cash;
     public int xp;
     public byte era = 1;
@@ -96,7 +97,7 @@ public class Player {
 
     public void UseUltimate() {
         if (this.ultimateDelay <= 0) {
-            new Ultimate();
+            this.ultimateCaller = new Ultimate();
             this.ultimateDelay = Player.ULTIMATE_LOADING_DELAY;
         }
     }
@@ -108,6 +109,13 @@ public class Player {
 
     // automation looping
     public int UpdateUnits(boolean isOverlapped) {
+        // update overall
+        this.ProcessUnitDeployment();
+
+        if (this.ultimateDelay > 0) this.ultimateDelay -= MainGame.deltaTime;
+
+        if (this.ultimateCaller != null) this.ultimateCaller.ContinueUltimate();
+
         // check dead units
         int deadCost = 0;
         for (int i = 0; i < this.units.size(); i++) {
@@ -233,13 +241,16 @@ public class Player {
             if (playerL.units.size() > 0) turret.Attack(playerL.units.get(0));
         }
 
-        // unit deployment
-        playerR.ProcessUnitDeployment();
-        playerL.ProcessUnitDeployment();
+        // using ultimate
+        if (playerL.ultimateCaller != null) {
+            playerL.ultimateCaller.caller = playerL;
+            playerL.ultimateCaller.target = playerR;
+        }
 
-        // ultimate delay
-        if (playerL.ultimateDelay > 0) playerL.ultimateDelay -= MainGame.deltaTime;
-        if (playerR.ultimateDelay > 0) playerR.ultimateDelay -= MainGame.deltaTime;
+        if (playerR.ultimateCaller != null) {
+            playerR.ultimateCaller.caller = playerR;
+            playerR.ultimateCaller.target = playerL;
+        }
 
         // playerL
         playerR.UpdateAfter(playerL.UpdateUnits(isOverlapped));
@@ -361,30 +372,28 @@ class GameBot extends Player {
         return this.state;
     }
 
-    private boolean isMeleeFront(){
+    private boolean isMeleeInFront() {
+        if (this.units.size() > 0) {
+            final Unit lastU = this.units.get(this.units.size() - 1);
 
-        if (this.units.size() == 0)  return false;
-        else{
-
-            final Unit u1 = this.units.get(this.units.size()-1);
-
-            if (u1 instanceof RangedUnit) return false;
-            else return true;
+            return !(lastU instanceof RangedUnit);
         }
+
+        return false;
     }
 
     private void BotStrategy(int idx){
         if (idx >= 0 && idx < 40) {
             this.DeployUnit(MeleeUnit.GetEra(this.era));
-            isMeleeFront();
+            isMeleeInFront();
         }
         else if (idx >= 40 && idx < 70) {
             this.DeployUnit(RangedUnit.GetEra(this.era));
-            isMeleeFront();
+            isMeleeInFront();
         }
         else {
             this.DeployUnit(CavalryUnit.GetEra(this.era));
-            isMeleeFront();
+            isMeleeInFront();
         }
     }
 
@@ -394,9 +403,9 @@ class GameBot extends Player {
         // game bot decision fired >> write decision commands here
         if (this.units.size() < Player.MAX_UNIT) {
 
-            int idx = (int)Mathf.CalRange(0,100);      // random idx for choosing unit
+            int idx = Mathf.CalRange(0,100);      // random idx for choosing unit
 
-            if(!isMeleeFront()){
+            if(!isMeleeInFront()){
                 BotStrategy(idx);
             }
             else{
@@ -404,7 +413,7 @@ class GameBot extends Player {
                 else if (idx >= 40 && idx < 80) this.DeployUnit(RangedUnit.GetEra(this.era));
                 else this.DeployUnit(CavalryUnit.GetEra(this.era));
             }
-            isMeleeFront();
+            isMeleeInFront();
         }
     }
 
@@ -415,7 +424,7 @@ class GameBot extends Player {
         if (this.units.size() < Player.MAX_UNIT) {
             int idx = (int)(Math.random() * 100);      // random idx for choosing unit
 
-            if(!isMeleeFront()){
+            if(!isMeleeInFront()){
                 BotStrategy(idx);
             }
             else{
@@ -423,7 +432,7 @@ class GameBot extends Player {
                 else if (idx >= 35 && idx < 70) this.DeployUnit(RangedUnit.GetEra(this.era));
                 else this.DeployUnit(CavalryUnit.GetEra(this.era));
             }
-            isMeleeFront();
+            isMeleeInFront();
         }
     }
 
@@ -433,7 +442,7 @@ class GameBot extends Player {
         // game bot decision fired >> write decision commands here
         int idx = (int)(Math.random() * 100);      // random idx for choosing unit
 
-        if (!isMeleeFront()){
+        if (!isMeleeInFront()){
             BotStrategy(idx);
         }
         else{
@@ -441,7 +450,7 @@ class GameBot extends Player {
             else if (idx >= 30 && idx < 60) this.DeployUnit(RangedUnit.GetEra(this.era));
             else this.DeployUnit(CavalryUnit.GetEra(this.era));
         }
-        isMeleeFront();
+        isMeleeInFront();
     }
 
     private void setTurret() {
@@ -461,15 +470,12 @@ class GameBot extends Player {
         }
     }
 
-    private void botUltimate(){
+    private void botUltimate() {
         switch(this.difficulty){
             // may be bug in case 1 and 2
-            case 1:
-                if (this.ultimateDelay + 1000 <= 0) this.UseUltimate(); break;
-            case 2:
-                if(this.ultimateDelay +500 <= 0) this.UseUltimate(); break;
-            case 3:
-                if(this.ultimateDelay <= 0) this.UseUltimate(); break;
+            case 1: if (this.ultimateDelay + 1000 <= 0) this.UseUltimate(); break;
+            case 2: if (this.ultimateDelay +500 <= 0) this.UseUltimate(); break;
+            case 3: if (this.ultimateDelay <= 0) this.UseUltimate(); break;
         }
     }
 

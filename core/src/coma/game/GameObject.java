@@ -163,9 +163,9 @@ abstract class Unit extends GameObject {
 
     public void NormalAnimate() {
         if (this.moveAnimationDelay < 0) {
-            this.moveAnimationDelay = Unit.ANIMATION_DELAY;
-
             this.NextAnimationState();
+
+            this.moveAnimationDelay = Unit.ANIMATION_DELAY;
         }
         else {
             this.moveAnimationDelay -= MainGame.deltaTime;
