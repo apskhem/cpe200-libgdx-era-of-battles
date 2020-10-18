@@ -337,6 +337,8 @@ public class MainGame extends ApplicationAdapter {
 			healthBarL.SetViewBox(user.stronghold.GetPercentageHealth(healthBarL.naturalWidth), Float.NaN);
 			healthBarR.SetViewBox(foe.stronghold.GetPercentageHealth(healthBarR.naturalWidth), Float.NaN);
 
+			unitUl.SetTexture(ultimateBannerImages[user.era - 1]);
+
 			// queue ui
 			for (byte i = 0; i < unitQueueIcons.length; i++) {
 				if (i < user.deploymentQueue.size) {

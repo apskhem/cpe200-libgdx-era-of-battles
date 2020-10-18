@@ -223,7 +223,8 @@ class UltimateObj extends GameObject {
                 }
             } break;
             case 2:
-            case 3: {
+            case 3:
+            case 4: {
                 final float objCenterX = this.image.GetTransform().x + this.image.naturalWidth / 2;
 
                 for (final Unit u : units) {
@@ -231,10 +232,6 @@ class UltimateObj extends GameObject {
                         u.health -= this.damage;
                     }
                 }
-            } break;
-
-            case 4:{
-
             } break;
         }
     }
