@@ -73,8 +73,34 @@ public class Player {
         }
     }
 
-    public void BuildTurret(Turret t) {
-        if (t == null) return;
+    public boolean BuildTurret(Turret t) {
+        // check if can build
+        if (t == null) {
+            boolean canBuildTurret = this.cash >= Turret.GetEra(this.era).cost && this.turrets.size() < 2;
+
+            for (final Turret at : this.turrets) {
+                if (at.era < this.era && this.cash >= Turret.GetEra(this.era).cost - at.cost) {
+                    canBuildTurret = true;
+                    break;
+                }
+            }
+
+            return canBuildTurret;
+        }
+
+        // check buying contition from existing turrets
+        for (Turret at : this.turrets) {
+            if (at.era < this.era && this.cash >= Turret.GetEra(this.era).cost - at.cost) {
+                this.cash -= t.cost - at.cost;
+
+                // replace
+                at.ReplaceWith(t);
+
+                MainGame.unitCall.play();
+
+                return true;
+            }
+        }
 
         if (this.cash >= t.cost && this.turrets.size() < 2) {
             this.cash -= t.cost;
@@ -84,14 +110,20 @@ public class Player {
             Renderer.AddComponents(t.image);
 
             MainGame.unitCall.play();
+
+            return true;
         }
+
+        return false;
     }
 
     public void UpgradeStronghold() {
-        if (this.era < 4 && this.xp >= Stronghold.GetRequiredXp((byte)(this.era + 1))) {
+        if (this.era < 4 && this.xp >= Stronghold.GetRequiredXp(this.era)) {
             this.era++;
 
             this.stronghold.UpgradeTo(this.era);
+
+            MainGame.newEraSound.play();
         }
     }
 
@@ -270,15 +302,12 @@ class GameBot extends Player {
     public byte decisionDelay = 120;
     public byte state = 1;
 
-    private short ULTIMATE_DELAY;
-
     public static final byte DECISION_DELAY = 120;
 
     public GameBot() {
         this.SPAWN_POSITION_X = Player.RIGHT_STRONGHOLD_POSITION_X + 210;
         this.stronghold.image.FlipHorizontal();
         this.stronghold.image.SetPosition(Player.RIGHT_STRONGHOLD_POSITION_X, Player.STRONGHOLD_POSITION_Y);
-        getUltimateDelay(this.difficulty);
     }
 
     @Override
@@ -293,8 +322,34 @@ class GameBot extends Player {
     }
 
     @Override
-    public void BuildTurret(Turret t) {
-        if (t == null) return;
+    public boolean BuildTurret(Turret t) {
+        // check if can build
+        if (t == null) {
+            boolean canBuildTurret = this.cash >= Turret.GetEra(this.era).cost && this.turrets.size() < 2;
+
+            for (final Turret at : this.turrets) {
+                if (at.era < this.era && this.cash >= Turret.GetEra(this.era).cost - at.cost) {
+                    canBuildTurret = true;
+                    break;
+                }
+            }
+
+            return canBuildTurret;
+        }
+
+        // check buying contition from existing turrets
+        for (Turret at : this.turrets) {
+            if (at.era < this.era && this.cash >= Turret.GetEra(this.era).cost - at.cost) {
+                this.cash -= t.cost - at.cost;
+
+                // replace
+                at.ReplaceWith(t);
+
+                MainGame.unitCall.play();
+
+                return true;
+            }
+        }
 
         if (this.cash >= t.cost && this.turrets.size() < 2) {
             this.cash -= t.cost;
@@ -303,7 +358,11 @@ class GameBot extends Player {
             t.image.FlipHorizontal();
             t.image.SetPosition(1935, this.turrets.size() == 1 ? 260 : 340);
             Renderer.AddComponents(t.image);
+
+            return true;
         }
+
+        return false;
     }
 
     @Override
@@ -331,20 +390,23 @@ class GameBot extends Player {
             switch (this.CalculatedDecisionState()) { // << old: this.diffulty
                 case 1: {
                     this.Level1Automation();
+                    this.setTurret();
+                    this.botUltimate();
                     break;
                 }
                 case 2: {
                     this.Level2Automation();
+                    this.setTurret();
+                    this.botUltimate();
                     break;
                 }
                 case 3: {
                     this.Level3Automation();
+                    this.setTurret();
+                    this.botUltimate();
                     break;
                 }
             }
-            this.setTurret();
-            this.botUltimate();
-            this.UpgradeStronghold();
 
             this.decisionDelay = GameBot.DECISION_DELAY;
         }
@@ -353,28 +415,20 @@ class GameBot extends Player {
         }
     }
 
-    public void getUltimateDelay(byte difficulty){
-        switch(difficulty){
-            case 1: this.ULTIMATE_DELAY = 5000;
-            case 2: this.ULTIMATE_DELAY = 4500;
-            case 3: this.ULTIMATE_DELAY = 4000;
-        }
-    }
-
     public byte CalculatedDecisionState() {
         switch (this.era){
             case 1:
-                if (this.cash >= 4000) state = 3;
-                else if (this.cash >= 2000) state = 2;
-                else state = 1;
+                if (this.cash >= 1000) state = 2;
+                else if (this.cash >= 0) state = 1;
+                else state = 3;
             case 2:
-                if(this.cash >= 5000)  state = 3;
-                else if (this.cash >= 3000) state = 2;
-                else state = 1;
+                if(this.cash >= 2000)  state = 2;
+                else if (this.cash >= 0) state = 1;
+                else state = 3;
             case 3:
-                if(this.cash >= 6000) state = 3;
-                else if (this.cash >= 4000) state = 2;
-                else state = 1;
+                if(this.cash >= 5000) state = 2;
+                else if (this.cash >= 0) state = 1;
+                else state = 3;
         }
 
         return this.state;
@@ -458,23 +512,19 @@ class GameBot extends Player {
     private void setTurret() {
         if (!this.isWaking) return;
 
-        if(this.units.size() > 4) {
-
+        if (this.units.size() > 4) {
             // unit must be > 4 and cash is enough for build turret and spawn troops in the future
-            switch (this.era) {
-                case 1:
-                    if (this.cash >= 1000) this.BuildTurret(Turret.GetEra(this.era)); break;
-                case 2:
-                    if (this.cash >= 3000) this.BuildTurret(Turret.GetEra(this.era)); break;
-                case 3:
-                    if (this.cash >= 5000) this.BuildTurret(Turret.GetEra(this.era)); break;
-            }
+            if (this.cash >= Turret.GetEra(this.era).cost * this.difficulty * 2) this.BuildTurret(Turret.GetEra(this.era));
         }
     }
 
     private void botUltimate() {
-            if (this.ultimateDelay <= 0)
-                this.UseUltimate();
+        switch(this.difficulty){
+            // may be bug in case 1 and 2
+            case 1: if (this.ultimateDelay + 1000 <= 0) this.UseUltimate(); break;
+            case 2: if (this.ultimateDelay +500 <= 0) this.UseUltimate(); break;
+            case 3: if (this.ultimateDelay <= 0) this.UseUltimate(); break;
+        }
     }
 
     public void Halt() {

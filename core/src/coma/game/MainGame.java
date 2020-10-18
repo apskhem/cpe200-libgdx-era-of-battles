@@ -80,12 +80,14 @@ public class MainGame extends ApplicationAdapter {
 	public static Sound newEraSound;
 	public static Sound winSound;
 	public static Sound loseSound;
-	public static Sound meleeHit1;
-	public static Sound rangedHit1;
-	public static Sound cavalryHit1;
+	public static final Sound[] meleeHitSounds = new Sound[4];
+	public static final Sound[] rangedHitSounds = new Sound[4];
+	public static final Sound[] cavalryHitSounds = new Sound[4];
+	public static final Sound[] explosionSounds = new Sound[1];
 	public static Sound meleeDie1;
 	public static Sound cavalryDie1;
 	public static Sound unitCall;
+	public static Sound ulPlaneSound;
 
 	// config
 	private static final float CAMERA_SPEED = 10f;
@@ -102,19 +104,19 @@ public class MainGame extends ApplicationAdapter {
 			turretImages[era] = new Image("turret-era-" + (era + 1) + ".png");
 		}
 
-		for (byte era = 0; era < 1; era++) {
+		for (byte era = 0; era < meleeUnitImages.length; era++) {
 			for (byte mov = 0; mov < meleeUnitImages[era].length; mov++) {
 				meleeUnitImages[era][mov] = new Image("melee-unit-era-" + (era + 1) + "-" + (mov + 1) + ".png");
 			}
 		}
 
-		for (byte era = 0; era < 1; era++) {
+		for (byte era = 0; era < rangedUnitImages.length; era++) {
 			for (byte mov = 0; mov < rangedUnitImages[era].length; mov++) {
 				rangedUnitImages[era][mov] = new Image("ranged-unit-era-" + (era + 1) + "-" + (mov + 1) + ".png");
 			}
 		}
 
-		for (byte era = 0; era < 1; era++) {
+		for (byte era = 0; era < cavalryUnitImages.length; era++) {
 			for (byte mov = 0; mov < cavalryUnitImages[era].length; mov++) {
 				cavalryUnitImages[era][mov] = new Image("cavalry-unit-era-" + (era + 1) + "-" + (mov + 1) + ".png");
 			}
@@ -124,12 +126,17 @@ public class MainGame extends ApplicationAdapter {
 			unitQueueImages[t] = new Image("unit-queue-" + (t + 1) + ".png");
 		}
 
-		for (byte era = 0; era < 1; era++) {
+		for (byte era = 0; era < ultimateBannerImages.length; era++) {
 			ultimateBannerImages[era] = new Image("unit-ul-" + (era + 1) + ".png");
 		}
 
-		for (byte era = 0; era < 4; era++) {
+		for (byte era = 0; era < ultimateImages.length; era++) {
 			ultimateImages[era] = new Image("ultimate-" + (era + 1) + ".png");
+		}
+
+		// debugging
+		for (byte era = 1; era < 4; era++) {
+			turretImages[era] = new Image(turretImages[0].Clone());
 		}
 
 		explosionImageRegion = new ImageRegion("explosion-region.png", 128, 128, 4, 4);
@@ -258,9 +265,21 @@ public class MainGame extends ApplicationAdapter {
 		newEraSound = Asset.LoadSound("audio/new-era.mp3");
 		winSound = Asset.LoadSound("audio/win.mp3");
 		loseSound = Asset.LoadSound("audio/lose.mp3");
-		meleeHit1 = Asset.LoadSound("audio/melee-hit-1.mp3");
-		rangedHit1 = Asset.LoadSound("audio/ranged-hit-1.mp3");
-		cavalryHit1 = Asset.LoadSound("audio/cavalry-hit-1.mp3");
+		ulPlaneSound = Asset.LoadSound("audio/ul-plane.mp3");
+
+		for (byte era = 0; era < meleeHitSounds.length; era++) {
+			meleeHitSounds[era] = Asset.LoadSound("audio/melee-hit-" + (era + 1) + ".mp3");
+		}
+
+		for (byte era = 0; era < rangedHitSounds.length; era++) {
+			rangedHitSounds[era] = Asset.LoadSound("audio/ranged-hit-" + (era + 1) + ".mp3");
+		}
+
+		for (byte era = 0; era < cavalryHitSounds.length; era++) {
+			cavalryHitSounds[era] = Asset.LoadSound("audio/cavalry-hit-" + (era + 1) + ".mp3");
+		}
+
+		explosionSounds[0] = Asset.LoadSound("audio/explosion-1.mp3");
 		meleeDie1 = Asset.LoadSound("audio/melee-die-1.mp3");
 		cavalryDie1 = Asset.LoadSound("audio/cavalry-die-1.mp3");
 		unitCall = Asset.LoadSound("audio/call-unit.mp3");
@@ -305,8 +324,8 @@ public class MainGame extends ApplicationAdapter {
 			unit1.SetActive(user.cash >= MeleeUnit.GetEra(user.era).cost);
 			unit2.SetActive(user.cash >= RangedUnit.GetEra(user.era).cost);
 			unit3.SetActive(user.cash >= CavalryUnit.GetEra(user.era).cost);
-			unit4.SetActive(user.cash >= Turret.GetEra(user.era).cost);
-			unit5.SetActive(user.era < 4 && user.xp >= Stronghold.GetRequiredXp((byte)(user.era + 1)));
+			unit4.SetActive(user.BuildTurret(null));
+			unit5.SetActive(user.era < 4 && user.xp >= Stronghold.GetRequiredXp(user.era));
 			unitUl.SetActive(user.ultimateDelay <= 0);
 
 			// delay bars
@@ -432,6 +451,9 @@ public class MainGame extends ApplicationAdapter {
 		if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
 			user.ultimateDelay = 0;
 		}
+		if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
+			user.xp = Stronghold.GetRequiredXp(user.era < 4 ? this.user.era : 3);
+		}
 	}
 
 	public void onclick(int clientX, int clientY) {
@@ -537,8 +559,6 @@ public class MainGame extends ApplicationAdapter {
 		}
 		else if (unit5.IsInBound(clientX, clientY)) {
 			user.UpgradeStronghold();
-
-			newEraSound.play();
 		}
 		else if (unitUl.IsInBound(clientX, clientY)) {
 			user.UseUltimate();

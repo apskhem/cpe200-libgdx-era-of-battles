@@ -40,7 +40,7 @@ abstract class Unit extends GameObject {
     private float moveAnimationDelay = Unit.ANIMATION_DELAY;
     private float deadDelay = 100;
     protected byte animationState = 1;
-    protected byte displacedTranslateX = 0;
+    protected short displacedTranslateX = 0;
 
     public static float MAX_MOVE = 1790;
     public static float MOVE_SPEED = 1.2f;
@@ -110,15 +110,15 @@ abstract class Unit extends GameObject {
             // instance cases
             if (this instanceof MeleeUnit) {
                 this.attackDelay = (byte) Mathf.CalError(Unit.MELEE_ATTACK_DELAY, 0.1f);
-                MainGame.meleeHit1.setVolume(MainGame.meleeHit1.play(), 0.5f);
+                MainGame.meleeHitSounds[era - 1].setVolume(MainGame.meleeHitSounds[era - 1].play(), 0.5f);
             }
             else if (this instanceof RangedUnit) {
                 this.attackDelay = (byte) Mathf.CalError(Unit.RANGED_ATTACK_DELAY, 0.1f);
-                MainGame.rangedHit1.setVolume(MainGame.rangedHit1.play(), 0.5f);
+                MainGame.rangedHitSounds[era - 1].setVolume(MainGame.rangedHitSounds[era - 1].play(), 0.5f);
             }
             else if (this instanceof CavalryUnit) {
                 this.attackDelay = (byte) Mathf.CalError(Unit.CAVALRY_ATTACK_DELAY, 0.1f);
-                MainGame.cavalryHit1.setVolume(MainGame.cavalryHit1.play(), 0.5f);
+                MainGame.cavalryHitSounds[era - 1].setVolume(MainGame.cavalryHitSounds[era - 1].play(), 0.5f);
             }
 
             this.SetAnimationStateTo(6);
@@ -220,9 +220,10 @@ class MeleeUnit extends Unit {
 
     public static MeleeUnit GetEra(byte era) {
         switch (era) {
-            case 1: return new MeleeUnit(MainGame.meleeUnitImages[0][0].Clone(), 100, 23, 80, 1);
-            case 2: return new MeleeUnit(MainGame.meleeUnitImages[1][0].Clone(), 180, 45, 240, 2);
-            case 3: return new MeleeUnit(MainGame.meleeUnitImages[2][0].Clone(), 320, 60, 600, 3);
+            case 1: return new MeleeUnit(MainGame.meleeUnitImages[0][0].Clone(), 100, 23, 80, era);
+            case 2: return new MeleeUnit(MainGame.meleeUnitImages[1][0].Clone(), 180, 45, 240, era);
+            case 3: return new MeleeUnit(MainGame.meleeUnitImages[2][0].Clone(), 320, 60, 600, era);
+            case 4: return new MeleeUnit(MainGame.meleeUnitImages[3][0].Clone(), 900, 150, 2200, era);
             default: throw new RangeException((short) 0, "Wrong parameter input.");
         }
     }
@@ -235,28 +236,66 @@ class MeleeUnit extends Unit {
 
         this.image.SetTexture(MainGame.meleeUnitImages[this.era - 1][state - 1]);
 
-        switch (state) {
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 7: {
-                this.image.SetSize(Float.NaN, Float.NaN);
-                this.image.Move(-this.displacedTranslateX, 0);
+        // reset displacement
+        this.image.SetSize(Float.NaN, Float.NaN);
+        this.image.Move(-this.displacedTranslateX, 0);
+        this.displacedTranslateX = 0;
 
-                this.displacedTranslateX = 0;
-            } break;
-            case 5: {
-                this.image.SetSize(96, 202);
-                this.image.Move(-this.displacedTranslateX, 0);
+        switch (this.era) {
+            case 1: {
+                if (state == 5) {
+                    this.image.SetSize(96, 202);
+                }
+                else if (state == 6) {
+                    this.image.SetSize(135, Float.NaN);
 
-                this.displacedTranslateX = 0;
+                    if (this.image.isFlipped) this.image.Move(this.displacedTranslateX = -55, 0);
+                }
             } break;
-            case 6: {
-                this.image.SetSize(135, Float.NaN);
+            case 2: {
+                if (state == 5) {
+                    this.image.SetSize(137, Float.NaN);
 
-                if (this.image.isFlipped) this.image.Move(this.displacedTranslateX = -55, 0);
+                    if (this.image.isFlipped) this.image.Move(this.displacedTranslateX = -38, 0);
+                }
+                else if (state == 6) {
+                    this.image.SetSize(197, Float.NaN);
+
+                    if (this.image.isFlipped) this.image.Move(this.displacedTranslateX = -98, 0);
+                }
             } break;
+            case 3: {
+                if (state == 5) {
+                    this.image.SetSize(143, Float.NaN);
+
+                    if (this.image.isFlipped) this.image.Move(this.displacedTranslateX = -53, 0);
+                }
+                else if (state == 6) {
+                    this.image.SetSize(185, Float.NaN);
+
+                    if (this.image.isFlipped) this.image.Move(this.displacedTranslateX = -95, 0);
+                }
+            } break;
+            case 4: {
+                if (state == 4) {
+                    this.image.SetSize(158, Float.NaN);
+
+                    if (this.image.isFlipped) this.image.Move(this.displacedTranslateX = -68, 0);
+                }
+                else if (state == 5) {
+                    this.image.SetSize(158, Float.NaN);
+
+                    if (this.image.isFlipped) this.image.Move(this.displacedTranslateX = -68, 0);
+                }
+                else if (state == 6) {
+                    this.image.SetSize(200, 206);
+
+                    if (this.image.isFlipped) this.image.Move(this.displacedTranslateX = -110, 0);
+                }
+            } break;
+            default: {
+                throw new RangeException((short) 0, "Wrong parameter input.");
+            }
         }
     }
 
@@ -279,9 +318,10 @@ class RangedUnit extends Unit {
 
     public static RangedUnit GetEra(byte era) {
         switch (era) {
-            case 1: return new RangedUnit(MainGame.rangedUnitImages[0][0].Clone(), 80, 10, 220, 1);
-            case 2: return new RangedUnit(MainGame.rangedUnitImages[1][0].Clone(), 150, 21, 690, 2);
-            case 3: return new RangedUnit(MainGame.rangedUnitImages[2][0].Clone(), 280, 43, 3000, 3);
+            case 1: return new RangedUnit(MainGame.rangedUnitImages[0][0].Clone(), 80, 10, 220, era);
+            case 2: return new RangedUnit(MainGame.rangedUnitImages[1][0].Clone(), 150, 21, 690, era);
+            case 3: return new RangedUnit(MainGame.rangedUnitImages[2][0].Clone(), 280, 43, 3000, era);
+            case 4: return new RangedUnit(MainGame.rangedUnitImages[3][0].Clone(), 560, 92, 8000, era);
             default: throw new RangeException((short) 0, "Wrong parameter input.");
         }
     }
@@ -294,23 +334,63 @@ class RangedUnit extends Unit {
 
         this.image.SetTexture(MainGame.rangedUnitImages[this.era - 1][state - 1]);
 
-        switch (state) {
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 6:
-            case 7:{
-                this.image.SetSize(Float.NaN, Float.NaN);
-                this.image.Move(-this.displacedTranslateX, 0);
+        // reset displacement
+        this.image.SetSize(Float.NaN, Float.NaN);
+        this.image.Move(-this.displacedTranslateX, 0);
+        this.displacedTranslateX = 0;
 
-                this.displacedTranslateX = 0;
-            } break;
-            case 5: {
-                this.image.SetSize(Float.NaN, Float.NaN);
+        switch (this.era) {
+            case 1: {
+                if (state == 5) {
+                    this.displacedTranslateX = (byte)(this.image.isFlipped ? -8 : 8);
 
-                this.image.Move(this.displacedTranslateX = (byte)(this.image.isFlipped ? -8 : 8), 0);
+                    this.image.Move(this.displacedTranslateX, 0);
+                }
             } break;
+            case 2: {
+                if (state == 6) {
+                    this.image.SetSize(125, Float.NaN);
+
+                    if (this.image.isFlipped) this.image.Move(this.displacedTranslateX = -35, 0);
+                }
+            } break;
+            case 3: {
+                if (state == 4 || state == 5) {
+                    this.image.SetSize(132, Float.NaN);
+
+                    if (this.image.isFlipped) this.image.Move(this.displacedTranslateX = -42, 0);
+                }
+                else if (state == 6) {
+                    this.image.SetSize(165, Float.NaN);
+
+                    if (this.image.isFlipped) this.image.Move(this.displacedTranslateX = -75, 0);
+                }
+            } break;
+            case 4: {
+                if (state == 4) {
+                    this.image.SetSize(100, Float.NaN);
+
+                    if (this.image.isFlipped) this.image.Move(this.displacedTranslateX = -10, 0);
+                }
+                else if (state == 5) {
+                    this.image.SetSize(179, Float.NaN);
+
+                    if (this.image.isFlipped) this.image.Move(this.displacedTranslateX = -89, 0);
+                }
+                else if (state == 6) {
+                    this.image.SetSize(249, Float.NaN);
+
+                    if (this.image.isFlipped) this.image.Move(this.displacedTranslateX = -159, 0);
+                }
+                else if (state == 7) {
+                    this.image.SetSize(150, Float.NaN);
+
+                    if (this.image.isFlipped) this.image.Move(this.displacedTranslateX = -60, 0);
+                }
+            } break;
+            default: {
+                throw new RangeException((short) 0, "Wrong parameter input.");
+            }
         }
     }
 
@@ -337,24 +417,41 @@ class CavalryUnit extends Unit {
 
         this.image.SetTexture(MainGame.cavalryUnitImages[this.era - 1][state - 1]);
 
-        switch (state) {
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            case 7: {
-                this.image.SetSize(Float.NaN, Float.NaN);
-                this.image.Move(-this.displacedTranslateX, 0);
+        // reset displacement
+        this.image.SetSize(Float.NaN, Float.NaN);
+        this.image.Move(-this.displacedTranslateX, 0);
+        this.displacedTranslateX = 0;
 
-                this.displacedTranslateX = 0;
+        switch (this.era) {
+            case 1: {
+                if (state == 6) {
+                    this.image.SetSize(Float.NaN, 230);
+                }
             } break;
-            case 6: {
-                this.image.SetSize(Float.NaN, 230);
-                this.image.Move(-this.displacedTranslateX, 0);
+            case 2: {
+                if (state == 6) {
+                    this.image.SetSize(275, Float.NaN);
 
-                this.displacedTranslateX = 0;
+                    if (this.image.isFlipped) this.image.Move(this.displacedTranslateX = -55, 0);
+                }
             } break;
+            case 3: {
+                if (state == 6) {
+                    this.image.SetSize(720, Float.NaN);
+
+                    if (this.image.isFlipped) this.image.Move(this.displacedTranslateX = -116, 0);
+                }
+            } break;
+            case 4: {
+                if (state == 6) {
+                    this.image.SetSize(540, Float.NaN);
+
+                    if (this.image.isFlipped) this.image.Move(this.displacedTranslateX = -96, 0);
+                }
+            } break;
+            default: {
+                throw new RangeException((short) 0, "Wrong parameter input.");
+            }
         }
     }
 
@@ -365,9 +462,10 @@ class CavalryUnit extends Unit {
 
     public static CavalryUnit GetEra(byte era) {
         switch (era) {
-            case 1: return new CavalryUnit(MainGame.cavalryUnitImages[0][0].Clone(), 320, 45, 600, 1);
-            case 2: return new CavalryUnit(MainGame.cavalryUnitImages[1][0].Clone(), 900, 95, 1500, 2);
-            case 3: return new CavalryUnit(MainGame.cavalryUnitImages[2][0].Clone(), 2000, 210, 5000, 3);
+            case 1: return new CavalryUnit(MainGame.cavalryUnitImages[0][0].Clone(), 320, 45, 600, era);
+            case 2: return new CavalryUnit(MainGame.cavalryUnitImages[1][0].Clone(), 900, 95, 1500, era);
+            case 3: return new CavalryUnit(MainGame.cavalryUnitImages[2][0].Clone(), 2000, 210, 5000, era);
+            case 4: return new CavalryUnit(MainGame.cavalryUnitImages[3][0].Clone(), 3680, 456, 20000, era);
             default: throw new RangeException((short) 0, "Wrong parameter input.");
         }
     }
@@ -378,9 +476,9 @@ class CavalryUnit extends Unit {
  */
 class Turret extends GameObject {
 
-    public final short attack;
-    public final short cost;
-    public final byte era;
+    public int attack;
+    public int cost;
+    public byte era;
     private short attackDelay = Turret.ATTACK_DELAY;
 
     private static final short ATTACK_DELAY = 25;
@@ -389,8 +487,8 @@ class Turret extends GameObject {
     public Turret(Image img, int attack, int cost, int era) {
         super(img);
 
-        this.attack = (short) attack;
-        this.cost = (short) cost;
+        this.attack = attack;
+        this.cost = cost;
         this.era = (byte) era;
     }
 
@@ -411,7 +509,7 @@ class Turret extends GameObject {
 
                 this.attackDelay = Turret.ATTACK_DELAY;
 
-                MainGame.rangedHit1.setVolume(MainGame.rangedHit1.play(), 0.5f);
+                MainGame.rangedHitSounds[era - 1].setVolume(MainGame.rangedHitSounds[era - 1].play(), 0.5f);
             }
             else {
                 this.attackDelay -= MainGame.deltaTime;
@@ -419,11 +517,20 @@ class Turret extends GameObject {
         }
     }
 
+    public void ReplaceWith(Turret t) {
+        this.image.SetTexture(t.image);
+
+        this.attack = t.attack;
+        this.cost = t.cost;
+        this.era = t.era;
+    }
+
     public static Turret GetEra(byte era) {
         switch (era) {
-            case 1: return new Turret(MainGame.turretImages[0].Clone(), 8, 1200, 1);
-            case 2: return new Turret(MainGame.turretImages[1].Clone(), 21, 3500, 2);
-            case 3: return new Turret(MainGame.turretImages[2].Clone(), 48, 11000, 3);
+            case 1: return new Turret(MainGame.turretImages[0].Clone(), 8, 1200, era);
+            case 2: return new Turret(MainGame.turretImages[1].Clone(), 21, 3500, era);
+            case 3: return new Turret(MainGame.turretImages[2].Clone(), 48, 11000, era);
+            case 4: return new Turret(MainGame.turretImages[3].Clone(), 130, 50000, era);
             default: throw new RangeException((short) 0, "Wrong parameter input.");
         }
     }
@@ -475,9 +582,8 @@ class Stronghold extends GameObject {
     public static short GetRequiredXp(byte era) {
         switch (era) {
             case 1: return 1000;
-            case 2: return 3500;
-            case 3: return 9000;
-            case 4: return 30000;
+            case 2: return 6500;
+            case 3: return 30000;
             default: return Short.MAX_VALUE;
         }
     }

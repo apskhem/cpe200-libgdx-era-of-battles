@@ -6,10 +6,10 @@ import java.util.ArrayList;
 
 public class Ultimate {
 
-    public final ArrayList<UltimateObj> ultimateSpawnContainer = new ArrayList<>();
-    public final ArrayList<ImageRegion> explodingObjectContainer = new ArrayList<>();
-    public final byte era;
-    public Image plane;
+    private final ArrayList<UltimateObj> ultimateSpawnContainer = new ArrayList<>();
+    private final ArrayList<ImageRegion> explodingObjectContainer = new ArrayList<>();
+    private final byte era;
+    private Image plane;
 
     //constant
     public static final float EXPLOSION_FRAME_ANIMATION_TIME = 4f;
@@ -22,41 +22,72 @@ public class Ultimate {
     public Player caller;
 
     public Ultimate(byte era) {
-        int n;
+        int n = 0;
         switch (this.era = era) {
             case 1: n = Mathf.CalRange(10, 15); break;
-            case 2: n = Mathf.CalRange(25, 30); break;
+            case 2: n = Mathf.CalRange(80, 112); break;
             case 3: {
-                n = Mathf.CalRange(15, 25);
+                n = 14;
 
                 // set plane
                 this.plane = MainGame.ulPlane;
-                this.plane.SetPosition(-811, 520);
+                this.plane.SetPosition(-2000, 520);
                 Renderer.AddComponents(this.plane);
 
+                MainGame.ulPlaneSound.play();
             } break;
             case 4: n = Mathf.CalRange(30, 35); break;
             default: throw new RangeException((short) 0, "Wrong parameter input.");
         }
 
-        for (int i = 0; i < n; i++) {
-            UltimateObj obj = new UltimateObj(era, Mathf.CalRange(0, 90f));
-            this.SpawnUltimateObj(obj);
+        for (byte i = 0; i < n; i++) {
+            // spawn
+            float spawnX = 0; //border of x-axis screen
+            float spawnDelay = 0;
+            float damage = 0;
+            float moveSpeedX = 0;
+            float moveSpeedY = 0;
+
+            switch (era) {
+                case 1: {
+                    spawnX = Mathf.CalRange(20f, 1600f);
+                    spawnDelay = Mathf.CalRange(0, 90f);
+                    damage = Mathf.CalRange(60f, 89f);
+                    moveSpeedX = 6.7f;
+                    moveSpeedY = 12.4f;
+                } break;
+                case 2: {
+                    spawnX = Mathf.CalRange(220f, 1600f);
+                    spawnDelay = Mathf.CalRange(0, 90f);
+                    damage = Mathf.CalRange(100f, 300f);
+                    moveSpeedX = Mathf.CalRange(-2.3f, 2.3f);
+                    moveSpeedY = 12.4f;
+                } break;
+                case 3: {
+                    spawnX = (i * 120) + 240;
+                    spawnDelay = i * 2.5f;
+                    damage = Mathf.CalRange(200f, 400f);
+                    moveSpeedY = 25.7f;
+                    moveSpeedX = 0;
+                } break;
+                case 4: {
+                    spawnX = 220;
+                    spawnDelay = Mathf.CalRange(0, 90f);
+                    damage = Mathf.CalRange(300f, 500f);
+                    moveSpeedY = 0;
+                    moveSpeedX = 0;
+                } break;
+                default: throw new RangeException((short) 0, "Wrong parameter input.");
+            }
+
+            UltimateObj obj = new UltimateObj(era, spawnDelay, damage, moveSpeedX, moveSpeedY);
+
+            obj.SetPosition(spawnX, era == 4 ? EXPLODE_POS_Y : SPAWN_POS_Y);
+
+            Renderer.AddComponents(obj.image);
+
             this.ultimateSpawnContainer.add(obj);
         }
-    }
-
-    private void SpawnUltimateObj(UltimateObj obj){
-        if(obj == null) return;
-
-        float x = Mathf.CalRange(20f, 1600f); //border of x-axis screen
-
-        if(obj.era == 3 || obj.era == 4) obj.SetPosition(x, EXPLODE_POS_Y);
-        else obj.SetPosition(x, SPAWN_POS_Y);
-
-        Renderer.AddComponents(obj.image);
-
-        // MainGame  if อยากใส่เพลง
     }
 
     public void Update() {
@@ -66,17 +97,22 @@ public class Ultimate {
 
         // new distance calculation and checking explosion
         for (final UltimateObj obj : this.ultimateSpawnContainer) {
-            if (obj.movedDistanceY < Ultimate.EXPLODE_POS_Y) {
+            if (obj.image.GetTransform().y < Ultimate.EXPLODE_POS_Y) {
                 obj.ultimateExplode(this.target.units);
 
-                final ImageRegion r = MainGame.explosionImageRegion.Clone();
-                r.SetPosition(obj.image.GetTransform().x, obj.image.GetTransform().y);
-                r.tempTimer = Ultimate.EXPLOSION_FRAME_ANIMATION_TIME;
-
                 Renderer.RemoveComponents(obj.image);
-                Renderer.AddComponents(r);
 
-                this.explodingObjectContainer.add(r);
+                if (this.era != 2) {
+                    final ImageRegion r = MainGame.explosionImageRegion.Clone();
+                    r.SetPosition(obj.image.GetTransform().x, obj.image.GetTransform().y);
+                    r.tempTimer = Ultimate.EXPLOSION_FRAME_ANIMATION_TIME;
+
+                    Renderer.AddComponents(r);
+
+                    this.explodingObjectContainer.add(r);
+
+                    MainGame.explosionSounds[0].play();
+                }
 
                 hitUltimateObjects.add(obj);
             }
@@ -96,9 +132,10 @@ public class Ultimate {
         // destroy ultimate caller zero objs are in container
         if (this.explodingObjectContainer.size() == 0) {
             if (this.era == 3 && this.plane != null) {
-                if (this.plane.GetTransform().x > 2080) this.caller.ultimateCaller = null;
-
-                Renderer.RemoveComponents(this.plane);
+                if (this.plane.GetTransform().x > 2080) {
+                    this.caller.ultimateCaller = null;
+                    Renderer.RemoveComponents(this.plane);
+                }
             }
             else {
                 if (this.ultimateSpawnContainer.size() == 0) this.caller.ultimateCaller = null;
@@ -147,35 +184,14 @@ class UltimateObj extends GameObject {
     public float damage;
     public float spawnDelay;
 
-    public UltimateObj(byte era, float spawnDelay) {
+    public UltimateObj(byte era, float spawnDelay, float damage, float moveSpeedX, float moveSpeedY) {
         super(MainGame.ultimateImages[era - 1].Clone());
 
+        this.era = era;
         this.spawnDelay = spawnDelay;
-
-        switch (this.era = era) {
-            case 1: {
-                this.damage = Mathf.CalRange(75f, 210f);
-                this.moveSpeedX = 6.7f;
-                this.moveSpeedY = 12.4f;
-            } break;
-            case 2: {
-                this.damage = Mathf.CalRange(100f,300f);
-                this.moveSpeedX = 6.7f;
-                this.moveSpeedY = 12.4f;
-            } break; // here
-            case 3: {
-                this.damage = Mathf.CalRange(200f, 400f);
-                this.moveSpeedY = 0;
-                this.moveSpeedX = 0;
-            } break;
-            case 4: {
-                this.damage = Mathf.CalRange(300f, 500f);
-                this.moveSpeedY = 0;
-                this.moveSpeedX = 0;
-
-            } break;
-            default: throw new RangeException((short) 0, "Wrong parameter input.");
-        }
+        this.damage = damage;
+        this.moveSpeedX = moveSpeedX;
+        this.moveSpeedY = moveSpeedY;
     }
 
     public void ultimateMove() {
@@ -193,13 +209,9 @@ class UltimateObj extends GameObject {
         }
     }
 
-    private void calUltimateDmg(){
-    }
-
     public void ultimateExplode(ArrayList<Unit> units) {
         switch (era) {
             case 1: {
-                // damage target units
                 final float objCenterX = this.image.GetTransform().x + this.image.naturalWidth / 2;
                 final float minEffectRange = objCenterX - 250;
                 final float maxEffectRange = objCenterX + 250;
@@ -210,46 +222,25 @@ class UltimateObj extends GameObject {
                     }
                 }
             } break;
-
-            case 2: {
+            case 2:
+            case 3: {
                 final float objCenterX = this.image.GetTransform().x + this.image.naturalWidth / 2;
-                final float minEffectRange = objCenterX - 150;
-                final float maxEffectRange = objCenterX + 150;
 
                 for (final Unit u : units) {
-                    if (u.image.GetTransform().x >= minEffectRange && u.image.GetTransform().x + u.image.naturalWidth <= maxEffectRange) {
+                    if (u.image.GetTransform().x <= objCenterX && u.image.GetTransform().x + u.image.naturalWidth >= objCenterX) {
                         u.health -= this.damage;
                     }
                 }
-
-            } break;
-
-            case 3:{
-                final float objCenterX = this.image.GetTransform().x + this.image.naturalWidth / 2;
-                final float minEffectRange = objCenterX - 200;
-                final float maxEffectRange = objCenterX + 200;
-
-                for (final Unit u : units) {
-                    if (u.image.GetTransform().x >= minEffectRange && u.image.GetTransform().x + u.image.naturalWidth <= maxEffectRange) {
-                        u.health -= this.damage;
-                    }
-                }
-
             } break;
 
             case 4:{
-                final float objCenterX = this.image.GetTransform().x + this.image.naturalWidth / 2;
-                final float minEffectRange = objCenterX - 220;
-                final float maxEffectRange = objCenterX + 220;
-
-                for (final Unit u : units) {
-                    if (u.image.GetTransform().x >= minEffectRange && u.image.GetTransform().x + u.image.naturalWidth <= maxEffectRange) {
-                        u.health -= this.damage;
-                    }
-                }
 
             } break;
         }
+    }
+
+    public void calDmg() {
+
     }
 
     public void SetPosition(float x, float y) {
