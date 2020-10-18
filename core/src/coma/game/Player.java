@@ -270,12 +270,15 @@ class GameBot extends Player {
     public byte decisionDelay = 120;
     public byte state = 1;
 
+    private short ULTIMATE_DELAY = 4000;
+
     public static final byte DECISION_DELAY = 120;
 
     public GameBot() {
         this.SPAWN_POSITION_X = Player.RIGHT_STRONGHOLD_POSITION_X + 210;
         this.stronghold.image.FlipHorizontal();
         this.stronghold.image.SetPosition(Player.RIGHT_STRONGHOLD_POSITION_X, Player.STRONGHOLD_POSITION_Y);
+        getUltimateDelay(this.difficulty);
     }
 
     @Override
@@ -353,20 +356,28 @@ class GameBot extends Player {
         }
     }
 
+    public void getUltimateDelay(byte difficulty){
+        switch(difficulty){
+            case 1: this.ULTIMATE_DELAY = 5000;
+            case 2: this.ULTIMATE_DELAY = 4500;
+            case 3: this.ULTIMATE_DELAY = 4000;
+        }
+    }
+
     public byte CalculatedDecisionState() {
         switch (this.era){
             case 1:
-                if (this.cash >= 1000) state = 2;
-                else if (this.cash >= 0) state = 1;
-                else state = 3;
+                if (this.cash >= 4000) state = 3;
+                else if (this.cash >= 2000) state = 2;
+                else state = 1;
             case 2:
-                if(this.cash >= 2000)  state = 2;
-                else if (this.cash >= 0) state = 1;
-                else state = 3;
+                if(this.cash >= 5000)  state = 3;
+                else if (this.cash >= 3000) state = 2;
+                else state = 1;
             case 3:
-                if(this.cash >= 5000) state = 2;
-                else if (this.cash >= 0) state = 1;
-                else state = 3;
+                if(this.cash >= 6000) state = 3;
+                else if (this.cash >= 4000) state = 2;
+                else state = 1;
         }
 
         return this.state;
@@ -385,15 +396,12 @@ class GameBot extends Player {
     private void BotStrategy(int idx){
         if (idx >= 0 && idx < 40) {
             this.DeployUnit(MeleeUnit.GetEra(this.era));
-            isMeleeInFront();
         }
         else if (idx >= 40 && idx < 70) {
             this.DeployUnit(RangedUnit.GetEra(this.era));
-            isMeleeInFront();
         }
         else {
             this.DeployUnit(CavalryUnit.GetEra(this.era));
-            isMeleeInFront();
         }
     }
 
@@ -413,7 +421,6 @@ class GameBot extends Player {
                 else if (idx >= 40 && idx < 80) this.DeployUnit(RangedUnit.GetEra(this.era));
                 else this.DeployUnit(CavalryUnit.GetEra(this.era));
             }
-            isMeleeInFront();
         }
     }
 
@@ -432,7 +439,6 @@ class GameBot extends Player {
                 else if (idx >= 35 && idx < 70) this.DeployUnit(RangedUnit.GetEra(this.era));
                 else this.DeployUnit(CavalryUnit.GetEra(this.era));
             }
-            isMeleeInFront();
         }
     }
 
@@ -450,7 +456,6 @@ class GameBot extends Player {
             else if (idx >= 30 && idx < 60) this.DeployUnit(RangedUnit.GetEra(this.era));
             else this.DeployUnit(CavalryUnit.GetEra(this.era));
         }
-        isMeleeInFront();
     }
 
     private void setTurret() {
@@ -471,12 +476,8 @@ class GameBot extends Player {
     }
 
     private void botUltimate() {
-        switch(this.difficulty){
-            // may be bug in case 1 and 2
-            case 1: if (this.ultimateDelay + 1000 <= 0) this.UseUltimate(); break;
-            case 2: if (this.ultimateDelay +500 <= 0) this.UseUltimate(); break;
-            case 3: if (this.ultimateDelay <= 0) this.UseUltimate(); break;
-        }
+            if (this.ultimateDelay <= 0)
+                this.UseUltimate();
     }
 
     public void Halt() {

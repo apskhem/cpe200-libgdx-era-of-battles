@@ -51,7 +51,7 @@ public class Ultimate {
 
         float x = Mathf.CalRange(20f, 1600f); //border of x-axis screen
 
-        if(obj.era == 3) obj.SetPosition(x, EXPLODE_POS_Y);
+        if(obj.era == 3 || obj.era == 4) obj.SetPosition(x, EXPLODE_POS_Y);
         else obj.SetPosition(x, SPAWN_POS_Y);
 
         Renderer.AddComponents(obj.image);
@@ -193,10 +193,13 @@ class UltimateObj extends GameObject {
         }
     }
 
+    private void calUltimateDmg(){
+    }
+
     public void ultimateExplode(ArrayList<Unit> units) {
         switch (era) {
             case 1: {
-                // damges target units
+                // damage target units
                 final float objCenterX = this.image.GetTransform().x + this.image.naturalWidth / 2;
                 final float minEffectRange = objCenterX - 250;
                 final float maxEffectRange = objCenterX + 250;
@@ -209,14 +212,41 @@ class UltimateObj extends GameObject {
             } break;
 
             case 2: {
+                final float objCenterX = this.image.GetTransform().x + this.image.naturalWidth / 2;
+                final float minEffectRange = objCenterX - 150;
+                final float maxEffectRange = objCenterX + 150;
+
+                for (final Unit u : units) {
+                    if (u.image.GetTransform().x >= minEffectRange && u.image.GetTransform().x + u.image.naturalWidth <= maxEffectRange) {
+                        u.health -= this.damage;
+                    }
+                }
 
             } break;
 
             case 3:{
+                final float objCenterX = this.image.GetTransform().x + this.image.naturalWidth / 2;
+                final float minEffectRange = objCenterX - 200;
+                final float maxEffectRange = objCenterX + 200;
+
+                for (final Unit u : units) {
+                    if (u.image.GetTransform().x >= minEffectRange && u.image.GetTransform().x + u.image.naturalWidth <= maxEffectRange) {
+                        u.health -= this.damage;
+                    }
+                }
 
             } break;
 
             case 4:{
+                final float objCenterX = this.image.GetTransform().x + this.image.naturalWidth / 2;
+                final float minEffectRange = objCenterX - 220;
+                final float maxEffectRange = objCenterX + 220;
+
+                for (final Unit u : units) {
+                    if (u.image.GetTransform().x >= minEffectRange && u.image.GetTransform().x + u.image.naturalWidth <= maxEffectRange) {
+                        u.health -= this.damage;
+                    }
+                }
 
             } break;
         }
