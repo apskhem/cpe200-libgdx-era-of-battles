@@ -162,7 +162,7 @@ class UltimateObj extends GameObject {
                 this.damage = Mathf.CalRange(100f,300f);
                 this.moveSpeedX = 6.7f;
                 this.moveSpeedY = 12.4f;
-            } break;
+            } break; // here
             case 3: {
                 this.damage = Mathf.CalRange(200f, 400f);
                 this.moveSpeedY = 0;
