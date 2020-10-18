@@ -71,10 +71,10 @@ public class Ultimate {
                     moveSpeedX = 0;
                 } break;
                 case 4: {
-                    spawnX = 220;
+                    spawnX = Mathf.CalRange(220f, 1600f);
                     spawnDelay = Mathf.CalRange(0, 90f);
                     damage = Mathf.CalRange(300f, 500f);
-                    moveSpeedY = 0;
+                    moveSpeedY = 30f;
                     moveSpeedX = 0;
                 } break;
                 default: throw new RangeException((short) 0, "Wrong parameter input.");
@@ -82,7 +82,7 @@ public class Ultimate {
 
             UltimateObj obj = new UltimateObj(era, spawnDelay, damage, moveSpeedX, moveSpeedY);
 
-            obj.SetPosition(spawnX, era == 4 ? EXPLODE_POS_Y : SPAWN_POS_Y);
+            obj.SetPosition(spawnX, SPAWN_POS_Y);
 
             Renderer.AddComponents(obj.image);
 

@@ -292,6 +292,11 @@ class MeleeUnit extends Unit {
 
                     if (this.image.isFlipped) this.image.Move(this.displacedTranslateX = -110, 0);
                 }
+                else if (state == 7) {
+                    this.image.SetSize(105, Float.NaN);
+
+                    if (this.image.isFlipped) this.image.Move(this.displacedTranslateX = -15, 0);
+                }
             } break;
             default: {
                 throw new RangeException((short) 0, "Wrong parameter input.");
