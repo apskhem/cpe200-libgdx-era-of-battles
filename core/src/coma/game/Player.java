@@ -1,6 +1,7 @@
 package coma.game;
 
 import com.badlogic.gdx.utils.Queue;
+import org.w3c.dom.ranges.RangeException;
 
 import java.util.ArrayList;
 
@@ -302,6 +303,8 @@ class GameBot extends Player {
     public byte decisionDelay = 120;
     public byte state = 1;
 
+    private short ULTIMATE_DELAY = getUltimateDelay(this.era);
+
     public static final byte DECISION_DELAY = 120;
 
     public GameBot() {
@@ -309,6 +312,19 @@ class GameBot extends Player {
         this.stronghold.image.FlipHorizontal();
         this.stronghold.image.SetPosition(Player.RIGHT_STRONGHOLD_POSITION_X, Player.STRONGHOLD_POSITION_Y);
     }
+
+    private short getUltimateDelay(byte difficulty) {
+        switch (this.difficulty) {
+            case 1:
+                return 5000;
+            case 2:
+                return 4500;
+            case 3:
+                return 4000;
+            default: throw new RangeException((short) 0, "Wrong parameter input.");
+        }
+    }
+
 
     @Override
     public void SpawnUnit(Unit u) {
@@ -388,25 +404,13 @@ class GameBot extends Player {
 
         if (this.decisionDelay < 0) {
             switch (this.CalculatedDecisionState()) { // << old: this.diffulty
-                case 1: {
-                    this.Level1Automation();
-                    this.setTurret();
-                    this.botUltimate();
-                    break;
-                }
-                case 2: {
-                    this.Level2Automation();
-                    this.setTurret();
-                    this.botUltimate();
-                    break;
-                }
-                case 3: {
-                    this.Level3Automation();
-                    this.setTurret();
-                    this.botUltimate();
-                    break;
-                }
+                case 1: this.Level1Automation(); break;
+                case 2: this.Level2Automation(); break;
+                case 3: this.Level3Automation(); break;
             }
+            this.setTurret();
+            this.UseUltimate();
+            this.UpgradeStronghold();
 
             this.decisionDelay = GameBot.DECISION_DELAY;
         }
@@ -418,17 +422,17 @@ class GameBot extends Player {
     public byte CalculatedDecisionState() {
         switch (this.era){
             case 1:
-                if (this.cash >= 1000) state = 2;
-                else if (this.cash >= 0) state = 1;
-                else state = 3;
+                if (this.cash >= 3000) state = 3;
+                else if (this.cash >= 2000) state = 2;
+                else state = 1;
             case 2:
-                if(this.cash >= 2000)  state = 2;
-                else if (this.cash >= 0) state = 1;
-                else state = 3;
+                if(this.cash >= 4000)  state = 3;
+                else if (this.cash >= 3000) state = 2;
+                else state = 1;
             case 3:
-                if(this.cash >= 5000) state = 2;
-                else if (this.cash >= 0) state = 1;
-                else state = 3;
+                if(this.cash >= 5000) state = 3;
+                else if (this.cash >= 4000) state = 2;
+                else state = 1;
         }
 
         return this.state;
@@ -514,16 +518,8 @@ class GameBot extends Player {
 
         if (this.units.size() > 4) {
             // unit must be > 4 and cash is enough for build turret and spawn troops in the future
-            if (this.cash >= Turret.GetEra(this.era).cost * this.difficulty * 2) this.BuildTurret(Turret.GetEra(this.era));
-        }
-    }
-
-    private void botUltimate() {
-        switch(this.difficulty){
-            // may be bug in case 1 and 2
-            case 1: if (this.ultimateDelay + 1000 <= 0) this.UseUltimate(); break;
-            case 2: if (this.ultimateDelay +500 <= 0) this.UseUltimate(); break;
-            case 3: if (this.ultimateDelay <= 0) this.UseUltimate(); break;
+            if (this.cash >= Turret.GetEra(this.era).cost * (3f / this.difficulty) * 2)
+                this.BuildTurret(Turret.GetEra(this.era));
         }
     }
 

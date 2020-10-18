@@ -15,8 +15,6 @@ public class Ultimate {
     public static final float EXPLOSION_FRAME_ANIMATION_TIME = 4f;
     public static final short SPAWN_POS_Y = 600;  // for era 3 plane around 530
     public static final short EXPLODE_POS_Y = 30;
-    public static final short SPAWN_POS_XMIN = 0;
-    public static final short SPAWN_POS_XMAX = 960;
 
     public Player target;
     public Player caller;
@@ -180,6 +178,7 @@ class UltimateObj extends GameObject {
     public float movedDistanceY = Ultimate.SPAWN_POS_Y;
     public float moveSpeedX;
     public float moveSpeedY;
+
     public final byte era;
     public float damage;
     public float spawnDelay;
@@ -234,10 +233,6 @@ class UltimateObj extends GameObject {
                 }
             } break;
         }
-    }
-
-    public void calDmg() {
-
     }
 
     public void SetPosition(float x, float y) {
