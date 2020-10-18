@@ -1,13 +1,14 @@
 package coma.game;
 
-public class Intro {
+final public class Intro {
 
     private static float soundPlayDelay = 80;
     private static float soundPlaying = 200;
     private static float fadingTime = 100;
-    private static final float MAX_FADING = 100;
     private static boolean isSoundPlayed = false;
     private static boolean isDone = false;
+
+    private static final float MAX_FADING = 100;
 
     public static void Play() {
         if (Intro.isDone) return;
@@ -32,7 +33,7 @@ public class Intro {
         if (fadingTime <= 0) {
             MainGame.devLogo.isVisible = false;
             MainGame.themeMusic.play();
-            MainGame.ui.GetBoxModule("start-menu").SetVisibility(true);
+            UIController.GetBoxModule("start-menu").SetVisibility(true);
             MainGame.musicBtn.isVisible = true;
 
             fadingTime -= MainGame.deltaTime;

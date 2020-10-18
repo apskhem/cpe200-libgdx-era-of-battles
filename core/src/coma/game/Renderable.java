@@ -5,8 +5,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import org.w3c.dom.ranges.RangeException;
 
 public abstract class Renderable {
     public boolean isVisible = true;
@@ -22,18 +20,19 @@ class Image extends Renderable {
     public final int naturalHeight;
     public boolean isFlipped;
 
-    public Image(String internalPath) {
+    public Image(final String internalPath) {
         this.texture = Asset.LoadTexture(internalPath);
         this.src = new Sprite(this.texture);
         this.naturalWidth = this.texture.getWidth();
         this.naturalHeight = this.texture.getHeight();
     }
 
-    protected Image(Image image) {
+    protected Image(final Image image) {
         this.texture = null;
         this.src = new Sprite(image.src);
         this.naturalWidth = this.src.getTexture().getWidth();
         this.naturalHeight = this.src.getTexture().getHeight();
+        this.isFlipped = image.isFlipped;
     }
 
     public void FlipHorizontal() {
@@ -48,7 +47,7 @@ class Image extends Renderable {
         this.isFlipped = this.src.isFlipX() || this.src.isFlipY();
     }
 
-    public void Move(float x, float y) {
+    public void Move(final float x, final float y) {
         this.src.translate(x, y);
     }
 
@@ -60,7 +59,7 @@ class Image extends Renderable {
         return v;
     }
 
-    public void SetOpacity(float value) {
+    public void SetOpacity(final float value) {
         this.src.setColor(1,1,1, value);
     }
 
@@ -71,23 +70,23 @@ class Image extends Renderable {
         this.src.setBounds(this.src.getX(), this.src.getY(), width, height);
     }
 
-    public void SetPosition(float x, float y) {
+    public void SetPosition(final float x, final float y) {
         this.src.setPosition(x, y);
     }
 
-    public void SetRotation(float degree) {
+    public void SetRotation(final float degree) {
         this.src.rotate(degree - this.src.getRotation());
     }
 
-    public void SetTexture(Image image) {
+    public void SetTexture(final Image image) {
         this.src.setTexture(image.src.getTexture());
     }
 
-    public void SetTexture(Texture texture) {
+    public void SetTexture(final Texture texture) {
         this.src.setTexture(texture);
     }
 
-    public void Render(SpriteBatch b) {
+    public void Render(final SpriteBatch b) {
         if (this.isVisible) {
             this.src.draw(b);
         }
@@ -98,17 +97,17 @@ class Image extends Renderable {
     }
 }
 
-class ImageRegion extends Image {
+final class ImageRegion extends Image {
 
-    public int regionWidth = 0;
-    public int regionHeight = 0;
-    public int currentIRegionIndex = 0;
-    public int currentJRegionIndex = 0;
-    public int maxIRegionIndex = 0;
-    public int maxJRegionIndex = 0;
+    public int regionWidth;
+    public int regionHeight;
+    public int currentIRegionIndex;
+    public int currentJRegionIndex;
+    public int maxIRegionIndex;
+    public int maxJRegionIndex;
     public float tempTimer;
 
-    public ImageRegion(String internalPath, int width, int height, int maxI, int maxJ) {
+    public ImageRegion(final String internalPath, final int width, final int height, final int maxI, final int maxJ) {
         super(internalPath);
 
         this.regionWidth = width;
@@ -120,7 +119,7 @@ class ImageRegion extends Image {
         this.src.setBounds(0,0, width, height);
     }
 
-    public ImageRegion(Image image, int width, int height, int maxI, int maxJ) {
+    public ImageRegion(final Image image, final int width, final int height, final int maxI, final int maxJ) {
         super(image);
 
         this.regionWidth = width;
@@ -156,24 +155,24 @@ class ImageRegion extends Image {
 }
 
 /**
- * Class for contaning a UI element.
+ * Class for containing a UI element.
  */
-class Canvas extends Image {
-    public int x;
-    public int y;
+final class Canvas extends Image {
+    public float x;
+    public float y;
 
     public final int VIEWPORT_WIDTH = 960;
     public final int VIEWPORT_HEIGHT = 600;
 
-    public Canvas(String internalPath) {
+    public Canvas(final String internalPath) {
         super(internalPath);
     }
 
-    public Canvas(Image canvas) {
+    public Canvas(final Image canvas) {
         super(canvas);
     }
 
-    public void SetActive(boolean value) {
+    public void SetActive(final boolean value) {
         if (value) {
             this.src.setColor(1,1,1,1);
         }
@@ -182,11 +181,11 @@ class Canvas extends Image {
         }
     }
 
-    public boolean IsInBound(float x, float y) {
+    public boolean IsInBound(final float x, final float y) {
         return x >= this.x && x <= this.x + this.src.getWidth() && y >= this.y && y <= this.y + this.src.getHeight() && this.isVisible;
     }
 
-    public void SetScale(float value) {
+    public void SetScale(final float value) {
         if (value < 0) return;
 
         this.src.scale(value - 1);
@@ -200,12 +199,12 @@ class Canvas extends Image {
     }
 
     @Override
-    public void SetPosition(float x, float y) {
-        this.x = (int) x;
-        this.y = (int) y;
+    public void SetPosition(final float x, final float y) {
+        this.x = x;
+        this.y = y;
     }
 
-    public void SetPosition(String alignX, float y) {
+    public void SetPosition(final String alignX, final float y) {
         if (alignX.equals("center")) {
             this.x = (int)(this.VIEWPORT_WIDTH/2 - this.src.getWidth() /2);
         }
@@ -213,7 +212,7 @@ class Canvas extends Image {
         this.y = (int) y;
     }
 
-    public void SetPosition(float x, String alignY) {
+    public void SetPosition(final float x, final String alignY) {
         if (alignY.equals("center")) {
             this.y = (int)((this.VIEWPORT_HEIGHT/2 - this.src.getHeight()/2));
         }
@@ -221,7 +220,7 @@ class Canvas extends Image {
         this.x = (int) x;
     }
 
-    public void SetPosition(String alignX, String alignY) {
+    public void SetPosition(final String alignX, final String alignY) {
         if (alignX.equals("center")) {
             this.x = (int)(this.VIEWPORT_WIDTH/2 - this.src.getWidth() /2);
         }
@@ -234,7 +233,7 @@ class Canvas extends Image {
 /**
  * Class for manipulating UI text.
  */
-class TextBox extends Renderable {
+final class TextBox extends Renderable {
 
     public float x;
     public float y;
@@ -244,16 +243,16 @@ class TextBox extends Renderable {
     private final BitmapFont bitmapFont;
     public String textContent = "";
 
-    public TextBox(BitmapFont bitmapFont) {
+    public TextBox(final BitmapFont bitmapFont) {
         this.bitmapFont = bitmapFont;
     }
 
-    public void SetPosition(float x, float y) {
+    public void SetPosition(final float x, final float y) {
         this.x = x;
         this.y = y;
     }
 
-    public void Render(SpriteBatch b) {
+    public void Render(final SpriteBatch b) {
         if (this.isVisible) {
             this.bitmapFont.draw(b, this.textContent, this.x + translateX, this.y + translateY);
         }

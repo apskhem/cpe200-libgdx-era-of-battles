@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.Disposable;
 
 import java.util.ArrayList;
 
-public class Asset {
+final public class Asset {
 
     private static final ArrayList<Disposable> loadedAsset = new ArrayList<>();
 
@@ -22,7 +22,7 @@ public class Asset {
         return spriteBatch;
     }
 
-    public static Sound LoadSound(String internalPath) {
+    public static Sound LoadSound(final String internalPath) {
         final Sound sound = Gdx.audio.newSound(Gdx.files.internal(internalPath));
 
         Asset.loadedAsset.add(sound);
@@ -30,7 +30,7 @@ public class Asset {
         return sound;
     }
 
-    public static Music LoadMusic(String internalPath) {
+    public static Music LoadMusic(final String internalPath) {
         final Music music = Gdx.audio.newMusic(Gdx.files.internal(internalPath));
 
         Asset.loadedAsset.add(music);
@@ -38,7 +38,7 @@ public class Asset {
         return music;
     }
 
-    public static Texture LoadTexture(String internalPath) {
+    public static Texture LoadTexture(final String internalPath) {
         final Texture texture = new Texture(internalPath);
 
         Asset.loadedAsset.add(texture);
@@ -46,7 +46,7 @@ public class Asset {
         return texture;
     }
 
-    public static BitmapFont LoadBitmapFont(String internalPath, boolean flip) {
+    public static BitmapFont LoadBitmapFont(final String internalPath, final boolean flip) {
         final BitmapFont bitmapFont = new BitmapFont(Gdx.files.internal(internalPath), flip);
 
         Asset.loadedAsset.add(bitmapFont);
@@ -55,7 +55,7 @@ public class Asset {
     }
 
     public static void Unload() {
-        for (Disposable item : Asset.loadedAsset) {
+        for (final Disposable item : Asset.loadedAsset) {
             item.dispose();
         }
 

@@ -1,24 +1,19 @@
 package coma.game;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.util.ArrayList;
 
-public class Renderer {
+final public class Renderer {
 
     private static final SpriteBatch b = Asset.LoadSpriteBatch();
     private static final ArrayList<Image> renderObjects = new ArrayList<>();
     private static final ArrayList<Canvas> canvasObjects = new ArrayList<>();
     private static final ArrayList<TextBox> textObjects = new ArrayList<>();
-    private static Camera camera;
 
-    public static void AddComponents(Object ...renderObjects) {
+    public static void AddComponents(final Object ...renderObjects) {
         for (final Object r : renderObjects) {
-            if (r instanceof Camera) {
-                Renderer.camera = (Camera) r;
-            }
-            else if (r instanceof Canvas) {
+            if (r instanceof Canvas) {
                 Renderer.canvasObjects.add((Canvas) r);
             }
             else if (r instanceof Image) {
@@ -33,7 +28,7 @@ public class Renderer {
         }
     }
 
-    public static void RemoveComponents(Image ...renderObjects) {
+    public static void RemoveComponents(final Image ...renderObjects) {
         for (final Image r : renderObjects) {
             Renderer.renderObjects.remove(r);
         }
@@ -43,9 +38,9 @@ public class Renderer {
         Renderer.b.begin();
 
         // camera
-        if (Renderer.camera != null) {
-            Renderer.camera.update();
-            Renderer.b.setProjectionMatrix(Renderer.camera.combined);
+        if (MainGame.camera != null) {
+            MainGame.camera.update();
+            Renderer.b.setProjectionMatrix(MainGame.camera.combined);
         }
 
         // images and canvas

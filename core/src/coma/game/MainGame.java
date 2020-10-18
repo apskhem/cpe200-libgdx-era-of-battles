@@ -14,7 +14,6 @@ import java.text.DecimalFormat;
 public class MainGame extends ApplicationAdapter {
 	// all game sources will be here
 	public static Image bg;
-	public static UIController ui;
 	public static OrthographicCamera camera;
 
 	public static Canvas devLogo;
@@ -92,51 +91,30 @@ public class MainGame extends ApplicationAdapter {
 	// config
 	private static final float CAMERA_SPEED = 10f;
 	private static final float MUSIC_VOLUME = 0.7f;
+
+	// debug
+	private static final boolean devMode = false;
 	
 	@Override
 	public void create() {
 		// load global images
-		for (byte era = 0; era < strongholdImages.length; era++) {
+		for (byte era = 0; era < 4; era++) {
 			strongholdImages[era] = new Image("base-era-" + (era + 1) + ".png");
-		}
-
-		for (byte era = 0; era < 1; era++) {
 			turretImages[era] = new Image("turret-era-" + (era + 1) + ".png");
+			ultimateBannerImages[era] = new Image("unit-ul-" + (era + 1) + ".png");
+			ultimateImages[era] = new Image("ultimate-" + (era + 1) + ".png");
 		}
 
-		for (byte era = 0; era < meleeUnitImages.length; era++) {
-			for (byte mov = 0; mov < meleeUnitImages[era].length; mov++) {
+		for (byte era = 0; era < 4; era++) {
+			for (byte mov = 0; mov < 7; mov++) {
 				meleeUnitImages[era][mov] = new Image("melee-unit-era-" + (era + 1) + "-" + (mov + 1) + ".png");
-			}
-		}
-
-		for (byte era = 0; era < rangedUnitImages.length; era++) {
-			for (byte mov = 0; mov < rangedUnitImages[era].length; mov++) {
 				rangedUnitImages[era][mov] = new Image("ranged-unit-era-" + (era + 1) + "-" + (mov + 1) + ".png");
-			}
-		}
-
-		for (byte era = 0; era < cavalryUnitImages.length; era++) {
-			for (byte mov = 0; mov < cavalryUnitImages[era].length; mov++) {
 				cavalryUnitImages[era][mov] = new Image("cavalry-unit-era-" + (era + 1) + "-" + (mov + 1) + ".png");
 			}
 		}
 
 		for (byte t = 0; t < unitQueueImages.length; t++) {
 			unitQueueImages[t] = new Image("unit-queue-" + (t + 1) + ".png");
-		}
-
-		for (byte era = 0; era < ultimateBannerImages.length; era++) {
-			ultimateBannerImages[era] = new Image("unit-ul-" + (era + 1) + ".png");
-		}
-
-		for (byte era = 0; era < ultimateImages.length; era++) {
-			ultimateImages[era] = new Image("ultimate-" + (era + 1) + ".png");
-		}
-
-		// debugging
-		for (byte era = 1; era < 4; era++) {
-			turretImages[era] = new Image(turretImages[0].Clone());
 		}
 
 		explosionImageRegion = new ImageRegion("explosion-region.png", 128, 128, 4, 4);
@@ -184,7 +162,6 @@ public class MainGame extends ApplicationAdapter {
 		cashText = new TextBox(bitmapFont);
 		xpText = new TextBox(bitmapFont);
 		unitCapText = new TextBox(bitmapFont);
-		ui = new UIController(camera);
 		user = new Player();
 		foe = new GameBot();
 
@@ -241,18 +218,18 @@ public class MainGame extends ApplicationAdapter {
 		unitCapText.SetPosition(22, 500);
 		unitCapText.textContent = "0/NaN";
 
-		ui.AddBoxModule("start-menu", gameLogo, playBtn, creditBtn);
-		ui.AddBoxModule("mode-selection-menu", mode1, mode2, mode3, modeBanner, startBtn, menuBtn);
-		ui.AddBoxModule("in-game-menu", speedBtn, unit1, unit2, unit3, unit4, unit5, unitUl,
+		UIController.AddBoxModule("start-menu", gameLogo, playBtn, creditBtn);
+		UIController.AddBoxModule("mode-selection-menu", mode1, mode2, mode3, modeBanner, startBtn, menuBtn);
+		UIController.AddBoxModule("in-game-menu", speedBtn, unit1, unit2, unit3, unit4, unit5, unitUl,
 				cashIcon, xpIcon, cashText, xpText, unitCapText, healthBar, healthBarL, healthBarR, queueBar,
 				unitQueueBarInner, ultimateBarInner, unitQueueIcons[0], unitQueueIcons[1], unitQueueIcons[2],
 				unitQueueIcons[3], unitQueueIcons[4], unitQueueIcons[5], unitQueueIcons[6], unitQueueIcons[7],
 				unitQueueIcons[8], unitQueueIcons[9]);
-		ui.AddBoxModule("game-over-menu", restartBtn, menuBtn, victoryBanner, defeatBanner);
-		ui.GetBoxModule("start-menu").SetVisibility(false);
-		ui.GetBoxModule("game-over-menu").SetVisibility(false);
-		ui.GetBoxModule("in-game-menu").SetVisibility(false);
-		ui.GetBoxModule("mode-selection-menu").SetVisibility(false);
+		UIController.AddBoxModule("game-over-menu", restartBtn, menuBtn, victoryBanner, defeatBanner);
+		UIController.GetBoxModule("start-menu").SetVisibility(false);
+		UIController.GetBoxModule("game-over-menu").SetVisibility(false);
+		UIController.GetBoxModule("in-game-menu").SetVisibility(false);
+		UIController.GetBoxModule("mode-selection-menu").SetVisibility(false);
 
 		// set sounds and music
 		themeMusic = Asset.LoadMusic("audio/theme.mp3");
@@ -288,13 +265,13 @@ public class MainGame extends ApplicationAdapter {
 		camera.translate(camera.viewportWidth/2, camera.viewportHeight/2);
 
 		// set components
-		ui.AddComponents(devLogo, gameLogo, playBtn, creditBtn, creditBanner, musicBtn, mode1, mode2, mode3, modeBanner, startBtn, restartBtn, menuBtn,
-				speedBtn, unit1, unit2, unit3, unit4, unit5, unitUl, cashIcon, xpIcon, healthBar, healthBarL, healthBarR, queueBar,
+		UIController.AddComponents(devLogo, gameLogo, playBtn, creditBtn, creditBanner, musicBtn, mode1, mode2, mode3, modeBanner, startBtn, restartBtn,
+				menuBtn, speedBtn, unit1, unit2, unit3, unit4, unit5, unitUl, cashIcon, xpIcon, healthBar, healthBarL, healthBarR, queueBar,
 				unitQueueBarInner, ultimateBarInner, victoryBanner, defeatBanner, unitQueueIcons[0], unitQueueIcons[1],
 				unitQueueIcons[2], unitQueueIcons[3], unitQueueIcons[4], unitQueueIcons[5], unitQueueIcons[6],
 				unitQueueIcons[7], unitQueueIcons[8], unitQueueIcons[9]);
-		ui.AddComponents(cashText, xpText, unitCapText);
-		Renderer.AddComponents(camera, bg, user.stronghold.image, foe.stronghold.image, ui.GetComponents());
+		UIController.AddComponents(cashText, xpText, unitCapText);
+		Renderer.AddComponents(bg, user.stronghold.image, foe.stronghold.image, UIController.GetComponents());
 	}
 
 	@Override
@@ -361,7 +338,7 @@ public class MainGame extends ApplicationAdapter {
 			Player.Update(user, foe);
 
 			// check game over
-			GameStatus.CheckGameOver(user, foe, ui);
+			GameStatus.CheckGameOver(user, foe);
 
 			// update foe
 			foe.Awake();
@@ -376,7 +353,7 @@ public class MainGame extends ApplicationAdapter {
 		}
 
 		// update components
-		ui.Update();
+		UIController.Update();
 		Renderer.Update();
 	}
 	
@@ -438,30 +415,38 @@ public class MainGame extends ApplicationAdapter {
 		}
 
 		// debugging
-		if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
-			foe.BuildTurret(Turret.GetEra(user.era));
-		}
-		if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
-			user.cash += 1000;
-		}
-		if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-			foe.cash += 1000;
-		}
-		if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-			user.stronghold.image.SetTexture(strongholdImages[1]);
-		}
-		if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
-			user.ultimateDelay = 0;
-		}
-		if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
-			user.xp = Stronghold.GetRequiredXp(user.era < 4 ? this.user.era : 3);
+		if (devMode) {
+			if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+				foe.BuildTurret(Turret.GetEra(user.era));
+			}
+			if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
+				user.cash += 1000;
+			}
+			if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+				foe.cash += 1000;
+			}
+			if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+				user.stronghold.image.SetTexture(strongholdImages[1]);
+			}
+			if (Gdx.input.isKeyJustPressed(Input.Keys.T)) {
+				user.ultimateDelay = 0;
+			}
+			if (Gdx.input.isKeyJustPressed(Input.Keys.Y)) {
+				foe.ultimateDelay = 0;
+			}
+			if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
+				user.xp = Stronghold.GetRequiredXp(user.era < 4 ? this.user.era : 3);
+			}
+			if (Gdx.input.isKeyJustPressed(Input.Keys.Z)) {
+				foe.xp = Stronghold.GetRequiredXp(foe.era < 4 ? this.foe.era : 3);
+			}
 		}
 	}
 
 	public void onclick(int clientX, int clientY) {
 		if (playBtn.IsInBound(clientX, clientY)) {
-			ui.GetBoxModule("mode-selection-menu").SetVisibility(true);
-			ui.GetBoxModule("start-menu").SetVisibility(false);
+			UIController.GetBoxModule("mode-selection-menu").SetVisibility(true);
+			UIController.GetBoxModule("start-menu").SetVisibility(false);
 
 			mode1.SetActive(foe.difficulty == 1);
 			mode2.SetActive(foe.difficulty == 2);
@@ -470,13 +455,13 @@ public class MainGame extends ApplicationAdapter {
 			menuClickSound.play();
 		}
 		else if (creditBtn.IsInBound(clientX, clientY)) {
-			ui.GetBoxModule("start-menu").SetVisibility(false);
+			UIController.GetBoxModule("start-menu").SetVisibility(false);
 			creditBanner.isVisible = true;
 
 			menuClickSound.play();
 		}
 		else if (creditBanner.IsInBound(clientX, clientY)) {
-			ui.GetBoxModule("start-menu").SetVisibility(true);
+			UIController.GetBoxModule("start-menu").SetVisibility(true);
 			creditBanner.isVisible = false;
 
 			menuClickSound.play();
@@ -517,8 +502,8 @@ public class MainGame extends ApplicationAdapter {
 			menuClickSound.play();
 		}
 		else if (startBtn.IsInBound(clientX, clientY)) {
-			ui.GetBoxModule("mode-selection-menu").SetVisibility(false);
-			ui.GetBoxModule("in-game-menu").SetVisibility(true);
+			UIController.GetBoxModule("mode-selection-menu").SetVisibility(false);
+			UIController.GetBoxModule("in-game-menu").SetVisibility(true);
 
 			user.Setup();
 			foe.Setup();
@@ -527,17 +512,17 @@ public class MainGame extends ApplicationAdapter {
 			startSound.play();
 		}
 		else if (menuBtn.IsInBound(clientX, clientY)) {
-			ui.GetBoxModule("start-menu").SetVisibility(true);
-			ui.GetBoxModule("mode-selection-menu").SetVisibility(false);
-			ui.GetBoxModule("game-over-menu").SetVisibility(false);
+			UIController.GetBoxModule("start-menu").SetVisibility(true);
+			UIController.GetBoxModule("mode-selection-menu").SetVisibility(false);
+			UIController.GetBoxModule("game-over-menu").SetVisibility(false);
 			victoryBanner.isVisible = false;
 			defeatBanner.isVisible = false;
 
 			menuClickSound.play();
 		}
 		else if (restartBtn.IsInBound(clientX, clientY)) {
-			ui.GetBoxModule("in-game-menu").SetVisibility(true);
-			ui.GetBoxModule("game-over-menu").SetVisibility(false);
+			UIController.GetBoxModule("in-game-menu").SetVisibility(true);
+			UIController.GetBoxModule("game-over-menu").SetVisibility(false);
 			victoryBanner.isVisible = false;
 			defeatBanner.isVisible = false;
 

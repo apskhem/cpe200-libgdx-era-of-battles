@@ -1,5 +1,6 @@
 package coma.game;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.utils.Queue;
 import org.w3c.dom.ranges.RangeException;
 
@@ -37,7 +38,7 @@ public class Player {
         this.stronghold.image.SetPosition(Player.LEFT_STRONGHOLD_POSITION_X, Player.STRONGHOLD_POSITION_Y);
     }
 
-    public void DeployUnit(Unit u) {
+    public void DeployUnit(final Unit u) {
         if (u == null) return;
 
         if (this.cash >= u.cost && this.units.size() + this.deploymentQueue.size < Player.MAX_UNIT) {
@@ -49,7 +50,7 @@ public class Player {
         }
     }
 
-    public void SpawnUnit(Unit u) {
+    public void SpawnUnit(final Unit u) {
         if (u == null) return;
 
         this.units.add(u);
@@ -74,7 +75,7 @@ public class Player {
         }
     }
 
-    public boolean BuildTurret(Turret t) {
+    public boolean BuildTurret(final Turret t) {
         // check if can build
         if (t == null) {
             boolean canBuildTurret = this.cash >= Turret.GetEra(this.era).cost && this.turrets.size() < 2;
@@ -90,7 +91,7 @@ public class Player {
         }
 
         // check buying contition from existing turrets
-        for (Turret at : this.turrets) {
+        for (final Turret at : this.turrets) {
             if (at.era < this.era && this.cash >= Turret.GetEra(this.era).cost - at.cost) {
                 this.cash -= t.cost - at.cost;
 
@@ -130,18 +131,18 @@ public class Player {
 
     public void UseUltimate() {
         if (this.ultimateDelay <= 0) {
-            this.ultimateCaller = new Ultimate(this.era);
+            this.ultimateCaller = new Ultimate(this.era, false);
             this.ultimateDelay = Player.ULTIMATE_LOADING_DELAY;
         }
     }
 
-    public void UpdateAfter(int rawCost) {
+    public void UpdateAfter(final int rawCost) {
         this.cash += (int)(rawCost * 0.8);
         this.xp += (int)(rawCost * Math.random() * 0.3f + rawCost * 0.05f);
     }
 
     // automation looping
-    public int UpdateUnits(boolean isOverlapped) {
+    public int UpdateUnits(final boolean isOverlapped) {
         // update overall
         this.ProcessUnitDeployment();
 
@@ -225,7 +226,7 @@ public class Player {
     }
 
     // static methods
-    private static void QueuedRangedUnitAttack(Player player, GameObject toAttackUnit) {
+    private static void QueuedRangedUnitAttack(final Player player, final GameObject toAttackUnit) {
         final Unit u2 = player.units.size() > 1 ? player.units.get(1) : null;
         final Unit u3 = player.units.size() > 2 ? player.units.get(2) : null;
 
@@ -233,7 +234,7 @@ public class Player {
         if (u3 instanceof RangedUnit && !u3.isMoving) u3.Attack(toAttackUnit);
     }
 
-    public static void Update(Player playerL, Player playerR) {
+    public static void Update(final Player playerL, final Player playerR) {
         // check overlapping
         boolean isOverlapped = false;
         if (playerL.units.size() > 0 && playerR.units.size() > 0) {
@@ -293,17 +294,15 @@ public class Player {
     }
 }
 
-class GameBot extends Player {
+final class GameBot extends Player {
 
     // constants
     private final short SPAWN_POSITION_X;
 
     public byte difficulty = 1;
-    public boolean isWaking = false;
-    public byte decisionDelay = 120;
-    public byte state = 1;
-
-    private short ULTIMATE_DELAY = getUltimateDelay(this.era);
+    private boolean isWaking = false;
+    private byte decisionDelay = 120;
+    private byte state = 1;
 
     public static final byte DECISION_DELAY = 120;
 
@@ -313,21 +312,18 @@ class GameBot extends Player {
         this.stronghold.image.SetPosition(Player.RIGHT_STRONGHOLD_POSITION_X, Player.STRONGHOLD_POSITION_Y);
     }
 
-    private short getUltimateDelay(byte difficulty) {
-        switch (this.difficulty) {
-            case 1:
-                return 5000;
-            case 2:
-                return 4500;
-            case 3:
-                return 4000;
+    public static short getUltimateDelay(final byte difficulty) {
+        switch (difficulty) {
+            case 1: return 5000;
+            case 2: return 4500;
+            case 3: return 4000;
             default: throw new RangeException((short) 0, "Wrong parameter input.");
         }
     }
 
 
     @Override
-    public void SpawnUnit(Unit u) {
+    public void SpawnUnit(final Unit u) {
         if (u == null) return;
 
         u.image.FlipHorizontal();
@@ -338,7 +334,7 @@ class GameBot extends Player {
     }
 
     @Override
-    public boolean BuildTurret(Turret t) {
+    public boolean BuildTurret(final Turret t) {
         // check if can build
         if (t == null) {
             boolean canBuildTurret = this.cash >= Turret.GetEra(this.era).cost && this.turrets.size() < 2;
@@ -382,7 +378,24 @@ class GameBot extends Player {
     }
 
     @Override
-    public void UpdateAfter(int rawCost) {
+    public void UseUltimate() {
+        if (this.ultimateDelay <= 0) {
+            this.ultimateCaller = new Ultimate(this.era, true);
+            this.ultimateDelay = GameBot.getUltimateDelay(this.difficulty);
+        }
+    }
+
+    @Override
+    public void UpgradeStronghold() {
+        if (this.era < 4 && this.xp >= Stronghold.GetRequiredXp(this.era)) {
+            this.era++;
+
+            this.stronghold.UpgradeTo(this.era);
+        }
+    }
+
+    @Override
+    public void UpdateAfter(final int rawCost) {
         switch (this.difficulty) {
             case 1: {
                 this.cash += (int)(rawCost * 1.5);
@@ -400,7 +413,10 @@ class GameBot extends Player {
     }
 
     public void Awake() {
-        this.isWaking = true;
+        if (!this.isWaking) {
+            this.ultimateDelay = GameBot.getUltimateDelay(this.difficulty);
+            this.isWaking = true;
+        }
 
         if (this.decisionDelay < 0) {
             switch (this.CalculatedDecisionState()) { // << old: this.diffulty
@@ -408,7 +424,7 @@ class GameBot extends Player {
                 case 2: this.Level2Automation(); break;
                 case 3: this.Level3Automation(); break;
             }
-            this.setTurret();
+            this.CalculateTurretSetting();
             this.UseUltimate();
             this.UpgradeStronghold();
 
@@ -438,28 +454,6 @@ class GameBot extends Player {
         return this.state;
     }
 
-    private boolean isMeleeInFront() {
-        if (this.units.size() > 0) {
-            final Unit lastU = this.units.get(this.units.size() - 1);
-
-            return !(lastU instanceof RangedUnit);
-        }
-
-        return false;
-    }
-
-    private void BotStrategy(int idx){
-        if (idx >= 0 && idx < 40) {
-            this.DeployUnit(MeleeUnit.GetEra(this.era));
-        }
-        else if (idx >= 40 && idx < 70) {
-            this.DeployUnit(RangedUnit.GetEra(this.era));
-        }
-        else {
-            this.DeployUnit(CavalryUnit.GetEra(this.era));
-        }
-    }
-
     private void Level1Automation() {
         if (!this.isWaking) return;
 
@@ -468,8 +462,8 @@ class GameBot extends Player {
 
             int idx = Mathf.CalRange(0,100);      // random idx for choosing unit
 
-            if(!isMeleeInFront()){
-                BotStrategy(idx);
+            if (IsMeleeInFront()){
+                this.CalculateBotStrategy(idx);
             }
             else{
                 if (idx >= 0 && idx < 40) this.DeployUnit(MeleeUnit.GetEra(this.era));
@@ -486,8 +480,8 @@ class GameBot extends Player {
         if (this.units.size() < Player.MAX_UNIT) {
             int idx = (int)(Math.random() * 100);      // random idx for choosing unit
 
-            if(!isMeleeInFront()){
-                BotStrategy(idx);
+            if (IsMeleeInFront()) {
+                this.CalculateBotStrategy(idx);
             }
             else{
                 if (idx >= 0 && idx < 35) this.DeployUnit(MeleeUnit.GetEra(this.era));
@@ -503,17 +497,39 @@ class GameBot extends Player {
         // game bot decision fired >> write decision commands here
         int idx = (int)(Math.random() * 100);      // random idx for choosing unit
 
-        if (!isMeleeInFront()){
-            BotStrategy(idx);
+        if (IsMeleeInFront()) {
+            this.CalculateBotStrategy(idx);
         }
-        else{
+        else {
             if (idx >= 0 && idx < 30) this.DeployUnit(MeleeUnit.GetEra(this.era));
             else if (idx >= 30 && idx < 60) this.DeployUnit(RangedUnit.GetEra(this.era));
             else this.DeployUnit(CavalryUnit.GetEra(this.era));
         }
     }
 
-    private void setTurret() {
+    private boolean IsMeleeInFront() {
+        if (this.units.size() > 0) {
+            final Unit lastU = this.units.get(this.units.size() - 1);
+
+            return lastU instanceof RangedUnit;
+        }
+
+        return true;
+    }
+
+    private void CalculateBotStrategy(final int idx){
+        if (idx >= 0 && idx < 40) {
+            this.DeployUnit(MeleeUnit.GetEra(this.era));
+        }
+        else if (idx >= 40 && idx < 70) {
+            this.DeployUnit(RangedUnit.GetEra(this.era));
+        }
+        else {
+            this.DeployUnit(CavalryUnit.GetEra(this.era));
+        }
+    }
+
+    private void CalculateTurretSetting() {
         if (!this.isWaking) return;
 
         if (this.units.size() > 4) {
