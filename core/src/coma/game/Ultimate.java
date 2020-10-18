@@ -33,6 +33,7 @@ public class Ultimate {
                 this.plane = MainGame.ulPlane;
                 this.plane.SetPosition(-811, 520);
                 Renderer.AddComponents(this.plane);
+
             } break;
             case 4: n = Mathf.CalRange(30, 35); break;
             default: throw new RangeException((short) 0, "Wrong parameter input.");
@@ -50,7 +51,9 @@ public class Ultimate {
 
         float x = Mathf.CalRange(20f, 1600f); //border of x-axis screen
 
-        obj.SetPosition(x, SPAWN_POS_Y);
+        if(obj.era == 3) obj.SetPosition(x, EXPLODE_POS_Y);
+        else obj.SetPosition(x, SPAWN_POS_Y);
+
         Renderer.AddComponents(obj.image);
 
         // MainGame  if อยากใส่เพลง
@@ -156,12 +159,19 @@ class UltimateObj extends GameObject {
                 this.moveSpeedY = 12.4f;
             } break;
             case 2: {
-
+                this.damage = Mathf.CalRange(100f,300f);
+                this.moveSpeedX = 6.7f;
+                this.moveSpeedY = 12.4f;
             } break;
             case 3: {
-
+                this.damage = Mathf.CalRange(200f, 400f);
+                this.moveSpeedY = 0;
+                this.moveSpeedX = 0;
             } break;
             case 4: {
+                this.damage = Mathf.CalRange(300f, 500f);
+                this.moveSpeedY = 0;
+                this.moveSpeedX = 0;
 
             } break;
             default: throw new RangeException((short) 0, "Wrong parameter input.");
@@ -210,10 +220,6 @@ class UltimateObj extends GameObject {
 
             } break;
         }
-    }
-
-    public void calDmg() {
-
     }
 
     public void SetPosition(float x, float y) {
