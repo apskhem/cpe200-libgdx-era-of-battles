@@ -270,7 +270,7 @@ class GameBot extends Player {
     public byte decisionDelay = 120;
     public byte state = 1;
 
-    private short ULTIMATE_DELAY = 4000;
+    private short ULTIMATE_DELAY;
 
     public static final byte DECISION_DELAY = 120;
 
@@ -331,23 +331,20 @@ class GameBot extends Player {
             switch (this.CalculatedDecisionState()) { // << old: this.diffulty
                 case 1: {
                     this.Level1Automation();
-                    this.setTurret();
-                    this.botUltimate();
                     break;
                 }
                 case 2: {
                     this.Level2Automation();
-                    this.setTurret();
-                    this.botUltimate();
                     break;
                 }
                 case 3: {
                     this.Level3Automation();
-                    this.setTurret();
-                    this.botUltimate();
                     break;
                 }
             }
+            this.setTurret();
+            this.botUltimate();
+            this.UpgradeStronghold();
 
             this.decisionDelay = GameBot.DECISION_DELAY;
         }
