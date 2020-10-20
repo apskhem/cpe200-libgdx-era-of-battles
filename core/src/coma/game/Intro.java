@@ -1,5 +1,7 @@
 package coma.game;
 
+import coma.game.utils.UIController;
+
 final public class Intro {
 
     private static float soundPlayDelay = 80;
@@ -14,7 +16,7 @@ final public class Intro {
         if (Intro.isDone) return;
 
         if (soundPlayDelay <= 0 && !isSoundPlayed) {
-            MainGame.devLogoSound.play();
+            Resources.devLogoSound.play();
             soundPlayDelay -= MainGame.deltaTime;
             isSoundPlayed = true;
         }
@@ -31,17 +33,17 @@ final public class Intro {
 
         // fading phase
         if (fadingTime <= 0) {
-            MainGame.devLogo.isVisible = false;
-            MainGame.themeMusic.play();
+            Resources.devLogo.isVisible = false;
+            Resources.themeMusic.play();
             UIController.GetBoxModule("start-menu").SetVisibility(true);
-            MainGame.musicBtn.isVisible = true;
+            Resources.musicBtn.isVisible = true;
 
             fadingTime -= MainGame.deltaTime;
             isDone = true;
         }
         else if (fadingTime > 0) {
             final float p = fadingTime / MAX_FADING;
-            MainGame.devLogo.src.setColor(p, p, p, 1);
+            Resources.devLogo.SetColorRGBA(p, p, p, 1);
             fadingTime -= MainGame.deltaTime;
         }
     }

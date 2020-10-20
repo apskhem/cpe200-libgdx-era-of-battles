@@ -1,7 +1,9 @@
 package coma.game;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.utils.Queue;
+import coma.game.contents.*;
+import coma.game.utils.Mathf;
+import coma.game.utils.Renderer;
 import org.w3c.dom.ranges.RangeException;
 
 import java.util.ArrayList;
@@ -54,10 +56,9 @@ public class Player {
         if (u == null) return;
 
         this.units.add(u);
-        u.SetPosition(this.SPAWN_POSITION_X, this.SPAWN_POSITION_Y);
-        Renderer.AddComponents(u.image, u.healthBar, u.healthBarInner);
+        u.SpawnAt(this.SPAWN_POSITION_X, this.SPAWN_POSITION_Y);
 
-        MainGame.unitCall.play();
+        Resources.unitCallSound.play();
     }
 
     public void ProcessUnitDeployment() {
@@ -98,7 +99,7 @@ public class Player {
                 // replace
                 at.ReplaceWith(t);
 
-                MainGame.unitCall.play();
+                Resources.unitCallSound.play();
 
                 return true;
             }
@@ -111,7 +112,7 @@ public class Player {
             t.image.SetPosition(65, this.turrets.size() == 1 ? 260 : 340);
             Renderer.AddComponents(t.image);
 
-            MainGame.unitCall.play();
+            Resources.unitCallSound.play();
 
             return true;
         }
@@ -125,7 +126,7 @@ public class Player {
 
             this.stronghold.UpgradeTo(this.era);
 
-            MainGame.newEraSound.play();
+            Resources.newEraSound.play();
         }
     }
 
@@ -141,6 +142,7 @@ public class Player {
         this.xp += (int)(rawCost * Math.random() * 0.3f + rawCost * 0.05f);
     }
 
+    //refractor
     // automation looping
     public int UpdateUnits(final boolean isOverlapped) {
         // update overall
@@ -160,14 +162,12 @@ public class Player {
                 deadCost += u.cost;
 
                 this.units.remove(u);
-                u.SetAnimationStateTo(7);
-                Renderer.RemoveComponents(u.healthBar, u.healthBarInner);
-                Unit.deadUnits.add(u);
+                u.Die();
 
-                MainGame.meleeDie1.play();
+                Resources.meleeDie1.play();
 
                 if (u instanceof CavalryUnit && u.era == 1) {
-                    MainGame.cavalryDie1.setVolume(MainGame.cavalryDie1.play(), 0.3f);
+                    Resources.cavalryDie1.setVolume(Resources.cavalryDie1.play(), 0.3f);
                 }
             }
         }
@@ -194,7 +194,7 @@ public class Player {
                 else {
                     currentUnit.isMoving = false;
                     if (!((i == 1 || i == 2) && currentUnit instanceof RangedUnit)) {
-                        currentUnit.SetAnimationStateTo(1);
+                        currentUnit.animator.SetAnimationFrameTo(1);
                     }
                 }
             }
@@ -234,6 +234,7 @@ public class Player {
         if (u3 instanceof RangedUnit && !u3.isMoving) u3.Attack(toAttackUnit);
     }
 
+    //refractor
     public static void Update(final Player playerL, final Player playerR) {
         // check overlapping
         boolean isOverlapped = false;
@@ -326,11 +327,9 @@ final class GameBot extends Player {
     public void SpawnUnit(final Unit u) {
         if (u == null) return;
 
-        u.image.FlipHorizontal();
-
         this.units.add(u);
-        u.SetPosition(this.SPAWN_POSITION_X - u.image.naturalWidth, this.SPAWN_POSITION_Y);
-        Renderer.AddComponents(u.image, u.healthBar, u.healthBarInner);
+        u.image.FlipHorizontal();
+        u.SpawnAt(this.SPAWN_POSITION_X - u.image.naturalWidth, this.SPAWN_POSITION_Y);
     }
 
     @Override
@@ -357,7 +356,7 @@ final class GameBot extends Player {
                 // replace
                 at.ReplaceWith(t);
 
-                MainGame.unitCall.play();
+                Resources.unitCallSound.play();
 
                 return true;
             }
@@ -425,8 +424,8 @@ final class GameBot extends Player {
                 case 3: this.Level3Automation(); break;
             }
             this.CalculateTurretSetting();
-            this.UseUltimate();
             this.UpgradeStronghold();
+            if (MainGame.user.units.size() >= 3) this.UseUltimate();
 
             this.decisionDelay = GameBot.DECISION_DELAY;
         }
@@ -436,7 +435,7 @@ final class GameBot extends Player {
     }
 
     public byte CalculatedDecisionState() {
-        switch (this.era){
+        switch (this.era) {
             case 1:
                 if (this.cash >= 3000) state = 3;
                 else if (this.cash >= 2000) state = 2;
@@ -466,9 +465,9 @@ final class GameBot extends Player {
                 this.CalculateBotStrategy(idx);
             }
             else{
-                if (idx >= 0 && idx < 40) this.DeployUnit(MeleeUnit.GetEra(this.era));
-                else if (idx >= 40 && idx < 80) this.DeployUnit(RangedUnit.GetEra(this.era));
-                else this.DeployUnit(CavalryUnit.GetEra(this.era));
+                if (idx >= 0 && idx < 40) this.DeployUnit(new MeleeUnit(this.era, MeleeUnit.stats[this.era - 1]));
+                else if (idx >= 40 && idx < 80) this.DeployUnit(new RangedUnit(this.era, RangedUnit.stats[this.era - 1]));
+                else this.DeployUnit(new CavalryUnit(this.era, CavalryUnit.stats[this.era - 1]));
             }
         }
     }
@@ -484,9 +483,9 @@ final class GameBot extends Player {
                 this.CalculateBotStrategy(idx);
             }
             else{
-                if (idx >= 0 && idx < 35) this.DeployUnit(MeleeUnit.GetEra(this.era));
-                else if (idx >= 35 && idx < 70) this.DeployUnit(RangedUnit.GetEra(this.era));
-                else this.DeployUnit(CavalryUnit.GetEra(this.era));
+                if (idx >= 0 && idx < 35) this.DeployUnit(new MeleeUnit(this.era, MeleeUnit.stats[this.era - 1]));
+                else if (idx >= 35 && idx < 70) this.DeployUnit(new RangedUnit(this.era, RangedUnit.stats[this.era - 1]));
+                else this.DeployUnit(new CavalryUnit(this.era, CavalryUnit.stats[this.era - 1]));
             }
         }
     }
@@ -501,9 +500,9 @@ final class GameBot extends Player {
             this.CalculateBotStrategy(idx);
         }
         else {
-            if (idx >= 0 && idx < 30) this.DeployUnit(MeleeUnit.GetEra(this.era));
-            else if (idx >= 30 && idx < 60) this.DeployUnit(RangedUnit.GetEra(this.era));
-            else this.DeployUnit(CavalryUnit.GetEra(this.era));
+            if (idx >= 0 && idx < 30) this.DeployUnit(new MeleeUnit(this.era, MeleeUnit.stats[this.era - 1]));
+            else if (idx >= 30 && idx < 60) this.DeployUnit(new RangedUnit(this.era, RangedUnit.stats[this.era - 1]));
+            else this.DeployUnit(new CavalryUnit(this.era, CavalryUnit.stats[this.era - 1]));
         }
     }
 
@@ -519,13 +518,13 @@ final class GameBot extends Player {
 
     private void CalculateBotStrategy(final int idx){
         if (idx >= 0 && idx < 40) {
-            this.DeployUnit(MeleeUnit.GetEra(this.era));
+            this.DeployUnit(new MeleeUnit(this.era, MeleeUnit.stats[this.era - 1]));
         }
         else if (idx >= 40 && idx < 70) {
-            this.DeployUnit(RangedUnit.GetEra(this.era));
+            this.DeployUnit(new RangedUnit(this.era, RangedUnit.stats[this.era - 1]));
         }
         else {
-            this.DeployUnit(CavalryUnit.GetEra(this.era));
+            this.DeployUnit(new CavalryUnit(this.era, CavalryUnit.stats[this.era - 1]));
         }
     }
 

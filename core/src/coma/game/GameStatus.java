@@ -1,5 +1,8 @@
 package coma.game;
 
+import coma.game.contents.Unit;
+import coma.game.utils.UIController;
+
 final public class GameStatus {
 
     public static boolean isGameStarted;
@@ -24,13 +27,13 @@ final public class GameStatus {
         UIController.GetBoxModule("in-game-menu").SetVisibility(false);
         UIController.GetBoxModule("game-over-menu").SetVisibility(true);
 
-        if (isWon) MainGame.winSound.play();
-        else MainGame.loseSound.play();
+        if (isWon) Resources.winSound.play();
+        else Resources.loseSound.play();
 
         MainGame.gameSpeed = 1;
-        MainGame.speedBtn.SetActive(false);
+        Resources.speedBtn.SetActive(false);
 
-        MainGame.victoryBanner.isVisible = isWon;
-        MainGame.defeatBanner.isVisible = !isWon;
+        Resources.victoryBanner.isVisible = isWon;
+        Resources.defeatBanner.isVisible = !isWon;
     }
 }
