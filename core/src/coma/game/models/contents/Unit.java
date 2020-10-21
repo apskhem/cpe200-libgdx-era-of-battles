@@ -4,6 +4,7 @@ import com.badlogic.gdx.audio.Sound;
 import coma.game.MainGame;
 import coma.game.Resources;
 import coma.game.components.Animator;
+import coma.game.controllers.AudioController;
 import coma.game.utils.Mathf;
 import coma.game.views.Renderer;
 import coma.game.components.Image;
@@ -110,7 +111,7 @@ public abstract class Unit extends GameObject {
             }
 
             if (this.attackSound != null) {
-                this.attackSound.setVolume(this.attackSound.play(), 0.5f);
+                AudioController.PlayAndSetVolume(this.attackSound, MainGame.AUDIO_VOLUME / 2);
             }
 
             this.animator.SetAnimationFrameTo(6);

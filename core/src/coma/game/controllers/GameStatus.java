@@ -33,8 +33,9 @@ final public class GameStatus {
         if (isWon) Resources.winSound.play();
         else Resources.loseSound.play();
 
-        MainGame.gameSpeed = 1;
-        Resources.speedBtn.SetActive(false);
+        if (MainGame.gameSpeed != 1) {
+            Resources.speedBtn.Click();
+        }
 
         Resources.victoryBanner.isVisible = isWon;
         Resources.defeatBanner.isVisible = !isWon;

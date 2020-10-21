@@ -1,6 +1,7 @@
 package coma.game.models.contents;
 
 import coma.game.MainGame;
+import coma.game.controllers.AudioController;
 import coma.game.models.Player;
 import coma.game.Resources;
 import coma.game.utils.Mathf;
@@ -44,7 +45,7 @@ final public class Ultimate {
 
                 Renderer.AddComponents(this.plane);
 
-                Resources.ulPlaneSound.play();
+                AudioController.PlayAndSetVolume(Resources.ulPlaneSound, MainGame.AUDIO_VOLUME);
             } break;
             case 4: n = Mathf.CalRange(30, 35); break;
             default: throw new RangeException((short) 0, "Wrong parameter input.");
@@ -122,7 +123,7 @@ final public class Ultimate {
 
                     this.explodingObjectContainer.add(r);
 
-                    Resources.explosionSounds[0].play();
+                    AudioController.PlayAndSetVolume(Resources.explosionSounds[0], MainGame.AUDIO_VOLUME);
                 }
 
                 hitUltimateObjects.add(obj);

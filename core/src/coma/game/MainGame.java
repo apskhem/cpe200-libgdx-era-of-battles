@@ -29,6 +29,8 @@ public class MainGame extends ApplicationAdapter {
 
 	// config
 	public static final float CAMERA_SPEED = 10f;
+	public static final float THEME_VOLUME = 0.6f;
+	public static final float AUDIO_VOLUME = 0;
 
 	// debug
 	public static final boolean devMode = true;

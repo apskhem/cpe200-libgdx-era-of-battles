@@ -20,7 +20,7 @@ public class EventController {
             Resources.mode2.SetOpacity(MainGame.foe.difficulty == 2 ? 1 : 0.75f);
             Resources.mode3.SetOpacity(MainGame.foe.difficulty == 3 ? 1 : 0.75f);
 
-            Resources.menuClickSound.play();
+            AudioController.PlayAndSetVolume(Resources.menuClickSound, MainGame.AUDIO_VOLUME);
         });
 
         Resources.creditBtn.AddEventListener("onclick", (MouseEvent e) -> {
@@ -29,19 +29,19 @@ public class EventController {
             UIController.GetBoxModule("start-menu").SetVisibility(false);
             Resources.creditBanner.isVisible = true;
 
-            Resources.menuClickSound.play();
+            AudioController.PlayAndSetVolume(Resources.menuClickSound, MainGame.AUDIO_VOLUME);
         });
 
         Resources.creditBanner.AddEventListener("onclick", (MouseEvent e) -> {
             UIController.GetBoxModule("start-menu").SetVisibility(true);
             Resources.creditBanner.isVisible = false;
 
-            Resources.menuClickSound.play();
+            AudioController.PlayAndSetVolume(Resources.menuClickSound, MainGame.AUDIO_VOLUME);
         });
 
         Resources.musicBtn.AddEventListener("onclick", (MouseEvent e) -> {
             final boolean t = Resources.themeMusic.getVolume() == 0;
-            Resources.themeMusic.setVolume(t ? 0.7f : 0);
+            Resources.themeMusic.setVolume(t ? MainGame.THEME_VOLUME : 0);
             Resources.musicBtn.SetActive(t);
         });
 
@@ -53,7 +53,7 @@ public class EventController {
             Resources.mode3.SetOpacity(0.75f);
 
             MainGame.foe.difficulty = 1;
-            Resources.menuClickSound.play();
+            AudioController.PlayAndSetVolume(Resources.menuClickSound, MainGame.AUDIO_VOLUME);
         });
 
         Resources.mode2.AddEventListener("onclick", (MouseEvent e) -> {
@@ -64,7 +64,7 @@ public class EventController {
             Resources.mode3.SetOpacity(0.75f);
 
             MainGame.foe.difficulty = 2;
-            Resources.menuClickSound.play();
+            AudioController.PlayAndSetVolume(Resources.menuClickSound, MainGame.AUDIO_VOLUME);
         });
 
         Resources.mode3.AddEventListener("onclick", (MouseEvent e) -> {
@@ -75,7 +75,7 @@ public class EventController {
             Resources.mode3.SetOpacity(1);
 
             MainGame.foe.difficulty = 3;
-            Resources.menuClickSound.play();
+            AudioController.PlayAndSetVolume(Resources.menuClickSound, MainGame.AUDIO_VOLUME);
         });
 
         Resources.startBtn.AddEventListener("onclick", (MouseEvent e) -> {
@@ -86,7 +86,7 @@ public class EventController {
             MainGame.foe.Setup();
             GameStatus.isGameStarted = true;
 
-            Resources.startSound.play();
+            AudioController.PlayAndSetVolume(Resources.startSound, MainGame.AUDIO_VOLUME);
         });
 
         Resources.restartBtn.AddEventListener("onclick", (MouseEvent e) -> {
@@ -99,7 +99,7 @@ public class EventController {
             MainGame.foe.Setup();
             GameStatus.isGameStarted = true;
 
-            Resources.startSound.play();
+            AudioController.PlayAndSetVolume(Resources.startSound, MainGame.AUDIO_VOLUME);
         });
 
         Resources.menuBtn.AddEventListener("onclick", (MouseEvent e) -> {
@@ -109,7 +109,7 @@ public class EventController {
             Resources.victoryBanner.isVisible = false;
             Resources.defeatBanner.isVisible = false;
 
-            Resources.menuClickSound.play();
+            AudioController.PlayAndSetVolume(Resources.menuClickSound, MainGame.AUDIO_VOLUME);
         });
 
         Resources.unit1.AddEventListener("onclick", (MouseEvent e) -> {

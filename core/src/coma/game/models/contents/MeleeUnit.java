@@ -9,10 +9,10 @@ import coma.game.components.Animator;
 final public class MeleeUnit extends Unit {
 
     public static final int[][] stats = {
-            { 120, 25, 40, 80 },
-            { 250, 50, 40, 200 },
-            { 500, 100, 40, 480 },
-            { 1000, 200, 40, 1000 }
+            { 100, 23, 44, 80 },
+            { 180, 45, 44, 240 },
+            { 320, 60, 44, 600 },
+            { 900, 150, 44, 2200 }
     };
 
     public MeleeUnit(final int era, final int[] s) {

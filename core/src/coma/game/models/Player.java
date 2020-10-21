@@ -3,6 +3,7 @@ package coma.game.models;
 import com.badlogic.gdx.utils.Queue;
 import coma.game.MainGame;
 import coma.game.Resources;
+import coma.game.controllers.AudioController;
 import coma.game.models.contents.*;
 import coma.game.views.Renderer;
 
@@ -58,7 +59,7 @@ public class Player {
         this.units.add(u);
         u.SpawnAt(this.SPAWN_POSITION_X, this.SPAWN_POSITION_Y);
 
-        Resources.unitCallSound.play();
+        AudioController.PlayAndSetVolume(Resources.unitCallSound, MainGame.AUDIO_VOLUME);
     }
 
     public void ProcessUnitDeployment() {
@@ -99,7 +100,7 @@ public class Player {
                 // replace
                 at.ReplaceWith(t);
 
-                Resources.unitCallSound.play();
+                AudioController.PlayAndSetVolume(Resources.unitCallSound, MainGame.AUDIO_VOLUME);
 
                 return true;
             }
@@ -112,7 +113,7 @@ public class Player {
             t.image.SetPosition(65, this.turrets.size() == 1 ? 260 : 340);
             Renderer.AddComponents(t.image);
 
-            Resources.unitCallSound.play();
+            AudioController.PlayAndSetVolume(Resources.unitCallSound, MainGame.AUDIO_VOLUME);
 
             return true;
         }
@@ -126,7 +127,7 @@ public class Player {
 
             this.stronghold.UpgradeTo(this.era);
 
-            Resources.newEraSound.play();
+            AudioController.PlayAndSetVolume(Resources.newEraSound, MainGame.AUDIO_VOLUME);
         }
     }
 
@@ -164,10 +165,10 @@ public class Player {
                 this.units.remove(u);
                 u.Die();
 
-                Resources.meleeDie1.play();
+                AudioController.PlayAndSetVolume(Resources.meleeDie1, MainGame.AUDIO_VOLUME);
 
                 if (u instanceof CavalryUnit && u.era == 1) {
-                    Resources.cavalryDie1.setVolume(Resources.cavalryDie1.play(), 0.3f);
+                    AudioController.PlayAndSetVolume(Resources.cavalryDie1, MainGame.AUDIO_VOLUME / 3);
                 }
             }
         }

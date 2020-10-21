@@ -9,10 +9,10 @@ import coma.game.components.Animator;
 final public class RangedUnit extends Unit {
 
     public static final int[][] stats = {
-            { 80, 40, 40, 100 },
-            { 160, 80, 40, 250 },
-            { 320, 160, 40, 530 },
-            { 640, 320, 40, 1200 }
+            { 80, 10, 18, 220 },
+            { 150, 27, 32, 690 },
+            { 280, 34, 12, 3000 },
+            { 560, 103, 23, 8000 }
     };
 
     public RangedUnit(final int era, final int[] s) {

@@ -17,7 +17,7 @@ final public class Intro {
         if (Intro.isDone) return;
 
         if (soundPlayDelay <= 0 && !isSoundPlayed) {
-            Resources.devLogoSound.play();
+            AudioController.PlayAndSetVolume(Resources.devLogoSound, MainGame.AUDIO_VOLUME);
             soundPlayDelay -= MainGame.deltaTime;
             isSoundPlayed = true;
         }

@@ -3,6 +3,7 @@ package coma.game.models.contents;
 import coma.game.MainGame;
 import coma.game.Resources;
 import coma.game.components.Image;
+import coma.game.controllers.AudioController;
 import org.w3c.dom.ranges.RangeException;
 
 /**
@@ -30,11 +31,11 @@ final public class Turret extends GameObject {
     public static Turret GetEra(final byte era) {
         switch (era) {
             case 1:
-                return new Turret(Resources.turretImages[0].Clone(), 15, 1000, era);
+                return new Turret(Resources.turretImages[0].Clone(), 8, 1200, era);
             case 2:
-                return new Turret(Resources.turretImages[1].Clone(), 35, 3500, era);
+                return new Turret(Resources.turretImages[1].Clone(), 21, 3500, era);
             case 3:
-                return new Turret(Resources.turretImages[2].Clone(), 65, 11000, era);
+                return new Turret(Resources.turretImages[2].Clone(), 48, 11000, era);
             case 4:
                 return new Turret(Resources.turretImages[3].Clone(), 130, 50000, era);
             default:
@@ -59,7 +60,7 @@ final public class Turret extends GameObject {
 
                 this.attackDelay = Turret.ATTACK_DELAY;
 
-                Resources.rangedHitSounds[era - 1].setVolume(Resources.rangedHitSounds[era - 1].play(), 0.5f);
+                AudioController.PlayAndSetVolume(Resources.rangedHitSounds[era - 1], MainGame.AUDIO_VOLUME / 2);
             } else {
                 this.attackDelay -= MainGame.deltaTime;
             }

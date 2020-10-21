@@ -2,6 +2,7 @@ package coma.game.models.contents;
 
 import coma.game.MainGame;
 import coma.game.Resources;
+import coma.game.controllers.AudioController;
 
 import java.util.ArrayList;
 
@@ -58,7 +59,7 @@ public class UltimateObj extends GameObject {
                         u.health -= this.damage;
 
                         if (this.era == 2) {
-                            Resources.cavalryHitSounds[0].setVolume(Resources.cavalryHitSounds[0].play(), 0.3f);
+                            AudioController.PlayAndSetVolume(Resources.cavalryHitSounds[0], MainGame.AUDIO_VOLUME / 3);
                         }
                     }
                 }

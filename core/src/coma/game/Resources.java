@@ -242,7 +242,7 @@ public class Resources {
 
         // set sounds and music
         themeMusic.setLooping(true);
-        themeMusic.setVolume(0.7f);
+        themeMusic.setVolume(MainGame.THEME_VOLUME);
 
         // set ui
         UIController.AddComponents(devLogo, gameLogo, playBtn, creditBtn, creditBanner, musicBtn, mode1, mode2, mode3, modeBanner, startBtn, restartBtn,
