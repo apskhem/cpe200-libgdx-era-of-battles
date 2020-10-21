@@ -262,6 +262,7 @@ public class Player {
             if (u.IsReachedMax()) {
                 if (u.Attack(defender.stronghold)) {
                     attacker.xp += (int)(Stronghold.GetMaxHealth(defender.era) * Math.random() * 0.01f);
+                    attacker.cash += (int)(Stronghold.GetMaxHealth(defender.era) * Math.random() * 0.1f);
                 }
 
                 Player.QueuedRangedUnitAttack(attacker, defender.stronghold);

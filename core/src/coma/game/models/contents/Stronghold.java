@@ -57,7 +57,7 @@ final public class Stronghold extends GameObject {
             case 2:
                 return 1200;
             case 3:
-                return 3000;
+                return 2000;
             default:
                 return Short.MAX_VALUE;
         }

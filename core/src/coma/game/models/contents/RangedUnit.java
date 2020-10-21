@@ -12,7 +12,7 @@ final public class RangedUnit extends Unit {
             { 80, 20, 30, 100 },
             { 150, 40, 30, 200 },
             { 230, 55, 30, 340 },
-            { 350, 75, 30, 450 }
+            { 350, 90, 30, 450 }
     };
 
     public RangedUnit(final int era, final int[] s) {
