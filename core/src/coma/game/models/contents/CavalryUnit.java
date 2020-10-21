@@ -12,7 +12,7 @@ final public class CavalryUnit extends Unit {
             { 160, 60, 50, 180 },
             { 250, 90, 50, 360 },
             { 360, 115, 50, 400 },
-            { 500, 150, 50, 600 }
+            { 600, 150, 50, 600 }
     };
 
     public CavalryUnit(final int era, final int[] s) {

@@ -107,8 +107,12 @@ final public class GameBot extends Player {
 
     @Override
     public void UpdateAfter(final int rawCost) {
-        this.cash += (int)(rawCost * (1.0f + 0.4f * this.difficulty));
-        this.xp += (int)(rawCost * Math.random() * (0.2f + 0.1f * this.difficulty) + rawCost * (0.05f + 0.01 * this.difficulty));
+        if(this.cash <= 10000) {
+            this.cash += (int) (rawCost * (1.0f + 0.4f * this.difficulty));
+        }
+        if(this.era <= 4) {
+            this.xp += (int) (rawCost * Math.random() * (0.2f + 0.1f * this.difficulty) + rawCost * (0.05f + 0.01 * this.difficulty));
+        }
     }
 
     @Override

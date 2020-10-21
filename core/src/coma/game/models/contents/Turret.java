@@ -33,11 +33,11 @@ final public class Turret extends GameObject {
             case 1:
                 return new Turret(Resources.turretImages[0].Clone(), 15, 400, era);
             case 2:
-                return new Turret(Resources.turretImages[1].Clone(), 25, 800, era);
+                return new Turret(Resources.turretImages[1].Clone(), 25, 1000, era);
             case 3:
-                return new Turret(Resources.turretImages[2].Clone(), 40, 1000, era);
+                return new Turret(Resources.turretImages[2].Clone(), 40, 1500, era);
             case 4:
-                return new Turret(Resources.turretImages[3].Clone(), 50, 1500, era);
+                return new Turret(Resources.turretImages[3].Clone(), 50, 2000, era);
             default:
                 throw new RangeException((short) 0, "Wrong parameter input.");
         }

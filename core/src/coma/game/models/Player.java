@@ -139,8 +139,13 @@ public class Player {
     }
 
     public void UpdateAfter(final int rawCost) {
-        this.cash += (int)(rawCost * 0.9);
-        this.xp += (int)(rawCost * Math.random() * 0.3f + rawCost * 0.05f);
+
+        if(this.cash <= 10000) {
+            this.cash += (int)(rawCost * 0.9);
+        }
+        if(this.era <= 4) {
+            this.xp += (int)(rawCost * Math.random() * 0.3f + rawCost * 0.05f);
+        }
     }
 
     //refractor
