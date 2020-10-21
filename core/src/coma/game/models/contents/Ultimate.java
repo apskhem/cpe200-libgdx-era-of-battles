@@ -63,28 +63,28 @@ final public class Ultimate {
                 case 1: {
                     spawnX = this.isFlipped ? Mathf.CalRange(520f, 2180f) : Mathf.CalRange(-100, 1560f);
                     spawnDelay = Mathf.CalRange(0, 90f);
-                    damage = Mathf.CalRange(60f, 89f);
+                    damage = Mathf.CalRange(60f, 180f);
                     moveSpeedX = this.isFlipped ? - 6.7f : 6.7f;
                     moveSpeedY = 12.4f;
                 } break;
                 case 2: {
                     spawnX = Mathf.CalRange(220f, 1600f);
                     spawnDelay = Mathf.CalRange(0, 90f);
-                    damage = Mathf.CalRange(100f, 300f);
+                    damage = Mathf.CalRange(130f, 270f);
                     moveSpeedX = Mathf.CalRange(-2.3f, 2.3f);
                     moveSpeedY = 12.4f;
                 } break;
                 case 3: {
                     spawnX = (i * 120) + 240;
                     spawnDelay = this.isFlipped ? ((n - 1) - i) * 2.5f : i * 2.5f;
-                    damage = Mathf.CalRange(200f, 400f);
+                    damage = Mathf.CalRange(210f, 380f);
                     moveSpeedY = 25.7f;
                     moveSpeedX = 0;
                 } break;
                 case 4: {
                     spawnX = Mathf.CalRange(220f, 1600f);
                     spawnDelay = Mathf.CalRange(0, 90f);
-                    damage = Mathf.CalRange(300f, 500f);
+                    damage = Mathf.CalRange(330f, 520f);
                     moveSpeedY = 30f;
                     moveSpeedX = 0;
                 } break;

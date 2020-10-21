@@ -16,7 +16,7 @@ final public class Turret extends GameObject {
     public byte era;
     private short attackDelay = Turret.ATTACK_DELAY;
 
-    private static final short ATTACK_DELAY = 25;
+    private static final short ATTACK_DELAY = 70;
     private static final short ATTACK_RANGE = 420;
 
     public Turret(final Image img, final int attack, final int cost, final int era) {
@@ -31,13 +31,13 @@ final public class Turret extends GameObject {
     public static Turret GetEra(final byte era) {
         switch (era) {
             case 1:
-                return new Turret(Resources.turretImages[0].Clone(), 8, 1200, era);
+                return new Turret(Resources.turretImages[0].Clone(), 15, 500, era);
             case 2:
-                return new Turret(Resources.turretImages[1].Clone(), 21, 3500, era);
+                return new Turret(Resources.turretImages[1].Clone(), 25, 800, era);
             case 3:
-                return new Turret(Resources.turretImages[2].Clone(), 48, 11000, era);
+                return new Turret(Resources.turretImages[2].Clone(), 40, 1000, era);
             case 4:
-                return new Turret(Resources.turretImages[3].Clone(), 130, 50000, era);
+                return new Turret(Resources.turretImages[3].Clone(), 50, 2000, era);
             default:
                 throw new RangeException((short) 0, "Wrong parameter input.");
         }

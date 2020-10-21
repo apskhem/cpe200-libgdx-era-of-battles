@@ -139,7 +139,7 @@ public class Player {
     }
 
     public void UpdateAfter(final int rawCost) {
-        this.cash += (int)(rawCost * 0.8);
+        this.cash += (int)(rawCost * 0.9);
         this.xp += (int)(rawCost * Math.random() * 0.3f + rawCost * 0.05f);
     }
 
@@ -219,7 +219,7 @@ public class Player {
     }
 
     public void Setup() {
-        this.cash = 500;
+        this.cash = 400;
         this.xp = 0;
         this.deploymentDelay = 0;
         this.ultimateDelay = Player.ULTIMATE_LOADING_DELAY;
