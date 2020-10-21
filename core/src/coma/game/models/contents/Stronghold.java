@@ -38,13 +38,13 @@ final public class Stronghold extends GameObject {
     public static short GetMaxHealth(final byte era) {
         switch (era) {
             case 1:
-                return 600;
+                return 1500;
             case 2:
-                return 2000;
+                return 2600;
             case 3:
-                return 5000;
+                return 5200;
             case 4:
-                return 10000;
+                return 10400;
             default:
                 return Short.MAX_VALUE;
         }

@@ -30,11 +30,11 @@ final public class Turret extends GameObject {
     public static Turret GetEra(final byte era) {
         switch (era) {
             case 1:
-                return new Turret(Resources.turretImages[0].Clone(), 8, 1200, era);
+                return new Turret(Resources.turretImages[0].Clone(), 15, 1000, era);
             case 2:
-                return new Turret(Resources.turretImages[1].Clone(), 21, 3500, era);
+                return new Turret(Resources.turretImages[1].Clone(), 35, 3500, era);
             case 3:
-                return new Turret(Resources.turretImages[2].Clone(), 48, 11000, era);
+                return new Turret(Resources.turretImages[2].Clone(), 65, 11000, era);
             case 4:
                 return new Turret(Resources.turretImages[3].Clone(), 130, 50000, era);
             default:
