@@ -8,7 +8,7 @@ import coma.game.components.Image;
 import coma.game.components.ImageRegion;
 import coma.game.components.TextBox;
 import coma.game.utils.Asset;
-import coma.game.utils.UIController;
+import coma.game.controllers.UIController;
 
 public class Resources {
     public static Canvas devLogo;

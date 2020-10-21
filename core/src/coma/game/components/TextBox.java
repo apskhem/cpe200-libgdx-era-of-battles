@@ -2,7 +2,7 @@ package coma.game.components;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import coma.game.utils.UIController;
+import coma.game.controllers.UIController;
 
 final public class TextBox extends Renderable {
 

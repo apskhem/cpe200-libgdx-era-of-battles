@@ -1,7 +1,5 @@
 package coma.game.components;
 
-import coma.game.utils.UIController;
-
 final public class Canvas extends Image {
     public float x;
     public float y;
