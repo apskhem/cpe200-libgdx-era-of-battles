@@ -11,13 +11,13 @@ import org.w3c.dom.ranges.RangeException;
 
 import java.util.ArrayList;
 
-final public class Ultimate {
+public class Ultimate {
 
     private final ArrayList<UltimateObj> ultimateSpawnContainer = new ArrayList<>();
     private final ArrayList<ImageRegion> explodingObjectContainer = new ArrayList<>();
     private Image plane;
     private final byte era;
-    private final boolean isFlipped;
+    protected final boolean isFlipped;
 
     // constant
     public static final float EXPLOSION_FRAME_ANIMATION_TIME = 4f;
@@ -175,7 +175,7 @@ final public class Ultimate {
 
         // remove when ended
         for (final ImageRegion r : endedExplosionImages) {
-            Renderer.RemoveComponents(r);
+                Renderer.RemoveComponents(r);
         }
 
         this.explodingObjectContainer.removeAll(endedExplosionImages);

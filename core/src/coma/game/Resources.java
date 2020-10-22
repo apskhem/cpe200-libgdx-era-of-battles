@@ -61,6 +61,9 @@ public class Resources {
     public static final Image[] unitQueueImages = new Image[3];
     public static final Image[] ultimateBannerImages = new Image[4];
     public static final Image[] ultimateImages = new Image[4];
+//    public static final Image[] emergencyUltimate = new Image[6];
+
+    public static Image emergencyUltimate;
     public static ImageRegion explosionImageRegion;
     public static Image ulPlane;
     public static Image unitHealthBar;
@@ -109,6 +112,11 @@ public class Resources {
         ulPlane = new Image("ul-plane.png");
         unitHealthBar = new Image("unit-health-bar.png");
         unitHealthBarInner = new Image("unit-health-bar-inner.png");
+
+//        for(byte i = 0; i < emergencyUltimate.length; i++){
+//            emergencyUltimate[i] = new Image("emergency-" + (i + 1) + ".png");
+//        }
+        emergencyUltimate = new Image("emergency-1.png");
 
         devLogo = new Canvas("dev-logo.png");
         gameLogo = new Canvas("game-logo.png");
