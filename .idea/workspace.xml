@@ -5,13 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="844ff65d-8b91-45ba-bbac-71ea5e0740a1" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gradle/5.4.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.4.1/executionHistory/executionHistory.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/coma/game/models/GameBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/coma/game/models/GameBot.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/coma/game/models/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/coma/game/models/Player.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/coma/game/models/contents/CavalryUnit.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/coma/game/models/contents/CavalryUnit.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/coma/game/models/contents/RangedUnit.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/coma/game/models/contents/RangedUnit.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/coma/game/models/contents/Turret.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/coma/game/models/contents/Turret.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

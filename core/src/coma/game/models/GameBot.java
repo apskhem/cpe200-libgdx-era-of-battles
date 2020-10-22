@@ -27,8 +27,8 @@ final public class GameBot extends Player {
 
     public static short getUltimateDelay(final byte difficulty) {
         switch (difficulty) {
-            case 1: return 5000;
-            case 2: return 4500;
+            case 1: return 6000;
+            case 2: return 5000;
             case 3: return 4000;
             default: throw new RangeException((short) 0, "Wrong parameter input.");
         }
@@ -94,6 +94,8 @@ final public class GameBot extends Player {
             this.ultimateCaller = new Ultimate(this.era, true);
             this.ultimateDelay = GameBot.getUltimateDelay(this.difficulty);
 
+            if(this.era == 4) this.time2end++;
+
             return true;
         }
 
@@ -115,12 +117,20 @@ final public class GameBot extends Player {
 
     @Override
     public void UpdateAfter(final int rawCost) {
-        if(this.cash <= 10000) {
-            this.cash += (int) (rawCost * (1.0f + 0.4f * this.difficulty));
+        switch(this.difficulty){
+            case 1:
+            case 2:
+                this.cash += (int) (rawCost * (1.0f + 0.4f * (this.difficulty / (0.3 * this.era) + this.time2end)));
+                System.out.println(this.time2end);
+                break;
+            case 3:
+                this.cash += (int) (rawCost * (1.0f + 0.4f * this.difficulty)); break;
         }
-        if(this.era <= 4) {
+
+        if(this.era == 4)
+            this.xp = Stronghold.GetRequiredXp((byte)4);
+        else
             this.xp += (int) (rawCost * Math.random() * (0.2f + 0.1f * this.difficulty) + rawCost * (0.05f + 0.01 * this.difficulty));
-        }
     }
 
     @Override
@@ -339,7 +349,6 @@ final public class GameBot extends Player {
                     this.DeployUnit(new RangedUnit(this.era, RangedUnit.stats[this.era - 1]));
                 }
             }
-
         }
     }
 

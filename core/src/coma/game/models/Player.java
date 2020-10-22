@@ -27,6 +27,7 @@ public class Player {
     public byte era = 1;
     public float deploymentDelay;
     public float ultimateDelay = Player.ULTIMATE_LOADING_DELAY;
+    protected short time2end = 0;
 
     // static
     public static final short LEFT_STRONGHOLD_POSITION_X = -80;
@@ -144,6 +145,7 @@ public class Player {
             this.ultimateCaller = new Ultimate(this.era, false);
             this.ultimateDelay = Player.ULTIMATE_LOADING_DELAY;
 
+            if(this.era == 4)   this.time2end++;
             return true;
         }
 
@@ -152,12 +154,14 @@ public class Player {
 
     public void UpdateAfter(final int rawCost) {
 
-        if(this.cash <= 10000) {
-            this.cash += (int)(rawCost * 0.9);
+        switch (MainGame.foe.difficulty) {
+            case 1:
+            case 2: this.cash += (int) (rawCost * 0.9); break;
+            case 3: this.cash += (int) (rawCost * 0.9 / (0.3 * this.time2end)); break;
         }
-        if(this.era <= 4) {
-            this.xp += (int)(rawCost * Math.random() * 0.3f + rawCost * 0.05f);
-        }
+
+        if(this.era == 4) this.xp = Stronghold.GetRequiredXp((byte)4);
+        else this.xp += (int)(rawCost * Math.random() * 0.3f + rawCost * 0.05f);
     }
 
     //refractor
