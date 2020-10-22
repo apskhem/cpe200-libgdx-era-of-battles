@@ -70,7 +70,7 @@ public class MainGame extends ApplicationAdapter {
 		if (GameStatus.isGameStarted) {
 			// text
 			Resources.cashText.textContent = DF.format(user.cash);
-			Resources.xpText.textContent = DF.format(user.xp);
+			Resources.xpText.textContent = user.era >= 4 ? "MAX" : DF.format(user.xp);
 			Resources.unitCapText.textContent = user.units.size() + "/" + Player.MAX_UNIT;
 
 			// unit icons
@@ -80,6 +80,13 @@ public class MainGame extends ApplicationAdapter {
 			Resources.unit4.SetActive(user.BuildTurret(null));
 			Resources.unit5.SetActive(user.era < 4 && user.xp >= Stronghold.GetRequiredXp(user.era));
 			Resources.unitUl.SetActive(user.ultimateDelay <= 0);
+
+			// textbox
+			Resources.unitText[0].textContent = DF.format(MeleeUnit.stats[user.era - 1][3]) + " g";
+			Resources.unitText[1].textContent = DF.format(RangedUnit.stats[user.era - 1][3]) + " g";
+			Resources.unitText[2].textContent = DF.format(CavalryUnit.stats[user.era - 1][3]) + " g";
+			Resources.unitText[3].textContent = DF.format(Turret.GetEra(user.era).cost) + " g";
+			Resources.unitText[4].textContent = DF.format(Stronghold.GetRequiredXp(user.era)) + " xp";
 
 			// delay bars
 			final float cd = user.deploymentQueue.size > 0 ? user.deploymentQueue.first().GetDeploymentDelay() : 100;

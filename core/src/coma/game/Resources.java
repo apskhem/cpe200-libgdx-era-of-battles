@@ -45,10 +45,12 @@ public class Resources {
 
     public static BitmapFont bitmapFont;
     public static BitmapFont bitmapFont2;
+    public static BitmapFont bitmapFont3;
     public static TextBox cashText;
     public static TextBox xpText;
     public static TextBox unitCapText;
     public static TextBox unitDescText;
+    public static final TextBox[] unitText = new TextBox[5];
 
     public static Image bg;
     public static final Image[] strongholdImages = new Image[4];
@@ -146,10 +148,14 @@ public class Resources {
 
         bitmapFont = Asset.LoadBitmapFont("fonts/kefa.fnt", false);
         bitmapFont2 = Asset.LoadBitmapFont("fonts/kefa.fnt", false);
+        bitmapFont3 = Asset.LoadBitmapFont("fonts/kefa.fnt", false);
         cashText = new TextBox(bitmapFont);
         xpText = new TextBox(bitmapFont);
         unitCapText = new TextBox(bitmapFont);
         unitDescText = new TextBox(bitmapFont2);
+        for (int i = 0; i < unitText.length; i++) {
+            unitText[i] = new TextBox(bitmapFont3);
+        }
 
         themeMusic = Asset.LoadMusic("audio/theme.mp3");
 
@@ -204,23 +210,22 @@ public class Resources {
         unit3.SetPosition(726, 524);
         unit4.SetPosition(806, 524);
         unit5.SetPosition(886, 524);
-        unitUl.SetPosition(770, 430);
+        unitUl.SetPosition(770, 420);
         cashIcon.SetPosition(-28, 504);
         cashIcon.SetScale(0.25f);
         xpIcon.SetPosition(-28, 466);
         xpIcon.SetScale(0.25f);
-        unitQueueIcons[0].SetPosition(566, 450);
         for (byte i = 0; i < unitQueueIcons.length; i++) {
-            unitQueueIcons[i].SetPosition(566 + 20 * i, 462);
+            unitQueueIcons[i].SetPosition(566 + 20 * i, 452);
             unitQueueIcons[i].isVisible = false;
         }
         healthBar.SetPosition("center", 14);
         healthBarL.SetPosition(318, 18);
         healthBarR.SetPosition(485, 18);
         healthBarR.SetRotation(180);
-        queueBar.SetPosition(566, 492);
-        unitQueueBarInner.SetPosition(567, 500);
-        ultimateBarInner.SetPosition(567,493);
+        queueBar.SetPosition(566, 482);
+        unitQueueBarInner.SetPosition(567, 490);
+        ultimateBarInner.SetPosition(567,483);
         victoryBanner.SetPosition("center", 180);
         defeatBanner.SetPosition("center", 180);
 
@@ -233,12 +238,19 @@ public class Resources {
         unitDescText.SetPosition(248, 580);
         unitDescText.textContent = "";
 
+        for (int i = 0; i < unitText.length; i++) {
+            unitText[i].SetPosition(576 + (i * 80), 516);
+            unitText[i].textContent = "0";
+        }
+
         bitmapFont2.getData().setScale(0.8f);
+        bitmapFont3.getData().setScale(0.4f);
 
         UIController.AddBoxModule("start-menu", gameLogo, playBtn, creditBtn);
         UIController.AddBoxModule("mode-selection-menu", mode1, mode2, mode3, modeBanner, startBtn, menuBtn);
         UIController.AddBoxModule("in-game-menu", speedBtn, unit1, unit2, unit3, unit4, unit5, unitUl,
-                cashIcon, xpIcon, cashText, xpText, unitCapText, unitDescText, healthBar, healthBarL, healthBarR, queueBar,
+                cashIcon, xpIcon, cashText, xpText, unitCapText, unitDescText, unitText[0],
+                unitText[1], unitText[2], unitText[3], unitText[4], healthBar, healthBarL, healthBarR, queueBar,
                 unitQueueBarInner, ultimateBarInner, unitQueueIcons[0], unitQueueIcons[1], unitQueueIcons[2],
                 unitQueueIcons[3], unitQueueIcons[4], unitQueueIcons[5], unitQueueIcons[6], unitQueueIcons[7],
                 unitQueueIcons[8], unitQueueIcons[9]);
@@ -258,6 +270,6 @@ public class Resources {
                 unitQueueBarInner, ultimateBarInner, victoryBanner, defeatBanner, unitQueueIcons[0], unitQueueIcons[1],
                 unitQueueIcons[2], unitQueueIcons[3], unitQueueIcons[4], unitQueueIcons[5], unitQueueIcons[6],
                 unitQueueIcons[7], unitQueueIcons[8], unitQueueIcons[9]);
-        UIController.AddComponents(cashText, xpText, unitCapText, unitDescText);
+        UIController.AddComponents(cashText, xpText, unitCapText, unitDescText, unitText[0], unitText[1], unitText[2], unitText[3], unitText[4]);
     }
 }
