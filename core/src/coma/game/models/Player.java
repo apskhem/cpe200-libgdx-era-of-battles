@@ -264,7 +264,7 @@ public class Player {
             final Unit ul1 = playerL.units.get(0);
             final Unit ur1 = playerR.units.get(0);
 
-            isOverlapped = ul1.image.GetTransform().x + ul1.image.naturalWidth / 1.2 > ur1.image.GetTransform().x;
+            isOverlapped = ul1.image.GetTransform().x + ul1.image.naturalWidth > ur1.image.GetTransform().x;
 
             // for front unit
             if (isOverlapped) {

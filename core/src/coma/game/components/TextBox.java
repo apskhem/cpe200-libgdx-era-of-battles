@@ -34,8 +34,4 @@ final public class TextBox extends Renderable {
             this.bitmapFont.draw(b, this.textContent, this.x + translateX, this.y + translateY);
         }
     }
-
-    public void Remove() {
-        this.bitmapFont.dispose();
-    }
 }

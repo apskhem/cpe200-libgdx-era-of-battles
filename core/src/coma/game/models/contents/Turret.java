@@ -46,7 +46,9 @@ final public class Turret extends GameObject {
     public void Attack(final Unit unit) {
         if (unit == null) return;
 
-        final float dl = Math.abs(this.image.GetTransform().x + this.image.naturalWidth / 2f - unit.image.GetTransform().x);
+        final float dl = unit.image.isFlipped
+                ? unit.image.GetTransform().x - this.image.GetTransform().x
+                : (this.image.GetTransform().x + this.image.naturalWidth) - (unit.image.GetTransform().x + unit.image.naturalWidth);
         final float dh = Math.abs(this.image.GetTransform().y - unit.image.GetTransform().y);
 
         if (dl < Turret.ATTACK_RANGE) {
