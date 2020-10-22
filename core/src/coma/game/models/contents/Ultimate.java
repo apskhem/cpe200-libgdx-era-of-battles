@@ -78,7 +78,7 @@ final public class Ultimate {
                     spawnX = (i * 120) + 240;
                     spawnDelay = this.isFlipped ? ((n - 1) - i) * 2.5f : i * 2.5f;
                     damage = Mathf.CalRange(210f, 380f);
-                    moveSpeedY = 25.7f;
+                    moveSpeedY = 20.0f;
                     moveSpeedX = 0;
                 } break;
                 case 4: {

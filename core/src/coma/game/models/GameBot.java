@@ -135,7 +135,7 @@ final public class GameBot extends Player {
 
     @Override
     public void Setup() {
-        this.cash = 500;
+        this.cash = 400;
         this.xp = 0;
         this.deploymentDelay = 0;
         this.ultimateDelay = getUltimateDelay(this.difficulty);
@@ -156,7 +156,7 @@ final public class GameBot extends Player {
             this.UpgradeStronghold();
 
             if(MainGame.user.ultimateDelay <= 1000) {
-                if (this.units.size() + this.deploymentQueue.size <= MainGame.user.units.size() + 1) // prevent ultimate clear field
+                if (this.units.size() + this.deploymentQueue.size <= MainGame.user.units.size() + (3 - this.difficulty)) // prevent ultimate clear field
                     BotDecision();
             }
             else BotDecision();

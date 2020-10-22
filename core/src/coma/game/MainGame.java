@@ -30,7 +30,7 @@ public class MainGame extends ApplicationAdapter {
 	// config
 	public static final float CAMERA_SPEED = 10f;
 	public static final float THEME_VOLUME = 0.6f;
-	public static final float AUDIO_VOLUME = 1;
+	public static final float AUDIO_VOLUME = 0;
 	public static final DecimalFormat DF = new DecimalFormat("###,###,###");
 
 	// debug

@@ -240,7 +240,7 @@ public class Player {
     }
 
     public void Setup() {
-        this.cash = 400;
+        this.cash = 300;
         this.xp = 0;
         this.deploymentDelay = 0;
         this.ultimateDelay = Player.ULTIMATE_LOADING_DELAY;
