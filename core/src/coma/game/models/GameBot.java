@@ -89,20 +89,28 @@ final public class GameBot extends Player {
     }
 
     @Override
-    public void UseUltimate() {
+    public boolean UseUltimate() {
         if (this.ultimateDelay <= 0) {
             this.ultimateCaller = new Ultimate(this.era, true);
             this.ultimateDelay = GameBot.getUltimateDelay(this.difficulty);
+
+            return true;
         }
+
+        return false;
     }
 
     @Override
-    public void UpgradeStronghold() {
+    public boolean UpgradeStronghold() {
         if (this.era < 4 && this.xp >= Stronghold.GetRequiredXp(this.era)) {
             this.era++;
 
             this.stronghold.UpgradeTo(this.era);
+
+            return true;
         }
+
+        return false;
     }
 
     @Override

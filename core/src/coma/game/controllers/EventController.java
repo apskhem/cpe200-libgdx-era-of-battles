@@ -7,6 +7,8 @@ import coma.game.event.KeyboardEvent;
 import coma.game.event.MouseEvent;
 import coma.game.models.contents.*;
 
+import java.text.DecimalFormat;
+
 public class EventController {
     public static void Init() {
         // onclick
@@ -112,35 +114,82 @@ public class EventController {
             AudioController.PlayAndSetVolume(Resources.menuClickSound, MainGame.AUDIO_VOLUME);
         });
 
+        DecimalFormat df = new DecimalFormat("###,###,###");
+
         Resources.unit1.AddEventListener("onclick", (MouseEvent e) -> {
             if (!MainGame.devMode) return;
 
-            MainGame.user.DeployUnit(new MeleeUnit(MainGame.user.era, MeleeUnit.stats[MainGame.user.era - 1]));
+            final Unit u = new MeleeUnit(MainGame.user.era, MeleeUnit.stats[MainGame.user.era - 1]);
+            final boolean t = MainGame.user.DeployUnit(u);
+
+            if (!t) {
+                Resources.unitDescText.textContent = "Requires: " + df.format(u.cost) + " golds!";
+                Resources.unitDescText.tempTimer = 40;
+            }
         });
+
         Resources.unit2.AddEventListener("onclick", (MouseEvent e) -> {
             if (!MainGame.devMode) return;
 
-            MainGame.user.DeployUnit(new RangedUnit(MainGame.user.era, RangedUnit.stats[MainGame.user.era - 1]));
+            final Unit u =new RangedUnit(MainGame.user.era, RangedUnit.stats[MainGame.user.era - 1]);
+            final boolean t = MainGame.user.DeployUnit(u);
+
+            if (!t) {
+                Resources.unitDescText.textContent = "Requires: " + df.format(u.cost) + " golds!";
+                Resources.unitDescText.tempTimer = 40;
+            }
         });
+
         Resources.unit3.AddEventListener("onclick", (MouseEvent e) -> {
             if (!MainGame.devMode) return;
 
-            MainGame.user.DeployUnit(new CavalryUnit(MainGame.user.era, CavalryUnit.stats[MainGame.user.era - 1]));
+            final Unit u =new CavalryUnit(MainGame.user.era, CavalryUnit.stats[MainGame.user.era - 1]);
+            final boolean t = MainGame.user.DeployUnit(u);
+
+            if (!t) {
+                Resources.unitDescText.textContent = "Requires: " + df.format(u.cost) + " golds!";
+                Resources.unitDescText.tempTimer = 40;
+            }
         });
+
         Resources.unit4.AddEventListener("onclick", (MouseEvent e) -> {
             if (!MainGame.devMode) return;
 
-            MainGame.user.BuildTurret(Turret.GetEra(MainGame.user.era));
+            final Turret u = Turret.GetEra(MainGame.user.era);
+            final boolean t = MainGame.user.BuildTurret(u);
+
+            if (!t) {
+                Resources.unitDescText.textContent = "Requires: " + df.format(u.cost) + " golds!";
+                Resources.unitDescText.tempTimer = 40;
+            }
         });
+
         Resources.unit5.AddEventListener("onclick", (MouseEvent e) -> {
             if (!MainGame.devMode) return;
 
-            MainGame.user.UpgradeStronghold();
+            final boolean t = MainGame.user.UpgradeStronghold();
+
+            if (!t) {
+                if (MainGame.user.era == 4) {
+                    Resources.unitDescText.textContent = "Max era!";
+                }
+                else {
+                    Resources.unitDescText.textContent = "Requires: " + df.format(Stronghold.GetRequiredXp(MainGame.user.era)) + " xp!";
+                }
+
+                Resources.unitDescText.tempTimer = 40;
+            }
         });
+
         Resources.unitUl.AddEventListener("onclick", (MouseEvent e) -> {
             if (!MainGame.devMode) return;
 
-            MainGame.user.UseUltimate();
+            final boolean t = MainGame.user.UseUltimate();
+
+            if (!t) {
+                Resources.unitDescText.textContent = "Ultimate isn't ready!";
+                Resources.unitDescText.tempTimer = 40;
+            }
         });
 
         Resources.speedBtn.AddEventListener("onclick", (MouseEvent e) -> {

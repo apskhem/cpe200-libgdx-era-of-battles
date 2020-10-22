@@ -122,6 +122,16 @@ public class MainGame extends ApplicationAdapter {
 			foe.Awake();
 		}
 
+		// unit desc font
+		if (Resources.unitDescText.tempTimer < 0) {
+			Resources.unitDescText.SetOpacity(0);
+		}
+		else {
+			Resources.unitDescText.tempTimer -= deltaTime;
+
+			Resources.unitDescText.SetOpacity(Resources.unitDescText.tempTimer / 40);
+		}
+
 		// for events
 		EventHandlingManager.Update();
 

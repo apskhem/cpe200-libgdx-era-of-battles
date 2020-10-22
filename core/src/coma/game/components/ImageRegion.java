@@ -8,7 +8,6 @@ final public class ImageRegion extends Image {
     public int currentJRegionIndex;
     public int maxIRegionIndex;
     public int maxJRegionIndex;
-    public float tempTimer;
 
     public ImageRegion(final String internalPath, final int width, final int height, final int maxI, final int maxJ) {
         super(internalPath);

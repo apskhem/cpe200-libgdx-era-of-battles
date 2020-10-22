@@ -41,8 +41,8 @@ public class Player {
         this.stronghold.image.SetPosition(Player.LEFT_STRONGHOLD_POSITION_X, Player.STRONGHOLD_POSITION_Y);
     }
 
-    public void DeployUnit(final Unit u) {
-        if (u == null) return;
+    public boolean DeployUnit(final Unit u) {
+        if (u == null) return false;
 
         if (this.cash >= u.cost && this.units.size() + this.deploymentQueue.size < Player.MAX_UNIT) {
             this.cash -= u.cost;
@@ -50,7 +50,11 @@ public class Player {
             if (this.deploymentQueue.size == 0) this.deploymentDelay = u.GetDeploymentDelay();
 
             this.deploymentQueue.addLast(u);
+
+            return true;
         }
+
+        return false;
     }
 
     public void SpawnUnit(final Unit u) {
@@ -121,21 +125,29 @@ public class Player {
         return false;
     }
 
-    public void UpgradeStronghold() {
+    public boolean UpgradeStronghold() {
         if (this.era < 4 && this.xp >= Stronghold.GetRequiredXp(this.era)) {
             this.era++;
 
             this.stronghold.UpgradeTo(this.era);
 
             AudioController.PlayAndSetVolume(Resources.newEraSound, MainGame.AUDIO_VOLUME);
+
+            return true;
         }
+
+        return false;
     }
 
-    public void UseUltimate() {
+    public boolean UseUltimate() {
         if (this.ultimateDelay <= 0) {
             this.ultimateCaller = new Ultimate(this.era, false);
             this.ultimateDelay = Player.ULTIMATE_LOADING_DELAY;
+
+            return true;
         }
+
+        return false;
     }
 
     public void UpdateAfter(final int rawCost) {

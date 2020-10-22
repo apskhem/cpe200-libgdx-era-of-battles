@@ -44,9 +44,11 @@ public class Resources {
     public static Canvas defeatBanner;
 
     public static BitmapFont bitmapFont;
+    public static BitmapFont bitmapFont2;
     public static TextBox cashText;
     public static TextBox xpText;
     public static TextBox unitCapText;
+    public static TextBox unitDescText;
 
     public static Image bg;
     public static final Image[] strongholdImages = new Image[4];
@@ -143,9 +145,11 @@ public class Resources {
         defeatBanner = new Canvas("defeat.png");
 
         bitmapFont = Asset.LoadBitmapFont("fonts/kefa.fnt", false);
+        bitmapFont2 = Asset.LoadBitmapFont("fonts/kefa.fnt", false);
         cashText = new TextBox(bitmapFont);
         xpText = new TextBox(bitmapFont);
         unitCapText = new TextBox(bitmapFont);
+        unitDescText = new TextBox(bitmapFont2);
 
         themeMusic = Asset.LoadMusic("audio/theme.mp3");
 
@@ -226,11 +230,15 @@ public class Resources {
         xpText.textContent = "0";
         unitCapText.SetPosition(22, 500);
         unitCapText.textContent = "0/NaN";
+        unitDescText.SetPosition(248, 580);
+        unitDescText.textContent = "";
+
+        bitmapFont2.getData().setScale(0.8f);
 
         UIController.AddBoxModule("start-menu", gameLogo, playBtn, creditBtn);
         UIController.AddBoxModule("mode-selection-menu", mode1, mode2, mode3, modeBanner, startBtn, menuBtn);
         UIController.AddBoxModule("in-game-menu", speedBtn, unit1, unit2, unit3, unit4, unit5, unitUl,
-                cashIcon, xpIcon, cashText, xpText, unitCapText, healthBar, healthBarL, healthBarR, queueBar,
+                cashIcon, xpIcon, cashText, xpText, unitCapText, unitDescText, healthBar, healthBarL, healthBarR, queueBar,
                 unitQueueBarInner, ultimateBarInner, unitQueueIcons[0], unitQueueIcons[1], unitQueueIcons[2],
                 unitQueueIcons[3], unitQueueIcons[4], unitQueueIcons[5], unitQueueIcons[6], unitQueueIcons[7],
                 unitQueueIcons[8], unitQueueIcons[9]);
@@ -250,6 +258,6 @@ public class Resources {
                 unitQueueBarInner, ultimateBarInner, victoryBanner, defeatBanner, unitQueueIcons[0], unitQueueIcons[1],
                 unitQueueIcons[2], unitQueueIcons[3], unitQueueIcons[4], unitQueueIcons[5], unitQueueIcons[6],
                 unitQueueIcons[7], unitQueueIcons[8], unitQueueIcons[9]);
-        UIController.AddComponents(cashText, xpText, unitCapText);
+        UIController.AddComponents(cashText, xpText, unitCapText, unitDescText);
     }
 }
