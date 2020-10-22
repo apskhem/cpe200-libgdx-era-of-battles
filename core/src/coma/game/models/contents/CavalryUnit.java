@@ -9,10 +9,10 @@ import coma.game.components.Animator;
 final public class CavalryUnit extends Unit {
 
     public static final int[][] stats = {
-            { 160, 60, 50, 180 },
-            { 250, 90, 50, 360 },
-            { 360, 115, 50, 400 },
-            { 600, 150, 50, 600 }
+            { 320, 60, 50, 600 },
+            { 540, 90, 50, 1500 },
+            { 860, 135, 65, 3000 },
+            { 1450, 150, 50, 6800 }
     };
 
     public CavalryUnit(final int era, final int[] s) {

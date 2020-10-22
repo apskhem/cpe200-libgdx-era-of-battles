@@ -16,6 +16,38 @@ public class EventHandlingManager {
     private static String previousKey;
 
     public static void Update() {
+        // onmouseover
+        {
+            final int clientX = Gdx.input.getX();
+            final int clientY = (int)(600 * (1 - Gdx.input.getY() / 600f));
+
+            final MouseEvent e = new MouseEvent(clientX, clientY);
+
+            // run all object on clicked position
+            for (final EventTarget eventTarget : eventTargets) {
+                if (eventTarget instanceof Canvas && ((Canvas) eventTarget).IsInBound(clientX, clientY)) {
+                    // run all onclick function
+                    for (final EventListener listener : eventTarget.listeners) {
+                        if (listener.type.equals("onmouseover")) {
+                            listener.fn.Call(e);
+                        }
+                    }
+
+                    if (e.IsPropagationStopped()) break;
+                }
+            }
+
+            // global
+            if (!e.IsPropagationStopped()) {
+                for (final EventListener listener : global.listeners) {
+                    if (listener.type.equals("onmouseover")) {
+                        listener.fn.Call(e);
+                    }
+                }
+            }
+        }
+
+
         // onclick
         if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
             final int clientX = Gdx.input.getX();

@@ -113,21 +113,33 @@ public class EventController {
         });
 
         Resources.unit1.AddEventListener("onclick", (MouseEvent e) -> {
+            if (!MainGame.devMode) return;
+
             MainGame.user.DeployUnit(new MeleeUnit(MainGame.user.era, MeleeUnit.stats[MainGame.user.era - 1]));
         });
         Resources.unit2.AddEventListener("onclick", (MouseEvent e) -> {
+            if (!MainGame.devMode) return;
+
             MainGame.user.DeployUnit(new RangedUnit(MainGame.user.era, RangedUnit.stats[MainGame.user.era - 1]));
         });
         Resources.unit3.AddEventListener("onclick", (MouseEvent e) -> {
+            if (!MainGame.devMode) return;
+
             MainGame.user.DeployUnit(new CavalryUnit(MainGame.user.era, CavalryUnit.stats[MainGame.user.era - 1]));
         });
         Resources.unit4.AddEventListener("onclick", (MouseEvent e) -> {
+            if (!MainGame.devMode) return;
+
             MainGame.user.BuildTurret(Turret.GetEra(MainGame.user.era));
         });
         Resources.unit5.AddEventListener("onclick", (MouseEvent e) -> {
+            if (!MainGame.devMode) return;
+
             MainGame.user.UpgradeStronghold();
         });
         Resources.unitUl.AddEventListener("onclick", (MouseEvent e) -> {
+            if (!MainGame.devMode) return;
+
             MainGame.user.UseUltimate();
         });
 

@@ -53,11 +53,11 @@ final public class Stronghold extends GameObject {
     public static short GetRequiredXp(final byte era) {
         switch (era) {
             case 1:
-                return 500;
+                return 800;
             case 2:
-                return 1200;
+                return 3000;
             case 3:
-                return 2000;
+                return 10000;
             default:
                 return Short.MAX_VALUE;
         }

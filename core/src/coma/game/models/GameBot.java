@@ -125,6 +125,7 @@ final public class GameBot extends Player {
     }
 
     public void Awake() {
+        // init
         if (!this.isWaking) {
             this.ultimateDelay = GameBot.getUltimateDelay(this.difficulty);
             this.isWaking = true;
@@ -132,7 +133,7 @@ final public class GameBot extends Player {
 
         if (this.decisionDelay < 0) {
 
-            this.break322();
+            this.CounterPlayerTactic();
             this.CalculateTurretSetting();
             this.UpgradeStronghold();
 
@@ -160,7 +161,7 @@ final public class GameBot extends Player {
     }
 
     private void BotDecision() {
-        switch (this.CalculatedDecisionState()) { // << old: this.diffulty
+        switch (this.GetCalculatedDecisionState()) { // << old: this.diffulty
             case 1:
                 this.Level1Automation();
                 break;
@@ -173,7 +174,7 @@ final public class GameBot extends Player {
         }
     }
 
-    public byte CalculatedDecisionState() {
+    public byte GetCalculatedDecisionState() {
 
         if (this.cash >= CavalryUnit.stats[this.era - 1][3] * 5) state = 3;
         else if (this.cash >= CavalryUnit.stats[this.era - 1][3] * 3) state = 2;
@@ -190,7 +191,7 @@ final public class GameBot extends Player {
 
             int idx = Mathf.CalRange(0,100);      // random idx for choosing unit
 
-            if (anyMeleeFront()){
+            if (this.HasMeleeInFront()){
                 this.BotStrategy(idx);
             }
             else{
@@ -214,7 +215,7 @@ final public class GameBot extends Player {
         if (this.units.size() < Player.MAX_UNIT) {
             int idx = (int)(Math.random() * 100);      // random idx for choosing unit
 
-            if (anyMeleeFront()) {
+            if (this.HasMeleeInFront()) {
                 this.BotStrategy(idx);
             }
             else{
@@ -237,7 +238,7 @@ final public class GameBot extends Player {
         // game bot decision fired >> write decision commands here
         int idx = (int)(Math.random() * 100);      // random idx for choosing unit
 
-        if (anyMeleeFront()) {
+        if (this.HasMeleeInFront()) {
             this.BotStrategy(idx);
         }
         else {
@@ -253,7 +254,7 @@ final public class GameBot extends Player {
         }
     }
 
-    private boolean anyMeleeFront() {
+    private boolean HasMeleeInFront() {
         if (this.units.size() > 1) {
             final Unit lastU = this.units.get(this.units.size() - 1);
             final Unit secondLastU = this.units.get(this.units.size() - 2);
@@ -264,7 +265,7 @@ final public class GameBot extends Player {
         return false;
     }
 
-    private void break322() {
+    private void CounterPlayerTactic() { // '322 Fn Code'
         for(int i = 0; i < MainGame.user.units.size() - 2 ; i++){
             Unit tank = MainGame.user.units.get(i);
             Unit ranged1 = MainGame.user.units.get(i + 1);
@@ -274,7 +275,7 @@ final public class GameBot extends Player {
                     && ranged1 instanceof RangedUnit
                     && ranged2 instanceof RangedUnit){
 
-                if(anyMeleeFront()) {   // not wasting resources for melee infront
+                if(this.HasMeleeInFront()) {   // not wasting resources for melee infront
                     this.DeployUnit(new RangedUnit(this.era, RangedUnit.stats[this.era - 1]));
                     this.DeployUnit(new RangedUnit(this.era, RangedUnit.stats[this.era - 1]));
                 }
@@ -295,13 +296,13 @@ final public class GameBot extends Player {
         }
     }
 
-    private void BotStrategy(final int idx) {
-        switch (this.CalculatedDecisionState()){
+    private void BotStrategy(final int rand) {
+        switch (this.GetCalculatedDecisionState()){
             case 1 :{
-                if (idx >= 0 && idx < 50) {
+                if (rand >= 0 && rand < 50) {
                     this.DeployUnit(new MeleeUnit(this.era, MeleeUnit.stats[this.era - 1]));
                 }
-                else if (idx >= 50 && idx < 80) {
+                else if (rand >= 50 && rand < 80) {
                     this.DeployUnit(new CavalryUnit(this.era, CavalryUnit.stats[this.era - 1]));
                 }
                 else {
@@ -309,10 +310,10 @@ final public class GameBot extends Player {
                 }
             }
             case 2 :{
-                if (idx >= 0 && idx < 40) {
+                if (rand >= 0 && rand < 40) {
                     this.DeployUnit(new MeleeUnit(this.era, MeleeUnit.stats[this.era - 1]));
                 }
-                else if (idx >= 40 && idx < 80) {
+                else if (rand >= 40 && rand < 80) {
                     this.DeployUnit(new CavalryUnit(this.era, CavalryUnit.stats[this.era - 1]));
                 }
                 else {
@@ -320,10 +321,10 @@ final public class GameBot extends Player {
                 }
             }
             case 3 :{
-                if (idx >= 0 && idx < 50) {
+                if (rand >= 0 && rand < 50) {
                     this.DeployUnit(new CavalryUnit(this.era, CavalryUnit.stats[this.era - 1]));
                 }
-                else if (idx >= 50 && idx < 80) {
+                else if (rand >= 50 && rand < 80) {
                     this.DeployUnit(new MeleeUnit(this.era, MeleeUnit.stats[this.era - 1]));
                 }
                 else {
@@ -339,8 +340,9 @@ final public class GameBot extends Player {
 
         if (this.units.size() > 3) {
             // unit must be > 4 and cash is enough for build turret and spawn troops in the future
-            if (this.cash >= Turret.GetEra(this.era).cost + CavalryUnit.stats[this.era - 1][3] * (3 - this.difficulty));
+            if (this.cash >= Turret.GetEra(this.era).cost + CavalryUnit.stats[this.era - 1][3] * (3 - this.difficulty)) {
                 this.BuildTurret(Turret.GetEra(this.era));
+            }
         }
     }
 
