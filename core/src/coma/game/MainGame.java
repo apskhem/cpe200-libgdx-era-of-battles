@@ -31,6 +31,7 @@ public class MainGame extends ApplicationAdapter {
 	public static final float CAMERA_SPEED = 10f;
 	public static final float THEME_VOLUME = 0.6f;
 	public static final float AUDIO_VOLUME = 1;
+	public static final DecimalFormat DF = new DecimalFormat("###,###,###");
 
 	// debug
 	public static final boolean devMode = true;
@@ -67,12 +68,9 @@ public class MainGame extends ApplicationAdapter {
 
 		// keyboard event
 		if (GameStatus.isGameStarted) {
-			// update user ui
-			DecimalFormat df = new DecimalFormat("###,###,###");
-
 			// text
-			Resources.cashText.textContent = df.format(user.cash);
-			Resources.xpText.textContent = df.format(user.xp);
+			Resources.cashText.textContent = DF.format(user.cash);
+			Resources.xpText.textContent = DF.format(user.xp);
 			Resources.unitCapText.textContent = user.units.size() + "/" + Player.MAX_UNIT;
 
 			// unit icons
@@ -127,7 +125,7 @@ public class MainGame extends ApplicationAdapter {
 			Resources.unitDescText.SetOpacity(0);
 		}
 		else {
-			Resources.unitDescText.tempTimer -= deltaTime;
+			Resources.unitDescText.tempTimer -= deltaTime / gameSpeed;
 
 			Resources.unitDescText.SetOpacity(Resources.unitDescText.tempTimer / 40);
 		}

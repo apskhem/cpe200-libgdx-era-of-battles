@@ -114,8 +114,6 @@ public class EventController {
             AudioController.PlayAndSetVolume(Resources.menuClickSound, MainGame.AUDIO_VOLUME);
         });
 
-        DecimalFormat df = new DecimalFormat("###,###,###");
-
         Resources.unit1.AddEventListener("onclick", (MouseEvent e) -> {
             if (!MainGame.devMode) return;
 
@@ -123,7 +121,7 @@ public class EventController {
             final boolean t = MainGame.user.DeployUnit(u);
 
             if (!t) {
-                Resources.unitDescText.textContent = "Requires: " + df.format(u.cost) + " golds!";
+                Resources.unitDescText.textContent = "Requires: " + MainGame.DF.format(u.cost) + " golds!";
                 Resources.unitDescText.tempTimer = 40;
             }
         });
@@ -135,7 +133,7 @@ public class EventController {
             final boolean t = MainGame.user.DeployUnit(u);
 
             if (!t) {
-                Resources.unitDescText.textContent = "Requires: " + df.format(u.cost) + " golds!";
+                Resources.unitDescText.textContent = "Requires: " + MainGame.DF.format(u.cost) + " golds!";
                 Resources.unitDescText.tempTimer = 40;
             }
         });
@@ -147,7 +145,7 @@ public class EventController {
             final boolean t = MainGame.user.DeployUnit(u);
 
             if (!t) {
-                Resources.unitDescText.textContent = "Requires: " + df.format(u.cost) + " golds!";
+                Resources.unitDescText.textContent = "Requires: " + MainGame.DF.format(u.cost) + " golds!";
                 Resources.unitDescText.tempTimer = 40;
             }
         });
@@ -159,7 +157,7 @@ public class EventController {
             final boolean t = MainGame.user.BuildTurret(u);
 
             if (!t) {
-                Resources.unitDescText.textContent = "Requires: " + df.format(u.cost) + " golds!";
+                Resources.unitDescText.textContent = "Requires: " + MainGame.DF.format(u.cost) + " golds!";
                 Resources.unitDescText.tempTimer = 40;
             }
         });
@@ -174,7 +172,7 @@ public class EventController {
                     Resources.unitDescText.textContent = "Max era!";
                 }
                 else {
-                    Resources.unitDescText.textContent = "Requires: " + df.format(Stronghold.GetRequiredXp(MainGame.user.era)) + " xp!";
+                    Resources.unitDescText.textContent = "Requires: " + MainGame.DF.format(Stronghold.GetRequiredXp(MainGame.user.era)) + " xp!";
                 }
 
                 Resources.unitDescText.tempTimer = 40;
