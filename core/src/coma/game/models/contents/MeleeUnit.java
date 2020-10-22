@@ -11,7 +11,7 @@ final public class MeleeUnit extends Unit {
     public static final int[][] stats = {
             { 120, 40, 40, 80 },
             { 190, 60, 40, 160 },
-            { 280, 80, 40, 300 },
+            { 280, 80, 40,  },
             { 420, 115, 40, 420 }
     };
 

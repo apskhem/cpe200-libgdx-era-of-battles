@@ -5,17 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="844ff65d-8b91-45ba-bbac-71ea5e0740a1" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gradle/5.4.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/5.4.1/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/coma/game/MainGame.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/coma/game/MainGame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/coma/game/models/GameBot.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/coma/game/models/GameBot.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/coma/game/models/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/coma/game/models/Player.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/coma/game/models/contents/CavalryUnit.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/coma/game/models/contents/CavalryUnit.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/src/coma/game/models/contents/MeleeUnit.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/coma/game/models/contents/MeleeUnit.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/coma/game/models/contents/RangedUnit.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/coma/game/models/contents/RangedUnit.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/coma/game/models/contents/Stronghold.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/coma/game/models/contents/Stronghold.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/coma/game/models/contents/Turret.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/coma/game/models/contents/Turret.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/src/coma/game/models/contents/Ultimate.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/coma/game/models/contents/Ultimate.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,22 +79,22 @@
       <screen x="0" y="23" width="1440" height="809" />
     </state>
     <state x="408" y="170" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.23.1440.809@0.23.1440.809" timestamp="1602905857790" />
-    <state width="1398" height="174" key="GridCell.Tab.0.bottom" timestamp="1603354668810">
+    <state width="1398" height="174" key="GridCell.Tab.0.bottom" timestamp="1603355505198">
       <screen x="0" y="23" width="1440" height="809" />
     </state>
-    <state width="1398" height="174" key="GridCell.Tab.0.bottom/0.23.1440.809@0.23.1440.809" timestamp="1603354668810" />
-    <state width="1398" height="174" key="GridCell.Tab.0.center" timestamp="1603354668809">
+    <state width="1398" height="174" key="GridCell.Tab.0.bottom/0.23.1440.809@0.23.1440.809" timestamp="1603355505198" />
+    <state width="1398" height="174" key="GridCell.Tab.0.center" timestamp="1603355505197">
       <screen x="0" y="23" width="1440" height="809" />
     </state>
-    <state width="1398" height="174" key="GridCell.Tab.0.center/0.23.1440.809@0.23.1440.809" timestamp="1603354668809" />
-    <state width="1398" height="174" key="GridCell.Tab.0.left" timestamp="1603354668808">
+    <state width="1398" height="174" key="GridCell.Tab.0.center/0.23.1440.809@0.23.1440.809" timestamp="1603355505197" />
+    <state width="1398" height="174" key="GridCell.Tab.0.left" timestamp="1603355505196">
       <screen x="0" y="23" width="1440" height="809" />
     </state>
-    <state width="1398" height="174" key="GridCell.Tab.0.left/0.23.1440.809@0.23.1440.809" timestamp="1603354668808" />
-    <state width="1398" height="174" key="GridCell.Tab.0.right" timestamp="1603354668810">
+    <state width="1398" height="174" key="GridCell.Tab.0.left/0.23.1440.809@0.23.1440.809" timestamp="1603355505196" />
+    <state width="1398" height="174" key="GridCell.Tab.0.right" timestamp="1603355505197">
       <screen x="0" y="23" width="1440" height="809" />
     </state>
-    <state width="1398" height="174" key="GridCell.Tab.0.right/0.23.1440.809@0.23.1440.809" timestamp="1603354668810" />
+    <state width="1398" height="174" key="GridCell.Tab.0.right/0.23.1440.809@0.23.1440.809" timestamp="1603355505197" />
     <state width="1398" height="258" key="GridCell.Tab.1.bottom" timestamp="1602918273098">
       <screen x="0" y="23" width="1440" height="809" />
     </state>

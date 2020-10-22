@@ -10,9 +10,9 @@ final public class CavalryUnit extends Unit {
 
     public static final int[][] stats = {
             { 200, 60, 50, 240 },
-            { 300, 90, 50, 360 },
-            { 400, 135, 65, 450 },
-            { 6500, 150, 50, 600 }
+            { 320, 90, 50, 360 },
+            { 480, 135, 65, 450 },
+            { 650, 150, 50, 600 }
     };
 
     public CavalryUnit(final int era, final int[] s) {
