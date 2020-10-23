@@ -1,10 +1,8 @@
 package coma.game.models.contents;
 
 import com.badlogic.gdx.audio.Sound;
-import coma.game.MainGame;
 import coma.game.Resources;
 import coma.game.components.Animator;
-import coma.game.controllers.AudioController;
 
 /**
  * Melee unit class.

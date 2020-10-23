@@ -50,7 +50,7 @@ public class Resources {
     public static TextBox xpText;
     public static TextBox unitCapText;
     public static TextBox unitDescText;
-    public static final TextBox[] unitText = new TextBox[5];
+    public static final TextBox[] unitTexts = new TextBox[5];
 
     public static Image bg;
     public static final Image[] strongholdImages = new Image[4];
@@ -163,8 +163,8 @@ public class Resources {
         xpText = new TextBox(bitmapFont);
         unitCapText = new TextBox(bitmapFont);
         unitDescText = new TextBox(bitmapFont2);
-        for (int i = 0; i < unitText.length; i++) {
-            unitText[i] = new TextBox(bitmapFont3);
+        for (int i = 0; i < unitTexts.length; i++) {
+            unitTexts[i] = new TextBox(bitmapFont3);
         }
 
         themeMusic = Asset.LoadMusic("audio/theme.mp3");
@@ -250,9 +250,9 @@ public class Resources {
         unitDescText.SetPosition(248, 580);
         unitDescText.textContent = "";
 
-        for (int i = 0; i < unitText.length; i++) {
-            unitText[i].SetPosition(576 + (i * 80), 516);
-            unitText[i].textContent = "0";
+        for (int i = 0; i < unitTexts.length; i++) {
+            unitTexts[i].SetPosition(576 + (i * 80), 516);
+            unitTexts[i].textContent = "0";
         }
 
         bitmapFont2.getData().setScale(0.8f);
@@ -261,8 +261,8 @@ public class Resources {
         UIController.AddBoxModule("start-menu", gameLogo, playBtn, creditBtn);
         UIController.AddBoxModule("mode-selection-menu", modeBanner, mode1, mode2, mode3, startBtn, menuBtn);
         UIController.AddBoxModule("in-game-menu", speedBtn, unit1, unit2, unit3, unit4, unit5, unitUl,
-                cashIcon, xpIcon, cashText, xpText, unitCapText, unitDescText, unitText[0],
-                unitText[1], unitText[2], unitText[3], unitText[4], healthBar, healthBarL, healthBarR, queueBar,
+                cashIcon, xpIcon, cashText, xpText, unitCapText, unitDescText, unitTexts[0],
+                unitTexts[1], unitTexts[2], unitTexts[3], unitTexts[4], healthBar, healthBarL, healthBarR, queueBar,
                 unitQueueBarInner, ultimateBarInner, unitQueueIcons[0], unitQueueIcons[1], unitQueueIcons[2],
                 unitQueueIcons[3], unitQueueIcons[4], unitQueueIcons[5], unitQueueIcons[6], unitQueueIcons[7],
                 unitQueueIcons[8], unitQueueIcons[9]);
@@ -282,6 +282,6 @@ public class Resources {
                 unitQueueBarInner, ultimateBarInner, victoryBanner, defeatBanner, unitQueueIcons[0], unitQueueIcons[1],
                 unitQueueIcons[2], unitQueueIcons[3], unitQueueIcons[4], unitQueueIcons[5], unitQueueIcons[6],
                 unitQueueIcons[7], unitQueueIcons[8], unitQueueIcons[9]);
-        UIController.AddComponents(cashText, xpText, unitCapText, unitDescText, unitText[0], unitText[1], unitText[2], unitText[3], unitText[4]);
+        UIController.AddComponents(cashText, xpText, unitCapText, unitDescText, unitTexts[0], unitTexts[1], unitTexts[2], unitTexts[3], unitTexts[4]);
     }
 }

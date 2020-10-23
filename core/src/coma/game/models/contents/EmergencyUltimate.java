@@ -15,12 +15,10 @@ public class EmergencyUltimate extends Ultimate {
 
     // constant
     private final short PLAYER_SPAWN_POS = 152;
-    private final short UNIT_SPAWN_POSITION_Y = 52;
     private final short BOT_SPAWN_POS = Player.RIGHT_STRONGHOLD_POSITION_X + 210;
+    private final short UNIT_SPAWN_POSITION_Y = 52;
 
-    private final short EXPLODE_POS_X = 1800;
-    private final float MOVE_SPEED = 20f;
-    private final float ANIMETION_DELAY = 10f;
+    private final float MOVE_SPEED = 13.5f;
 
     public static final float REQUIRED_XP = 4000;
 
@@ -33,7 +31,12 @@ public class EmergencyUltimate extends Ultimate {
     public EmergencyUltimate(final Player caller, final Player target, final boolean isFlipped) {
         super(caller, target, (byte) -1, isFlipped);
 
-        this.doraemonImage.SetPosition(this.isFlipped ? this.BOT_SPAWN_POS : this.PLAYER_SPAWN_POS, this.UNIT_SPAWN_POSITION_Y);
+        if (isFlipped) {
+            this.doraemonImage.SetPosition(this.BOT_SPAWN_POS - this.doraemonImage.naturalWidth, this.UNIT_SPAWN_POSITION_Y);
+        }
+        else {
+            this.doraemonImage.SetPosition(this.PLAYER_SPAWN_POS, this.UNIT_SPAWN_POSITION_Y);
+        }
 
         this.anim.refImage = this.doraemonImage;
 

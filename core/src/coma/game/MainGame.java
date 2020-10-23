@@ -84,11 +84,11 @@ public class MainGame extends ApplicationAdapter {
 			Resources.unitUl.SetActive(user.ultimateDelay <= 0);
 
 			// textbox
-			Resources.unitText[0].textContent = DF.format(MeleeUnit.stats[user.era - 1][3]) + " g";
-			Resources.unitText[1].textContent = DF.format(RangedUnit.stats[user.era - 1][3]) + " g";
-			Resources.unitText[2].textContent = DF.format(CavalryUnit.stats[user.era - 1][3]) + " g";
-			Resources.unitText[3].textContent = DF.format(Turret.GetEra(user.era).cost) + " g";
-			Resources.unitText[4].textContent = (user.era >= 4
+			Resources.unitTexts[0].textContent = DF.format(MeleeUnit.stats[user.era - 1][3]) + " g";
+			Resources.unitTexts[1].textContent = DF.format(RangedUnit.stats[user.era - 1][3]) + " g";
+			Resources.unitTexts[2].textContent = DF.format(CavalryUnit.stats[user.era - 1][3]) + " g";
+			Resources.unitTexts[3].textContent = DF.format(Turret.GetEra(user.era).cost) + " g";
+			Resources.unitTexts[4].textContent = (user.era >= 4
 					? DF.format(EmergencyUltimate.REQUIRED_XP)
 					: DF.format(Stronghold.GetRequiredXp(user.era))) + " xp";
 

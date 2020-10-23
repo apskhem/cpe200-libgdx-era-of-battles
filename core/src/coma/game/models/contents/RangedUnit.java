@@ -11,9 +11,9 @@ final public class RangedUnit extends Unit {
 
     public static final int[][] stats = {
             { 80, 9, 15, 100 },
-            { 150, 19, 15, 200 },
-            { 230, 28, 12, 320 },
-            { 350, 75, 30, 450 }
+            { 150, 27, 22, 200 },
+            { 230, 26, 12, 380 },
+            { 350, 75, 30, 540 }
     };
 
     public RangedUnit(final int era, final int[] s) {

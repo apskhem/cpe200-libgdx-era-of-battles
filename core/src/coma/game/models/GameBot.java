@@ -106,6 +106,20 @@ final public class GameBot extends Player {
     }
 
     @Override
+    public boolean UseEmergencyUltimate(final Player target) {
+        if (target == null) return false;
+
+        if (this.era >= 4 && this.xp >= EmergencyUltimate.REQUIRED_XP) {
+            this.xp -= EmergencyUltimate.REQUIRED_XP;
+            this.emergencyUltimateCaller = new EmergencyUltimate(this, target, true);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
     public boolean UpgradeStronghold() {
         if (this.era < 4 && this.xp >= Stronghold.GetRequiredXp(this.era)) {
             this.era++;
@@ -124,7 +138,6 @@ final public class GameBot extends Player {
             case 1:
             case 2: {
                 this.cash += (int) (rawCost * (1.0f + 0.4f * (this.difficulty / (0.3 * this.era) + this.time2end)));
-                System.out.println(this.time2end);
             } break;
             case 3: {
                 this.cash += (int) (rawCost * (1.0f + 0.4f * this.difficulty));
@@ -139,7 +152,7 @@ final public class GameBot extends Player {
         this.cash = 400;
         this.xp = 0;
         this.deploymentDelay = 0;
-        this.ultimateDelay = getUltimateDelay(this.difficulty);
+        this.ultimateDelay = GameBot.getUltimateDelay(this.difficulty);
         this.stronghold.SetEra(this.era = 1);
     }
 
@@ -156,13 +169,17 @@ final public class GameBot extends Player {
             this.CalculateTurretSetting();
             this.UpgradeStronghold();
 
-            if(MainGame.user.ultimateDelay <= 1000) {
-                if (this.units.size() + this.deploymentQueue.size <= MainGame.user.units.size() + (3 - this.difficulty)) // prevent ultimate clear field
-                    BotDecision();
-            }
-            else BotDecision();
+            if (this.difficulty == 3) this.UseEmergencyUltimate(MainGame.user);
 
-            if (MainGame.user.units.size() >= 3 || isBaseHit()) this.UseUltimate(MainGame.user);
+            if (MainGame.user.ultimateDelay <= 1000) {
+                if (this.units.size() + this.deploymentQueue.size <= MainGame.user.units.size() + (3 - this.difficulty)) // prevent ultimate clear field
+                    this.BotDecision();
+            }
+            else {
+                this.BotDecision();
+            }
+
+            if ((MainGame.user.units.size() >= 3 || this.isBaseHit()) && this.difficulty > 1) this.UseUltimate(MainGame.user);
 
             this.decisionDelay = GameBot.DECISION_DELAY;
         }

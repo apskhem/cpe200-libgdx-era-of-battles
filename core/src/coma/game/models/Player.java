@@ -28,7 +28,7 @@ public class Player {
     public byte era = 1;
     public float deploymentDelay;
     public float ultimateDelay = Player.ULTIMATE_LOADING_DELAY;
-    protected short time2end = 0;
+    protected short time2end = 1;
 
     // static
     public static final short LEFT_STRONGHOLD_POSITION_X = -80;
