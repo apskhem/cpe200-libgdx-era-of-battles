@@ -20,6 +20,7 @@ public abstract class Unit extends GameObject {
     public final Image healthBarInner;
     public final Animator animator;
     public Sound attackSound;
+    public Sound[] deadSound;
 
     public float moveX;
     public short health;
@@ -141,6 +142,12 @@ public abstract class Unit extends GameObject {
         this.animator.SetAnimationFrameTo(7);
         Renderer.RemoveComponents(this.healthBar, this.healthBarInner);
         Unit.deadUnits.add(this);
+
+        if (this.deadSound != null) {
+            for (final Sound sound : this.deadSound) {
+                AudioController.PlayAndSetVolume(sound,  MainGame.AUDIO_VOLUME / (sound == Resources.meleeDie1 ? 1 : 3));
+            }
+        }
     }
 
     private void ContinueDeadFading() {

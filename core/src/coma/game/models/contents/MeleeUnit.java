@@ -1,7 +1,10 @@
 package coma.game.models.contents;
 
+import com.badlogic.gdx.audio.Sound;
+import coma.game.MainGame;
 import coma.game.Resources;
 import coma.game.components.Animator;
+import coma.game.controllers.AudioController;
 
 /**
  * Melee unit class.
@@ -18,6 +21,9 @@ final public class MeleeUnit extends Unit {
     public MeleeUnit(final int era, final int[] s) {
         super(new Animator(Resources.meleeUnitImages[era - 1]), s[0], s[1], s[2], s[3], era);
         this.attackSound = Resources.meleeHitSounds[era - 1];
+
+        this.deadSound = new Sound[1];
+        this.deadSound[0] = Resources.meleeDie1;
     }
 
     public short GetDeploymentDelay() {

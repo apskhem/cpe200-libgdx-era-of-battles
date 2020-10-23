@@ -1,5 +1,6 @@
 package coma.game.models.contents;
 
+import com.badlogic.gdx.audio.Sound;
 import coma.game.Resources;
 import coma.game.components.Animator;
 
@@ -18,6 +19,9 @@ final public class RangedUnit extends Unit {
     public RangedUnit(final int era, final int[] s) {
         super(new Animator(Resources.rangedUnitImages[era - 1]), s[0], s[1], s[2], s[3], era);
         this.attackSound = Resources.rangedHitSounds[era - 1];
+
+        this.deadSound = new Sound[1];
+        this.deadSound[0] = Resources.meleeDie1;
     }
 
     public short GetDeploymentDelay() {

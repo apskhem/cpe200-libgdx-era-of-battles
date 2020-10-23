@@ -164,7 +164,7 @@ public class EventController {
         });
 
         Resources.unit5.AddEventListener("onclick", (MouseEvent e) -> {
-            if (!GameStatus.isGameStarted) return;
+            if (!GameStatus.isGameStarted || MainGame.user.emergencyUltimateCaller != null) return;
 
             final boolean t = MainGame.user.era >= 4 ? MainGame.user.UseEmergencyUltimate(MainGame.foe) : MainGame.user.UpgradeStronghold();
 

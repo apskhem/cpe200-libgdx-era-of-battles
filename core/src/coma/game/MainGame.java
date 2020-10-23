@@ -30,7 +30,7 @@ public class MainGame extends ApplicationAdapter {
 	// config
 	public static final float CAMERA_SPEED = 10f;
 	public static final float THEME_VOLUME = 0.6f;
-	public static final float AUDIO_VOLUME = 0;
+	public static final float AUDIO_VOLUME = 1;
 	public static final DecimalFormat DF = new DecimalFormat("###,###,###");
 
 	// debug
@@ -78,7 +78,9 @@ public class MainGame extends ApplicationAdapter {
 			Resources.unit2.SetActive(user.cash >= RangedUnit.stats[user.era - 1][3]);
 			Resources.unit3.SetActive(user.cash >= CavalryUnit.stats[user.era - 1][3]);
 			Resources.unit4.SetActive(user.BuildTurret(null));
-			Resources.unit5.SetActive(user.xp >= (user.era < 4 ? Stronghold.GetRequiredXp(user.era) : EmergencyUltimate.REQUIRED_XP));
+			Resources.unit5.SetActive(
+					(user.xp >= (user.era < 4 ? Stronghold.GetRequiredXp(user.era) : EmergencyUltimate.REQUIRED_XP))
+					&& user.emergencyUltimateCaller == null);
 			Resources.unitUl.SetActive(user.ultimateDelay <= 0);
 
 			// textbox
@@ -86,7 +88,9 @@ public class MainGame extends ApplicationAdapter {
 			Resources.unitText[1].textContent = DF.format(RangedUnit.stats[user.era - 1][3]) + " g";
 			Resources.unitText[2].textContent = DF.format(CavalryUnit.stats[user.era - 1][3]) + " g";
 			Resources.unitText[3].textContent = DF.format(Turret.GetEra(user.era).cost) + " g";
-			Resources.unitText[4].textContent = (user.era >= 4 ? DF.format(EmergencyUltimate.REQUIRED_XP) : DF.format(Stronghold.GetRequiredXp(user.era))) + " xp";
+			Resources.unitText[4].textContent = (user.era >= 4
+					? DF.format(EmergencyUltimate.REQUIRED_XP)
+					: DF.format(Stronghold.GetRequiredXp(user.era))) + " xp";
 
 			// delay bars
 			final float cd = user.deploymentQueue.size > 0 ? user.deploymentQueue.first().GetDeploymentDelay() : 100;
@@ -98,7 +102,7 @@ public class MainGame extends ApplicationAdapter {
 			Resources.healthBarR.SetViewBox(foe.stronghold.GetPercentageHealth(Resources.healthBarR.naturalWidth), Float.NaN);
 
 			// set texture
-			Resources.unit5.SetTexture(user.era >= 4 ? Resources.unit5Ul : Resources.unit5);
+			Resources.unit5.SetTexture(user.era >= 4 ? Resources.unit5UlImage : Resources.unit5EraImage);
 			Resources.unitUl.SetTexture(Resources.ultimateBannerImages[user.era - 1]);
 
 			// queue ui

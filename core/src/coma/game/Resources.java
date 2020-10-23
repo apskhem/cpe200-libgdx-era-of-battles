@@ -67,7 +67,8 @@ public class Resources {
     public static Image unitHealthBar;
     public static Image unitHealthBarInner;
 
-    public static Image unit5Ul;
+    public static Image unit5UlImage;
+    public static Image unit5EraImage;
 
     public static Music themeMusic;
     public static Sound devLogoSound;
@@ -80,8 +81,8 @@ public class Resources {
     public static final Sound[] rangedHitSounds = new Sound[4];
     public static final Sound[] cavalryHitSounds = new Sound[4];
     public static final Sound[] explosionSounds = new Sound[1];
+    public static final Sound[] cavalryDieSounds = new Sound[3];
     public static Sound meleeDie1;
-    public static Sound cavalryDie1;
     public static Sound unitCallSound;
     public static Sound ulPlaneSound;
 
@@ -112,7 +113,8 @@ public class Resources {
         ulPlane = new Image("ul-plane.png");
         unitHealthBar = new Image("unit-health-bar.png");
         unitHealthBarInner = new Image("unit-health-bar-inner.png");
-        unit5Ul = new Image("unit-5-ul.png");
+        unit5UlImage = new Image("unit-5-ul.png");
+        unit5EraImage = new Image("unit-5.png");
 
         for(byte i = 0; i < emergencyUltimateImages.length; i++){
             emergencyUltimateImages[i] = new Image("emergency-" + (i + 1) + ".png");
@@ -136,7 +138,7 @@ public class Resources {
         unit2 = new Canvas("unit-2.png");
         unit3 = new Canvas("unit-3.png");
         unit4 = new Canvas("unit-4.png");
-        unit5 = new Canvas("unit-5.png");
+        unit5 = new Canvas(unit5EraImage);
         unitUl = new Canvas(ultimateBannerImages[0]);
         cashIcon = new Canvas("cash-icon.png");
         xpIcon = new Canvas("xp-icon.png");
@@ -189,7 +191,9 @@ public class Resources {
 
         explosionSounds[0] = Asset.LoadSound("audio/explosion-1.mp3");
         meleeDie1 = Asset.LoadSound("audio/melee-die-1.mp3");
-        cavalryDie1 = Asset.LoadSound("audio/cavalry-die-1.mp3");
+        cavalryDieSounds[0] = Asset.LoadSound("audio/cavalry-die-1.mp3");
+        cavalryDieSounds[1] = Asset.LoadSound("audio/cavalry-die-2.mp3");
+        cavalryDieSounds[2] = Asset.LoadSound("audio/cavalry-die-3.mp3");
         unitCallSound = Asset.LoadSound("audio/call-unit.mp3");
     }
 

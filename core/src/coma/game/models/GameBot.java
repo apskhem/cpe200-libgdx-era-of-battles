@@ -120,20 +120,18 @@ final public class GameBot extends Player {
 
     @Override
     public void UpdateAfter(final int rawCost) {
-        switch(this.difficulty){
+        switch (this.difficulty) {
             case 1:
-            case 2:
+            case 2: {
                 this.cash += (int) (rawCost * (1.0f + 0.4f * (this.difficulty / (0.3 * this.era) + this.time2end)));
                 System.out.println(this.time2end);
-                break;
-            case 3:
-                this.cash += (int) (rawCost * (1.0f + 0.4f * this.difficulty)); break;
+            } break;
+            case 3: {
+                this.cash += (int) (rawCost * (1.0f + 0.4f * this.difficulty));
+            }
         }
 
-        if(this.era == 4)
-            this.xp = Stronghold.GetRequiredXp((byte)4);
-        else
-            this.xp += (int) (rawCost * Math.random() * (0.2f + 0.1f * this.difficulty) + rawCost * (0.05f + 0.01 * this.difficulty));
+        this.xp += (int) (rawCost * Math.random() * (0.2f + 0.1f * this.difficulty) + rawCost * (0.05f + 0.01 * this.difficulty));
     }
 
     @Override

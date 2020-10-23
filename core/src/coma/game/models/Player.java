@@ -177,8 +177,7 @@ public class Player {
             case 3: this.cash += (int) (rawCost * 0.9 / (0.3 * this.time2end)); break;
         }
 
-        if(this.era == 4) this.xp = Stronghold.GetRequiredXp((byte)4);
-        else this.xp += (int)(rawCost * Math.random() * 0.3f + rawCost * 0.05f);
+        this.xp += (int)(rawCost * Math.random() * 0.3f + rawCost * 0.05f);
     }
 
     // automation looping
@@ -202,12 +201,6 @@ public class Player {
 
                 this.units.remove(u);
                 u.Die();
-
-                AudioController.PlayAndSetVolume(Resources.meleeDie1, MainGame.AUDIO_VOLUME);
-
-                if (u instanceof CavalryUnit && u.era == 1) {
-                    AudioController.PlayAndSetVolume(Resources.cavalryDie1, MainGame.AUDIO_VOLUME / 3);
-                }
             }
         }
 
