@@ -73,7 +73,7 @@ public abstract class Unit extends GameObject {
     }
 
     public boolean IsReachedMax() {
-        return moveX >= Unit.MAX_MOVE - this.image.naturalWidth;
+        return this.moveX >= Unit.MAX_MOVE - this.image.naturalWidth;
     }
 
     public void UpdateHealthBar() {

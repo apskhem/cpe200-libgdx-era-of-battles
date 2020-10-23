@@ -79,7 +79,7 @@ public class Animator {
     }
 
     public void SetAnimationFrameTo(int frame) {
-        if (this.currentFrame == frame) return;
+        if (this.currentFrame == frame || refImage == null) return;
 
         this.currentFrame = (byte) frame;
 

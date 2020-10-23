@@ -21,6 +21,7 @@ public class Player {
     public final ArrayList<Unit> units = new ArrayList<>();
     public final Queue<Unit> deploymentQueue = new Queue<>();
     public Ultimate ultimateCaller;
+    public EmergencyUltimate emergencyUltimateCaller;
 
     public int cash;
     public int xp;
@@ -140,12 +141,28 @@ public class Player {
         return false;
     }
 
-    public boolean UseUltimate() {
+    public boolean UseUltimate(final Player target) {
+        if (target == null) return false;
+
         if (this.ultimateDelay <= 0) {
-            this.ultimateCaller = new Ultimate(this.era, false);
+            this.ultimateCaller = new Ultimate(this, target, this.era, false);
             this.ultimateDelay = Player.ULTIMATE_LOADING_DELAY;
 
-            if(this.era == 4)   this.time2end++;
+            if (this.era == 4)  this.time2end++;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean UseEmergencyUltimate(final Player target) {
+        if (target == null) return false;
+
+        if (this.era >= 4 && this.xp >= EmergencyUltimate.REQUIRED_XP) {
+            this.xp -= EmergencyUltimate.REQUIRED_XP;
+            this.emergencyUltimateCaller = new EmergencyUltimate(this, target, false);
+
             return true;
         }
 
@@ -164,7 +181,6 @@ public class Player {
         else this.xp += (int)(rawCost * Math.random() * 0.3f + rawCost * 0.05f);
     }
 
-    //refractor
     // automation looping
     public int UpdateUnits(final boolean isOverlapped) {
         // update overall
@@ -173,6 +189,7 @@ public class Player {
         if (this.ultimateDelay > 0) this.ultimateDelay -= MainGame.deltaTime;
 
         if (this.ultimateCaller != null) this.ultimateCaller.Update();
+        if (this.emergencyUltimateCaller != null) this.emergencyUltimateCaller.Update();
 
         // check dead units
         int deadCost = 0;
@@ -297,17 +314,6 @@ public class Player {
 
         for (final Turret turret : playerR.turrets) {
             if (playerL.units.size() > 0) turret.Attack(playerL.units.get(0));
-        }
-
-        // using ultimate
-        if (playerL.ultimateCaller != null) {
-            playerL.ultimateCaller.caller = playerL;
-            playerL.ultimateCaller.target = playerR;
-        }
-
-        if (playerR.ultimateCaller != null) {
-            playerR.ultimateCaller.caller = playerR;
-            playerR.ultimateCaller.target = playerL;
         }
 
         // playerL

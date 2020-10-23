@@ -1,5 +1,6 @@
 package coma.game.controllers;
 
+import com.sun.tools.javac.Main;
 import coma.game.MainGame;
 import coma.game.Resources;
 import coma.game.event.EventHandlingManager;
@@ -115,7 +116,7 @@ public class EventController {
         });
 
         Resources.unit1.AddEventListener("onclick", (MouseEvent e) -> {
-            if (!MainGame.devMode) return;
+            if (!GameStatus.isGameStarted) return;
 
             final Unit u = new MeleeUnit(MainGame.user.era, MeleeUnit.stats[MainGame.user.era - 1]);
             final boolean t = MainGame.user.DeployUnit(u);
@@ -127,7 +128,7 @@ public class EventController {
         });
 
         Resources.unit2.AddEventListener("onclick", (MouseEvent e) -> {
-            if (!MainGame.devMode) return;
+            if (!GameStatus.isGameStarted) return;
 
             final Unit u =new RangedUnit(MainGame.user.era, RangedUnit.stats[MainGame.user.era - 1]);
             final boolean t = MainGame.user.DeployUnit(u);
@@ -139,7 +140,7 @@ public class EventController {
         });
 
         Resources.unit3.AddEventListener("onclick", (MouseEvent e) -> {
-            if (!MainGame.devMode) return;
+            if (!GameStatus.isGameStarted) return;
 
             final Unit u =new CavalryUnit(MainGame.user.era, CavalryUnit.stats[MainGame.user.era - 1]);
             final boolean t = MainGame.user.DeployUnit(u);
@@ -151,7 +152,7 @@ public class EventController {
         });
 
         Resources.unit4.AddEventListener("onclick", (MouseEvent e) -> {
-            if (!MainGame.devMode) return;
+            if (!GameStatus.isGameStarted) return;
 
             final Turret u = Turret.GetEra(MainGame.user.era);
             final boolean t = MainGame.user.BuildTurret(u);
@@ -163,26 +164,25 @@ public class EventController {
         });
 
         Resources.unit5.AddEventListener("onclick", (MouseEvent e) -> {
-            if (!MainGame.devMode) return;
+            if (!GameStatus.isGameStarted) return;
 
-            final boolean t = MainGame.user.UpgradeStronghold();
+            final boolean t = MainGame.user.era >= 4 ? MainGame.user.UseEmergencyUltimate(MainGame.foe) : MainGame.user.UpgradeStronghold();
 
             if (!t) {
-                if (MainGame.user.era == 4) {
-                    Resources.unitDescText.textContent = "Max era!";
-                }
-                else {
-                    Resources.unitDescText.textContent = "Requires: " + MainGame.DF.format(Stronghold.GetRequiredXp(MainGame.user.era)) + " xp!";
-                }
+                Resources.unitDescText.textContent = "Requires: " +
+                        (MainGame.user.era >= 4
+                                ? EmergencyUltimate.REQUIRED_XP
+                                : MainGame.DF.format(Stronghold.GetRequiredXp(MainGame.user.era))) +
+                        " xp!";
 
                 Resources.unitDescText.tempTimer = 40;
             }
         });
 
         Resources.unitUl.AddEventListener("onclick", (MouseEvent e) -> {
-            if (!MainGame.devMode) return;
+            if (!GameStatus.isGameStarted) return;
 
-            final boolean t = MainGame.user.UseUltimate();
+            final boolean t = MainGame.user.UseUltimate(MainGame.foe);
 
             if (!t) {
                 Resources.unitDescText.textContent = "Ultimate isn't ready!";

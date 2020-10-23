@@ -1,5 +1,6 @@
 package coma.game.models;
 
+import com.sun.tools.javac.Main;
 import coma.game.MainGame;
 import coma.game.Resources;
 import coma.game.models.contents.*;
@@ -89,9 +90,11 @@ final public class GameBot extends Player {
     }
 
     @Override
-    public boolean UseUltimate() {
+    public boolean UseUltimate(final Player target) {
+        if (target == null) return false;
+
         if (this.ultimateDelay <= 0) {
-            this.ultimateCaller = new Ultimate(this.era, true);
+            this.ultimateCaller = new Ultimate(this, target,  this.era, true);
             this.ultimateDelay = GameBot.getUltimateDelay(this.difficulty);
 
             if(this.era == 4) this.time2end++;
@@ -161,7 +164,7 @@ final public class GameBot extends Player {
             }
             else BotDecision();
 
-            if (MainGame.user.units.size() >= 3 || isBaseHit()) this.UseUltimate();
+            if (MainGame.user.units.size() >= 3 || isBaseHit()) this.UseUltimate(MainGame.user);
 
             this.decisionDelay = GameBot.DECISION_DELAY;
         }
@@ -209,7 +212,7 @@ final public class GameBot extends Player {
 
             int idx = Mathf.CalRange(0,100);      // random idx for choosing unit
 
-            if (this.HasMeleeInFront()){
+            if (this.HasMeleeInFront()) {
                 this.BotStrategy(idx);
             }
             else{

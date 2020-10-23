@@ -24,14 +24,17 @@ public class Ultimate {
     public static final short SPAWN_POS_Y = 600;  // for era 3 plane around 530
     public static final short EXPLODE_POS_Y = 30;
 
-    public Player target;
-    public Player caller;
+    public final Player target;
+    public final Player caller;
 
-    public Ultimate(final byte era, final boolean isFlipped) {
+    public Ultimate(final Player caller, final Player target, final byte era, final boolean isFlipped) {
+        this.caller = caller;
+        this.target = target;
         this.isFlipped = isFlipped;
 
         int n;
         switch (this.era = era) {
+            case -1: return;
             case 1: n = Mathf.CalRange(10, 15); break;
             case 2: n = Mathf.CalRange(80, 112); break;
             case 3: {
@@ -103,8 +106,6 @@ public class Ultimate {
     }
 
     public void Update() {
-        if (this.target == null && this.caller == null) return;
-
         final ArrayList<UltimateObj> hitUltimateObjects = new ArrayList<>();
 
         // new distance calculation and checking explosion

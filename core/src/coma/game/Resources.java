@@ -61,13 +61,13 @@ public class Resources {
     public static final Image[] unitQueueImages = new Image[3];
     public static final Image[] ultimateBannerImages = new Image[4];
     public static final Image[] ultimateImages = new Image[4];
-//    public static final Image[] emergencyUltimate = new Image[6];
-
-    public static Image emergencyUltimate;
+    public static final Image[] emergencyUltimateImages = new Image[6];
     public static ImageRegion explosionImageRegion;
     public static Image ulPlane;
     public static Image unitHealthBar;
     public static Image unitHealthBarInner;
+
+    public static Image unit5Ul;
 
     public static Music themeMusic;
     public static Sound devLogoSound;
@@ -112,11 +112,11 @@ public class Resources {
         ulPlane = new Image("ul-plane.png");
         unitHealthBar = new Image("unit-health-bar.png");
         unitHealthBarInner = new Image("unit-health-bar-inner.png");
+        unit5Ul = new Image("unit-5-ul.png");
 
-//        for(byte i = 0; i < emergencyUltimate.length; i++){
-//            emergencyUltimate[i] = new Image("emergency-" + (i + 1) + ".png");
-//        }
-        emergencyUltimate = new Image("emergency-1.png");
+        for(byte i = 0; i < emergencyUltimateImages.length; i++){
+            emergencyUltimateImages[i] = new Image("emergency-" + (i + 1) + ".png");
+        }
 
         devLogo = new Canvas("dev-logo.png");
         gameLogo = new Canvas("game-logo.png");
@@ -203,10 +203,10 @@ public class Resources {
         musicBtn.isVisible = false;
         speedBtn.SetPosition(14, 14);
         speedBtn.SetActive(false);
-        mode1.SetPosition(80, "center");
-        mode2.SetPosition("center", "center");
-        mode3.SetPosition(640, "center");
         modeBanner.SetPosition("center", 440);
+        mode1.SetPosition(70, 200);
+        mode2.SetPosition("center", 200);
+        mode3.SetPosition(640, 200);
         startBtn.SetPosition("center", 80);
         startBtn.x += -120;
         menuBtn.SetPosition("center", 80);
@@ -255,7 +255,7 @@ public class Resources {
         bitmapFont3.getData().setScale(0.4f);
 
         UIController.AddBoxModule("start-menu", gameLogo, playBtn, creditBtn);
-        UIController.AddBoxModule("mode-selection-menu", mode1, mode2, mode3, modeBanner, startBtn, menuBtn);
+        UIController.AddBoxModule("mode-selection-menu", modeBanner, mode1, mode2, mode3, startBtn, menuBtn);
         UIController.AddBoxModule("in-game-menu", speedBtn, unit1, unit2, unit3, unit4, unit5, unitUl,
                 cashIcon, xpIcon, cashText, xpText, unitCapText, unitDescText, unitText[0],
                 unitText[1], unitText[2], unitText[3], unitText[4], healthBar, healthBarL, healthBarR, queueBar,
@@ -273,7 +273,7 @@ public class Resources {
         themeMusic.setVolume(MainGame.THEME_VOLUME);
 
         // set ui
-        UIController.AddComponents(devLogo, gameLogo, playBtn, creditBtn, creditBanner, musicBtn, mode1, mode2, mode3, modeBanner, startBtn, restartBtn,
+        UIController.AddComponents(devLogo, gameLogo, playBtn, creditBtn, creditBanner, musicBtn, modeBanner, mode1, mode2, mode3, startBtn, restartBtn,
                 menuBtn, speedBtn, unit1, unit2, unit3, unit4, unit5, unitUl, cashIcon, xpIcon, healthBar, healthBarL, healthBarR, queueBar,
                 unitQueueBarInner, ultimateBarInner, victoryBanner, defeatBanner, unitQueueIcons[0], unitQueueIcons[1],
                 unitQueueIcons[2], unitQueueIcons[3], unitQueueIcons[4], unitQueueIcons[5], unitQueueIcons[6],
