@@ -44,7 +44,7 @@ public class EmergencyUltimate extends Ultimate {
 
         Renderer.AddComponents(this.doraemonImage);
 
-        //AudioController.PlayAndSetVolume(Resources.ulPlaneSound, MainGame.AUDIO_VOLUME);
+        AudioController.PlayAndSetVolume(Resources.emergencyUlSound, MainGame.AUDIO_VOLUME);
     }
 
     @Override
@@ -113,5 +113,16 @@ public class EmergencyUltimate extends Ultimate {
         this.explsionImageRegion = r;
 
         AudioController.PlayAndSetVolume(Resources.explosionSounds[0], MainGame.AUDIO_VOLUME);
+    }
+
+    public void RemoveImmidiate() {
+        if (this.explsionImageRegion == null) {
+            Renderer.RemoveComponents(this.doraemonImage);
+        }
+        else {
+            Renderer.RemoveComponents(this.explsionImageRegion);
+        }
+
+        this.caller.emergencyUltimateCaller = null;
     }
 }

@@ -1,14 +1,11 @@
 package coma.game.controllers;
 
-import com.sun.tools.javac.Main;
 import coma.game.MainGame;
 import coma.game.Resources;
 import coma.game.event.EventHandlingManager;
 import coma.game.event.KeyboardEvent;
 import coma.game.event.MouseEvent;
 import coma.game.models.contents.*;
-
-import java.text.DecimalFormat;
 
 public class EventController {
     public static void Init() {
@@ -35,9 +32,37 @@ public class EventController {
             AudioController.PlayAndSetVolume(Resources.menuClickSound, MainGame.AUDIO_VOLUME);
         });
 
+        Resources.how2playBtn.AddEventListener("onclick", (MouseEvent e) -> {
+            e.StopPropagation();
+
+            UIController.GetBoxModule("start-menu").SetVisibility(false);
+            Resources.how2playBanner1.isVisible = true;
+
+            AudioController.PlayAndSetVolume(Resources.menuClickSound, MainGame.AUDIO_VOLUME);
+        });
+
         Resources.creditBanner.AddEventListener("onclick", (MouseEvent e) -> {
             UIController.GetBoxModule("start-menu").SetVisibility(true);
             Resources.creditBanner.isVisible = false;
+
+            AudioController.PlayAndSetVolume(Resources.menuClickSound, MainGame.AUDIO_VOLUME);
+        });
+
+        Resources.how2playBanner1.AddEventListener("onclick", (MouseEvent e) -> {
+            e.StopPropagation();
+
+            Resources.how2playBanner1.isVisible = false;
+            Resources.how2playBanner2.isVisible = true;
+
+            AudioController.PlayAndSetVolume(Resources.menuClickSound, MainGame.AUDIO_VOLUME);
+        });
+
+        Resources.how2playBanner2.AddEventListener("onclick", (MouseEvent e) -> {
+            e.StopPropagation();
+
+            Resources.how2playBanner1.isVisible = false;
+            Resources.how2playBanner2.isVisible = false;
+            UIController.GetBoxModule("start-menu").SetVisibility(true);
 
             AudioController.PlayAndSetVolume(Resources.menuClickSound, MainGame.AUDIO_VOLUME);
         });
@@ -239,6 +264,19 @@ public class EventController {
             }
             else if (Resources.creditBanner.isVisible) {
                 if (e.code.equals("Delete")) Resources.creditBanner.Click();
+            }
+            else if (Resources.how2playBanner1.isVisible) {
+                if (e.code.equals("Right")) Resources.how2playBanner1.Click();
+                else if (e.code.equals("Delete")) Resources.how2playBanner2.Click();
+            }
+            else if (Resources.how2playBanner2.isVisible) {
+                if (e.code.equals("Left")) {
+                    Resources.how2playBanner2.isVisible = false;
+                    Resources.how2playBanner1.isVisible = true;
+
+                    AudioController.PlayAndSetVolume(Resources.menuClickSound, MainGame.AUDIO_VOLUME);
+                }
+                else if (e.code.equals("Delete")) Resources.how2playBanner2.Click();
             }
 
             // in-game

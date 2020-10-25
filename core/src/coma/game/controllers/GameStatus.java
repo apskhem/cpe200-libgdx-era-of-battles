@@ -20,6 +20,10 @@ final public class GameStatus {
             playerR.ClearAllUnits();
             Unit.ClearDeadUnitQueue();
 
+            // clear ultimate
+            if (playerL.emergencyUltimateCaller != null) playerL.emergencyUltimateCaller.RemoveImmidiate();
+            if (playerR.emergencyUltimateCaller != null) playerR.emergencyUltimateCaller.RemoveImmidiate();
+
             playerR.Halt();
         }
     }

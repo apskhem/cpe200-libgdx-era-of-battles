@@ -16,6 +16,9 @@ public class Resources {
     public static Canvas creditBanner;
     public static Canvas playBtn;
     public static Canvas creditBtn;
+    public static Canvas how2playBtn;
+    public static Canvas how2playBanner1;
+    public static Canvas how2playBanner2;
     public static Canvas musicBtn;
     public static Canvas speedBtn;
     public static Canvas mode1;
@@ -85,6 +88,7 @@ public class Resources {
     public static Sound meleeDie1;
     public static Sound unitCallSound;
     public static Sound ulPlaneSound;
+    public static Sound emergencyUlSound;
 
     public static void Load() {
         // set ui position and group module
@@ -125,6 +129,9 @@ public class Resources {
         creditBanner = new Canvas("credit.png");
         playBtn = new Canvas("play-btn.png");
         creditBtn = new Canvas("credit-btn.png");
+        how2playBtn = new Canvas("how2play-btn.png");
+        how2playBanner1 = new Canvas("how2play-page-1.png");
+        how2playBanner2 = new Canvas("how2play-page-2.png");
         musicBtn = new Canvas("music-btn.png");
         speedBtn = new Canvas("speed-btn.png");
         mode1 = new Canvas("mode-1.png");
@@ -176,6 +183,7 @@ public class Resources {
         winSound = Asset.LoadSound("audio/win.mp3");
         loseSound = Asset.LoadSound("audio/lose.mp3");
         ulPlaneSound = Asset.LoadSound("audio/ul-plane.mp3");
+        emergencyUlSound = Asset.LoadSound("audio/emergency-ultimate.mp3");
 
         for (byte era = 0; era < meleeHitSounds.length; era++) {
             meleeHitSounds[era] = Asset.LoadSound("audio/melee-hit-" + (era + 1) + ".mp3");
@@ -201,6 +209,11 @@ public class Resources {
         gameLogo.SetPosition("center", 400);
         playBtn.SetPosition("center", 300);
         creditBtn.SetPosition("center", 180);
+        how2playBtn.SetPosition("center", 60);
+        how2playBanner1.SetPosition("center", 0);
+        how2playBanner1.isVisible = false;
+        how2playBanner2.SetPosition("center", 0);
+        how2playBanner2.isVisible = false;
         creditBanner.SetPosition("center", 5);
         creditBanner.isVisible = false;
         musicBtn.SetPosition(886, 14);
@@ -258,7 +271,7 @@ public class Resources {
         bitmapFont2.getData().setScale(0.8f);
         bitmapFont3.getData().setScale(0.4f);
 
-        UIController.AddBoxModule("start-menu", gameLogo, playBtn, creditBtn);
+        UIController.AddBoxModule("start-menu", gameLogo, playBtn, creditBtn, how2playBtn);
         UIController.AddBoxModule("mode-selection-menu", modeBanner, mode1, mode2, mode3, startBtn, menuBtn);
         UIController.AddBoxModule("in-game-menu", speedBtn, unit1, unit2, unit3, unit4, unit5, unitUl,
                 cashIcon, xpIcon, cashText, xpText, unitCapText, unitDescText, unitTexts[0],
@@ -277,7 +290,8 @@ public class Resources {
         themeMusic.setVolume(MainGame.THEME_VOLUME);
 
         // set ui
-        UIController.AddComponents(devLogo, gameLogo, playBtn, creditBtn, creditBanner, musicBtn, modeBanner, mode1, mode2, mode3, startBtn, restartBtn,
+        UIController.AddComponents(devLogo, gameLogo, playBtn, creditBtn, how2playBtn, how2playBanner1, how2playBanner2,
+                creditBanner, musicBtn, modeBanner, mode1, mode2, mode3, startBtn, restartBtn,
                 menuBtn, speedBtn, unit1, unit2, unit3, unit4, unit5, unitUl, cashIcon, xpIcon, healthBar, healthBarL, healthBarR, queueBar,
                 unitQueueBarInner, ultimateBarInner, victoryBanner, defeatBanner, unitQueueIcons[0], unitQueueIcons[1],
                 unitQueueIcons[2], unitQueueIcons[3], unitQueueIcons[4], unitQueueIcons[5], unitQueueIcons[6],
