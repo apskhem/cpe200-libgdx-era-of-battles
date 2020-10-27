@@ -8,17 +8,17 @@ public class EventTarget {
 
     public final ArrayList<EventListener> listeners = new ArrayList<>();
 
-    public <T extends UIEvent> void AddEventListener(String type, Listener<T> listener) {
+    public <T extends UIEvent> void addEventListener(String type, Listener<T> listener) {
         this.listeners.add(new EventListener<T>(type, listener));
-        EventHandlingManager.AddEventTarget(this);
+        EventHandlingManager.addEventTarget(this);
     }
 
-    public void Click() {
+    public void click() {
         final MouseEvent e = new MouseEvent(Integer.MAX_VALUE, Integer.MAX_VALUE);
 
         for (final EventListener listener : this.listeners) {
-            if (listener.type.equals("onclick")) {
-                listener.fn.Call(e);
+            if (listener.type.equals("click")) {
+                listener.call(e);
             }
         }
     }

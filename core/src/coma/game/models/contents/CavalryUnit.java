@@ -40,7 +40,7 @@ final public class CavalryUnit extends Unit {
         }
     }
 
-    public short GetDeploymentDelay() {
+    public short getDeploymentDelay() {
         return 200;
     }
 }

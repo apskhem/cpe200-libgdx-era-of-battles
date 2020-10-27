@@ -42,7 +42,7 @@ public abstract class Unit extends GameObject {
     public static final ArrayList<Unit> toRemoveDeadUnits = new ArrayList<>();
 
     public Unit(final Animator anim, final int health, final int attack, final int delay, final int cost, final int era) {
-        super(anim.GetFrameImage(0).Clone());
+        super(anim.getFrameImage(0).clone());
 
         this.animator = anim;
         this.animator.refImage = this.image;
@@ -54,8 +54,8 @@ public abstract class Unit extends GameObject {
         // this.animator.AddState("hitting", 6, 6);
         // this.animator.AddState("die", 7, 7);
 
-        this.healthBar = Resources.unitHealthBar.Clone();
-        this.healthBarInner = Resources.unitHealthBarInner.Clone();
+        this.healthBar = Resources.unitHealthBar.clone();
+        this.healthBarInner = Resources.unitHealthBarInner.clone();
         this.maxHealth = (short) health;
         this.maxAttackDelay = (short) delay;
         this.health = (short) health;
@@ -65,33 +65,33 @@ public abstract class Unit extends GameObject {
         this.era = (byte) era;
     }
 
-    public void SpawnAt(final float x, final float y) {
-        this.image.SetPosition(x, y);
-        this.healthBar.SetPosition(x + (this.image.naturalWidth - this.healthBar.naturalWidth) / 2f, y + 200);
-        this.healthBarInner.SetPosition(1 + x + (this.image.naturalWidth - this.healthBar.naturalWidth) / 2f, y + 201);
+    public void spawnAt(final float x, final float y) {
+        this.image.setPosition(x, y);
+        this.healthBar.setPosition(x + (this.image.naturalWidth - this.healthBar.naturalWidth) / 2f, y + 200);
+        this.healthBarInner.setPosition(1 + x + (this.image.naturalWidth - this.healthBar.naturalWidth) / 2f, y + 201);
 
-        Renderer.AddComponents(this.image, this.healthBar, this.healthBarInner);
+        Renderer.addComponents(this.image, this.healthBar, this.healthBarInner);
     }
 
-    public boolean IsReachedMax() {
+    public boolean isReachedMax() {
         return this.moveX >= Unit.MAX_MOVE - this.image.naturalWidth;
     }
 
-    public void UpdateHealthBar() {
-        this.healthBarInner.SetSize(
+    public void updateHealthBar() {
+        this.healthBarInner.setSize(
                 this.health > 0 ? this.health * this.healthBarInner.naturalWidth / (float) this.maxHealth : 0,
                 Float.NaN);
     }
 
-    public void Move() {
+    public void move() {
         // normal moving
         if (moveX < Unit.MAX_MOVE - this.image.naturalWidth) {
             final float mov = Unit.MOVE_SPEED * MainGame.deltaTime;
 
             moveX += mov;
-            this.image.Move((this.image.isFlipped ? -mov : mov), 0);
-            this.healthBar.Move(this.image.isFlipped ? -mov : mov, 0);
-            this.healthBarInner.Move(this.image.isFlipped ? -mov : mov, 0);
+            this.image.move((this.image.isFlipped ? -mov : mov), 0);
+            this.healthBar.move(this.image.isFlipped ? -mov : mov, 0);
+            this.healthBarInner.move(this.image.isFlipped ? -mov : mov, 0);
 
             if (this.animator.currentFrame > 3) this.animator.currentFrame = 3;
 
@@ -100,25 +100,25 @@ public abstract class Unit extends GameObject {
         }
     }
 
-    public boolean Attack(final GameObject toAttackUnit) {
+    public boolean attack(final GameObject toAttackUnit) {
         if (toAttackUnit == null) return false;
 
         if (this.attackDelay < 0) {
             if (toAttackUnit instanceof Unit) {
-                ((Unit) toAttackUnit).health -= Mathf.CalError(this.attack, 0.05f);
+                ((Unit) toAttackUnit).health -= Mathf.calError(this.attack, 0.05f);
             }
             else if (toAttackUnit instanceof Stronghold) {
-                ((Stronghold) toAttackUnit).health -= Mathf.CalError(this.attack, 0.05f);
+                ((Stronghold) toAttackUnit).health -= Mathf.calError(this.attack, 0.05f);
             }
 
             if (this.attackSound != null) {
-                AudioController.PlayAndSetVolume(this.attackSound, MainGame.AUDIO_VOLUME / 2);
+                AudioController.playAndSetVolume(this.attackSound, MainGame.AUDIO_VOLUME / 2);
             }
 
-            this.animator.SetAnimationFrameTo(6);
+            this.animator.setAnimationFrameTo(6);
             this.animator.nextFrameDelay = 8;
 
-            this.attackDelay = (byte) Mathf.CalError(this.maxAttackDelay, 0.1f);
+            this.attackDelay = (byte) Mathf.calError(this.maxAttackDelay, 0.1f);
 
             return true;
         } else {
@@ -126,7 +126,7 @@ public abstract class Unit extends GameObject {
             if (this.animator.nextFrameDelay < 0) {
                 this.animator.nextFrameDelay = this.maxAttackDelay - 8;
 
-                this.animator.SetAnimationFrameTo(this.animator.currentFrame == 4 ? 5 : 4);
+                this.animator.setAnimationFrameTo(this.animator.currentFrame == 4 ? 5 : 4);
             } else {
                 this.animator.nextFrameDelay -= MainGame.deltaTime;
             }
@@ -138,43 +138,43 @@ public abstract class Unit extends GameObject {
         }
     }
 
-    public void Die() {
-        this.animator.SetAnimationFrameTo(7);
-        Renderer.RemoveComponents(this.healthBar, this.healthBarInner);
+    public void die() {
+        this.animator.setAnimationFrameTo(7);
+        Renderer.removeComponents(this.healthBar, this.healthBarInner);
         Unit.deadUnits.add(this);
 
         if (this.deadSound != null) {
             for (final Sound sound : this.deadSound) {
-                AudioController.PlayAndSetVolume(sound,  MainGame.AUDIO_VOLUME / (sound == Resources.meleeDie1 ? 1 : 3));
+                AudioController.playAndSetVolume(sound,  MainGame.AUDIO_VOLUME / (sound == Resources.meleeDie1 ? 1 : 3));
             }
         }
     }
 
-    private void ContinueDeadFading() {
+    private void continueDeadFading() {
         if (this.deadDelay < 0) {
-            Renderer.RemoveComponents(this.image);
+            Renderer.removeComponents(this.image);
             Unit.toRemoveDeadUnits.add(this);
         } else {
-            this.image.SetOpacity(this.deadDelay / 100f);
+            this.image.setOpacity(this.deadDelay / 100f);
             this.deadDelay -= MainGame.deltaTime;
         }
     }
 
-    public abstract short GetDeploymentDelay();
+    public abstract short getDeploymentDelay();
 
     // static methods
-    public static void UpdateDeadUnits() {
+    public static void updateDeadUnits() {
         for (final Unit unit : Unit.deadUnits) {
-            unit.ContinueDeadFading();
+            unit.continueDeadFading();
         }
 
         Unit.deadUnits.removeAll(Unit.toRemoveDeadUnits);
         toRemoveDeadUnits.clear();
     }
 
-    public static void ClearDeadUnitQueue() {
+    public static void clearDeadUnitQueue() {
         for (final Unit unit : Unit.deadUnits) {
-            Renderer.RemoveComponents(unit.image);
+            Renderer.removeComponents(unit.image);
         }
 
         Unit.deadUnits.clear();

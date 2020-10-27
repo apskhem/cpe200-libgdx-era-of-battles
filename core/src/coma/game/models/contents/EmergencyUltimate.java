@@ -22,7 +22,7 @@ public class EmergencyUltimate extends Ultimate {
 
     public static final float REQUIRED_XP = 4000;
 
-    private final Image doraemonImage = Resources.emergencyUltimateImages[0].Clone();
+    private final Image doraemonImage = Resources.emergencyUltimateImages[0].clone();
     private final Animator anim = new Animator(Resources.emergencyUltimateImages);
     private ImageRegion explsionImageRegion;
 
@@ -32,32 +32,32 @@ public class EmergencyUltimate extends Ultimate {
         super(caller, target, (byte) -1, isFlipped);
 
         if (isFlipped) {
-            this.doraemonImage.SetPosition(this.BOT_SPAWN_POS - this.doraemonImage.naturalWidth, this.UNIT_SPAWN_POSITION_Y);
+            this.doraemonImage.setPosition(this.BOT_SPAWN_POS - this.doraemonImage.naturalWidth, this.UNIT_SPAWN_POSITION_Y);
         }
         else {
-            this.doraemonImage.SetPosition(this.PLAYER_SPAWN_POS, this.UNIT_SPAWN_POSITION_Y);
+            this.doraemonImage.setPosition(this.PLAYER_SPAWN_POS, this.UNIT_SPAWN_POSITION_Y);
         }
 
         this.anim.refImage = this.doraemonImage;
 
-        if (isFlipped) this.doraemonImage.FlipHorizontal();
+        if (isFlipped) this.doraemonImage.flipHorizontal();
 
-        Renderer.AddComponents(this.doraemonImage);
+        Renderer.addComponents(this.doraemonImage);
 
-        AudioController.PlayAndSetVolume(Resources.emergencyUlSound, MainGame.AUDIO_VOLUME);
+        AudioController.playAndSetVolume(Resources.emergencyUlSound, MainGame.AUDIO_VOLUME);
     }
 
     @Override
-    public void Update() {
+    public void update() {
         // normal moving
         if (this.explsionImageRegion == null) {
-            if (this.IsReachedMax()) {
+            if (this.isReachedMax()) {
                 this.target.stronghold.health -= this.damage;
 
-                Renderer.RemoveComponents(this.doraemonImage);
+                Renderer.removeComponents(this.doraemonImage);
 
                 if (this.target.stronghold.health > 0) {
-                    this.Explode();
+                    this.explode();
                 }
                 else {
                     this.caller.emergencyUltimateCaller = null;
@@ -65,18 +65,18 @@ public class EmergencyUltimate extends Ultimate {
             }
             else {
                 // move
-                this.Move();
+                this.move();
             }
         }
         // after explosion
         else {
             if (this.explsionImageRegion.tempTimer <= 0) {
-                if (this.explsionImageRegion.IsAtTheEnd()) {
+                if (this.explsionImageRegion.isAtTheEnd()) {
                     this.caller.emergencyUltimateCaller = null;
-                    Renderer.RemoveComponents(this.explsionImageRegion);
+                    Renderer.removeComponents(this.explsionImageRegion);
                 }
                 else {
-                    this.explsionImageRegion.NextRegion();
+                    this.explsionImageRegion.nextRegion();
                     this.explsionImageRegion.tempTimer = Ultimate.EXPLOSION_FRAME_ANIMATION_TIME;
                 }
             }
@@ -86,12 +86,12 @@ public class EmergencyUltimate extends Ultimate {
         }
     }
 
-    private void Move() {
+    private void move() {
         // normal moving
         final float mov = this.MOVE_SPEED * MainGame.deltaTime;
 
         this.moveX += mov;
-        this.doraemonImage.Move(this.doraemonImage.isFlipped ? -mov : mov, 0);
+        this.doraemonImage.move(this.doraemonImage.isFlipped ? -mov : mov, 0);
 
         if (this.anim.currentFrame > 3) this.anim.currentFrame = 3;
 
@@ -99,28 +99,28 @@ public class EmergencyUltimate extends Ultimate {
         this.anim.Continue();
     }
 
-    public boolean IsReachedMax() {
+    public boolean isReachedMax() {
         return this.moveX >= Unit.MAX_MOVE - this.doraemonImage.naturalWidth;
     }
 
-    private void Explode() {
-        final ImageRegion r = Resources.explosionImageRegion.Clone();
-        r.SetPosition(this.doraemonImage.GetTransform().x, this.doraemonImage.GetTransform().y);
+    private void explode() {
+        final ImageRegion r = Resources.explosionImageRegion.clone();
+        r.setPosition(this.doraemonImage.getTransform().x, this.doraemonImage.getTransform().y);
         r.tempTimer = Ultimate.EXPLOSION_FRAME_ANIMATION_TIME;
 
-        Renderer.AddComponents(r);
+        Renderer.addComponents(r);
 
         this.explsionImageRegion = r;
 
-        AudioController.PlayAndSetVolume(Resources.explosionSounds[0], MainGame.AUDIO_VOLUME);
+        AudioController.playAndSetVolume(Resources.explosionSounds[0], MainGame.AUDIO_VOLUME);
     }
 
-    public void RemoveImmidiate() {
+    public void removeImmidiate() {
         if (this.explsionImageRegion == null) {
-            Renderer.RemoveComponents(this.doraemonImage);
+            Renderer.removeComponents(this.doraemonImage);
         }
         else {
-            Renderer.RemoveComponents(this.explsionImageRegion);
+            Renderer.removeComponents(this.explsionImageRegion);
         }
 
         this.caller.emergencyUltimateCaller = null;

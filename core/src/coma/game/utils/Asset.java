@@ -14,7 +14,7 @@ final public class Asset {
 
     private static final ArrayList<Disposable> loadedAsset = new ArrayList<>();
 
-    public static SpriteBatch LoadSpriteBatch() {
+    public static SpriteBatch loadSpriteBatch() {
         final SpriteBatch spriteBatch = new SpriteBatch();
 
         Asset.loadedAsset.add(spriteBatch);
@@ -22,7 +22,7 @@ final public class Asset {
         return spriteBatch;
     }
 
-    public static Sound LoadSound(final String internalPath) {
+    public static Sound loadSound(final String internalPath) {
         final Sound sound = Gdx.audio.newSound(Gdx.files.internal(internalPath));
 
         Asset.loadedAsset.add(sound);
@@ -30,7 +30,7 @@ final public class Asset {
         return sound;
     }
 
-    public static Music LoadMusic(final String internalPath) {
+    public static Music loadMusic(final String internalPath) {
         final Music music = Gdx.audio.newMusic(Gdx.files.internal(internalPath));
 
         Asset.loadedAsset.add(music);
@@ -38,7 +38,7 @@ final public class Asset {
         return music;
     }
 
-    public static Texture LoadTexture(final String internalPath) {
+    public static Texture loadTexture(final String internalPath) {
         final Texture texture = new Texture(internalPath);
 
         Asset.loadedAsset.add(texture);
@@ -46,7 +46,7 @@ final public class Asset {
         return texture;
     }
 
-    public static BitmapFont LoadBitmapFont(final String internalPath, final boolean flip) {
+    public static BitmapFont loadBitmapFont(final String internalPath, final boolean flip) {
         final BitmapFont bitmapFont = new BitmapFont(Gdx.files.internal(internalPath), flip);
 
         Asset.loadedAsset.add(bitmapFont);
@@ -54,7 +54,7 @@ final public class Asset {
         return bitmapFont;
     }
 
-    public static void Unload() {
+    public static void unload() {
         for (final Disposable item : Asset.loadedAsset) {
             item.dispose();
         }

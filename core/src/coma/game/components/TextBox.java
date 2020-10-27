@@ -17,19 +17,19 @@ final public class TextBox extends Renderable {
     public TextBox(final BitmapFont bitmapFont) {
         this.bitmapFont = bitmapFont.getCache().getFont();
 
-        UIController.AddComponents(this);
+        UIController.addComponents(this);
     }
 
-    public void SetOpacity(final float value) {
+    public void setOpacity(final float value) {
         this.bitmapFont.setColor(1,1,1, value);
     }
 
-    public void SetPosition(final float x, final float y) {
+    public void setPosition(final float x, final float y) {
         this.x = x;
         this.y = y;
     }
 
-    public void Render(final SpriteBatch b) {
+    public void render(final SpriteBatch b) {
         if (this.isVisible) {
             this.bitmapFont.draw(b, this.textContent, this.x + translateX, this.y + translateY);
         }

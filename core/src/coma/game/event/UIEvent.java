@@ -2,13 +2,13 @@ package coma.game.event;
 
 public abstract class UIEvent {
 
-    private boolean isStop = false;
+    private boolean isStopped = false;
 
-    public boolean IsPropagationStopped() {
-        return this.isStop;
+    public boolean isPropagationStopped() {
+        return this.isStopped;
     }
 
-    public void StopPropagation() {
-        this.isStop = true;
+    public void stopPropagation() {
+        this.isStopped = true;
     }
 }

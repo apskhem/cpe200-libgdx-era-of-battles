@@ -7,35 +7,35 @@ import coma.game.Resources;
  */
 final public class Stronghold extends GameObject {
 
-    public short health = Stronghold.GetMaxHealth((byte) 1);
+    public short health = Stronghold.getMaxHealth((byte) 1);
     public byte era = 1;
 
     public Stronghold() {
-        super(Resources.strongholdImages[0].Clone());
+        super(Resources.strongholdImages[0].clone());
     }
 
-    public float GetPercentageHealth(final float multiplier) {
+    public float getPercentageHealth(final float multiplier) {
         return this.health < 0
                 ? 0
-                : this.health * multiplier / Stronghold.GetMaxHealth(this.era);
+                : this.health * multiplier / Stronghold.getMaxHealth(this.era);
     }
 
-    public void UpgradeTo(byte era) {
-        final float oHealthPercentage = this.health / (float) Stronghold.GetMaxHealth(this.era);
+    public void upgradeTo(byte era) {
+        final float oHealthPercentage = this.health / (float) Stronghold.getMaxHealth(this.era);
 
         this.era = era;
-        this.health = (short) (Stronghold.GetMaxHealth(this.era) * oHealthPercentage);
-        this.image.SetTexture(Resources.strongholdImages[era - 1]);
+        this.health = (short) (Stronghold.getMaxHealth(this.era) * oHealthPercentage);
+        this.image.setTexture(Resources.strongholdImages[era - 1]);
     }
 
-    public void SetEra(byte era) {
+    public void setEra(byte era) {
         this.era = era;
-        this.health = Stronghold.GetMaxHealth(this.era);
-        this.image.SetTexture(Resources.strongholdImages[era - 1]);
+        this.health = Stronghold.getMaxHealth(this.era);
+        this.image.setTexture(Resources.strongholdImages[era - 1]);
     }
 
     // static methods
-    public static short GetMaxHealth(final byte era) {
+    public static short getMaxHealth(final byte era) {
         switch (era) {
             case 1:
                 return 1000;
@@ -50,7 +50,7 @@ final public class Stronghold extends GameObject {
         }
     }
 
-    public static short GetRequiredXp(final byte era) {
+    public static short getRequiredXp(final byte era) {
         switch (era) {
             case 1:
                 return 600;

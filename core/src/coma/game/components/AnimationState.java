@@ -14,7 +14,7 @@ public class AnimationState {
         this.endFrame = endFrame;
     }
 
-    public int NextFrame() {
+    public int nextFrame() {
         this.currentFrame++;
 
         if (this.currentFrame > this.endFrame) this.currentFrame = this.startFrame;

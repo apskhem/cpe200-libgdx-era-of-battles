@@ -39,20 +39,20 @@ public class MainGame extends ApplicationAdapter {
 	@Override
 	public void create() {
 		// load global images
-		Resources.Load();
-		Resources.Setup();
+		Resources.load();
+		Resources.setup();
 
 		// set fields
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		user = new Player();
 		foe = new GameBot();
 
-		EventController.Init();
+		EventController.init();
 
 		// set camera
 		camera.translate(camera.viewportWidth/2, camera.viewportHeight/2);
 
-		Renderer.AddComponents(Resources.bg, user.stronghold.image, foe.stronghold.image, UIController.GetComponents());
+		Renderer.addComponents(Resources.bg, user.stronghold.image, foe.stronghold.image, UIController.getComponents());
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class MainGame extends ApplicationAdapter {
 		// set deltaTime
 		deltaTime = Gdx.graphics.getDeltaTime() * 60.606f * gameSpeed;
 
-		Intro.Play();
+		Intro.play();
 
 		// keyboard event
 		if (GameStatus.isGameStarted) {
@@ -74,36 +74,36 @@ public class MainGame extends ApplicationAdapter {
 			Resources.unitCapText.textContent = user.units.size() + "/" + Player.MAX_UNIT;
 
 			// unit icons
-			Resources.unit1.SetActive(user.cash >= MeleeUnit.stats[user.era - 1][3]);
-			Resources.unit2.SetActive(user.cash >= RangedUnit.stats[user.era - 1][3]);
-			Resources.unit3.SetActive(user.cash >= CavalryUnit.stats[user.era - 1][3]);
-			Resources.unit4.SetActive(user.BuildTurret(null));
-			Resources.unit5.SetActive(
-					(user.xp >= (user.era < 4 ? Stronghold.GetRequiredXp(user.era) : EmergencyUltimate.REQUIRED_XP))
+			Resources.unit1.setActive(user.cash >= MeleeUnit.stats[user.era - 1][3]);
+			Resources.unit2.setActive(user.cash >= RangedUnit.stats[user.era - 1][3]);
+			Resources.unit3.setActive(user.cash >= CavalryUnit.stats[user.era - 1][3]);
+			Resources.unit4.setActive(user.buildTurret(null));
+			Resources.unit5.setActive(
+					(user.xp >= (user.era < 4 ? Stronghold.getRequiredXp(user.era) : EmergencyUltimate.REQUIRED_XP))
 					&& user.emergencyUltimateCaller == null);
-			Resources.unitUl.SetActive(user.ultimateDelay <= 0);
+			Resources.unitUl.setActive(user.ultimateDelay <= 0);
 
 			// textbox
 			Resources.unitTexts[0].textContent = DF.format(MeleeUnit.stats[user.era - 1][3]) + " g";
 			Resources.unitTexts[1].textContent = DF.format(RangedUnit.stats[user.era - 1][3]) + " g";
 			Resources.unitTexts[2].textContent = DF.format(CavalryUnit.stats[user.era - 1][3]) + " g";
-			Resources.unitTexts[3].textContent = DF.format(Turret.GetEra(user.era).cost) + " g";
+			Resources.unitTexts[3].textContent = DF.format(Turret.getEra(user.era).cost) + " g";
 			Resources.unitTexts[4].textContent = (user.era >= 4
 					? DF.format(EmergencyUltimate.REQUIRED_XP)
-					: DF.format(Stronghold.GetRequiredXp(user.era))) + " xp";
+					: DF.format(Stronghold.getRequiredXp(user.era))) + " xp";
 
 			// delay bars
-			final float cd = user.deploymentQueue.size > 0 ? user.deploymentQueue.first().GetDeploymentDelay() : 100;
+			final float cd = user.deploymentQueue.size > 0 ? user.deploymentQueue.first().getDeploymentDelay() : 100;
 			final float b = user.deploymentDelay / cd < 0 ? 0 : user.deploymentDelay / cd;
 
-			Resources.unitQueueBarInner.SetViewBox((1 - b) * Resources.unitQueueBarInner.naturalWidth, Float.NaN);
-			Resources.ultimateBarInner.SetViewBox((1 - user.ultimateDelay / (float) Player.ULTIMATE_LOADING_DELAY) * 198, Float.NaN);
-			Resources.healthBarL.SetViewBox(user.stronghold.GetPercentageHealth(Resources.healthBarL.naturalWidth), Float.NaN);
-			Resources.healthBarR.SetViewBox(foe.stronghold.GetPercentageHealth(Resources.healthBarR.naturalWidth), Float.NaN);
+			Resources.unitQueueBarInner.setViewBox((1 - b) * Resources.unitQueueBarInner.naturalWidth, Float.NaN);
+			Resources.ultimateBarInner.setViewBox((1 - user.ultimateDelay / (float) Player.ULTIMATE_LOADING_DELAY) * 198, Float.NaN);
+			Resources.healthBarL.setViewBox(user.stronghold.getPercentageHealth(Resources.healthBarL.naturalWidth), Float.NaN);
+			Resources.healthBarR.setViewBox(foe.stronghold.getPercentageHealth(Resources.healthBarR.naturalWidth), Float.NaN);
 
 			// set texture
-			Resources.unit5.SetTexture(user.era >= 4 ? Resources.unit5UlImage : Resources.unit5EraImage);
-			Resources.unitUl.SetTexture(Resources.ultimateBannerImages[user.era - 1]);
+			Resources.unit5.setTexture(user.era >= 4 ? Resources.unit5UlImage : Resources.unit5EraImage);
+			Resources.unitUl.setTexture(Resources.ultimateBannerImages[user.era - 1]);
 
 			// queue ui
 			for (byte i = 0; i < Resources.unitQueueIcons.length; i++) {
@@ -111,9 +111,9 @@ public class MainGame extends ApplicationAdapter {
 					final Unit qu = user.deploymentQueue.get(i);
 					Resources.unitQueueIcons[i].isVisible = true;
 
-					if (qu instanceof MeleeUnit) Resources.unitQueueIcons[i].SetTexture(Resources.unitQueueImages[0]);
-					if (qu instanceof RangedUnit) Resources.unitQueueIcons[i].SetTexture(Resources.unitQueueImages[1]);
-					if (qu instanceof CavalryUnit) Resources.unitQueueIcons[i].SetTexture(Resources.unitQueueImages[2]);
+					if (qu instanceof MeleeUnit) Resources.unitQueueIcons[i].setTexture(Resources.unitQueueImages[0]);
+					if (qu instanceof RangedUnit) Resources.unitQueueIcons[i].setTexture(Resources.unitQueueImages[1]);
+					if (qu instanceof CavalryUnit) Resources.unitQueueIcons[i].setTexture(Resources.unitQueueImages[2]);
 				}
 				else {
 					Resources.unitQueueIcons[i].isVisible = false;
@@ -121,38 +121,38 @@ public class MainGame extends ApplicationAdapter {
 			}
 
 			// update fading units
-			Unit.UpdateDeadUnits();
+			Unit.updateDeadUnits();
 
 			// update user and foe
-			Player.Update(user, foe);
+			Player.update(user, foe);
 
 			// check game over
-			GameStatus.CheckGameOver(user, foe);
+			GameStatus.checkGameOver(user, foe);
 
 			// update foe
-			foe.Awake();
+			foe.awake();
 		}
 
 		// unit desc font
 		if (Resources.unitDescText.tempTimer < 0) {
-			Resources.unitDescText.SetOpacity(0);
+			Resources.unitDescText.setOpacity(0);
 		}
 		else {
 			Resources.unitDescText.tempTimer -= deltaTime / gameSpeed;
 
-			Resources.unitDescText.SetOpacity(Resources.unitDescText.tempTimer / 40);
+			Resources.unitDescText.setOpacity(Resources.unitDescText.tempTimer / 40);
 		}
 
 		// for events
-		EventHandlingManager.Update();
+		EventHandlingManager.update();
 
 		// update components
-		UIController.Update();
-		Renderer.Update();
+		UIController.update();
+		Renderer.update();
 	}
 	
 	@Override
 	public void dispose() {
-		Asset.Unload();
+		Asset.unload();
 	}
 }

@@ -15,7 +15,7 @@ public class UltimateObj extends GameObject {
     private float spawnDelay;
 
     public UltimateObj(final byte era, final float spawnDelay, final float damage, final float moveSpeedX, final float moveSpeedY) {
-        super(Resources.ultimateImages[era - 1].Clone());
+        super(Resources.ultimateImages[era - 1].clone());
 
         this.era = era;
         this.spawnDelay = spawnDelay;
@@ -29,7 +29,7 @@ public class UltimateObj extends GameObject {
             final float moveY = -this.moveSpeedY * MainGame.deltaTime;
             final float moveX = this.moveSpeedX * MainGame.deltaTime;
 
-            this.image.Move(moveX, moveY);
+            this.image.move(moveX, moveY);
         } else {
             this.spawnDelay -= MainGame.deltaTime;
         }
@@ -38,12 +38,12 @@ public class UltimateObj extends GameObject {
     public void ultimateExplode(final ArrayList<Unit> units) {
         switch (era) {
             case 1: {
-                final float objCenterX = this.image.GetTransform().x + this.image.naturalWidth / 2f;
+                final float objCenterX = this.image.getTransform().x + this.image.naturalWidth / 2f;
                 final float minEffectRange = objCenterX - 250;
                 final float maxEffectRange = objCenterX + 250;
 
                 for (final Unit u : units) {
-                    if (u.image.GetTransform().x >= minEffectRange && u.image.GetTransform().x + u.image.naturalWidth <= maxEffectRange) {
+                    if (u.image.getTransform().x >= minEffectRange && u.image.getTransform().x + u.image.naturalWidth <= maxEffectRange) {
                         u.health -= this.damage;
                     }
                 }
@@ -52,14 +52,14 @@ public class UltimateObj extends GameObject {
             case 2:
             case 3:
             case 4: {
-                final float objCenterX = this.image.GetTransform().x + this.image.naturalWidth / 2f;
+                final float objCenterX = this.image.getTransform().x + this.image.naturalWidth / 2f;
 
                 for (final Unit u : units) {
-                    if (u.image.GetTransform().x <= objCenterX && u.image.GetTransform().x + u.image.naturalWidth >= objCenterX) {
+                    if (u.image.getTransform().x <= objCenterX && u.image.getTransform().x + u.image.naturalWidth >= objCenterX) {
                         u.health -= this.damage;
 
                         if (this.era == 2) {
-                            AudioController.PlayAndSetVolume(Resources.cavalryHitSounds[0], MainGame.AUDIO_VOLUME / 3);
+                            AudioController.playAndSetVolume(Resources.cavalryHitSounds[0], MainGame.AUDIO_VOLUME / 3);
                         }
                     }
                 }

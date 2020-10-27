@@ -38,18 +38,18 @@ public class Player {
     public static final short ULTIMATE_LOADING_DELAY = 4000;
 
     public Player() {
-        this.stronghold.SetEra(this.era);
+        this.stronghold.setEra(this.era);
         this.SPAWN_POSITION_X = 120;
-        this.stronghold.image.SetPosition(Player.LEFT_STRONGHOLD_POSITION_X, Player.STRONGHOLD_POSITION_Y);
+        this.stronghold.image.setPosition(Player.LEFT_STRONGHOLD_POSITION_X, Player.STRONGHOLD_POSITION_Y);
     }
 
-    public boolean DeployUnit(final Unit u) {
+    public boolean deployUnit(final Unit u) {
         if (u == null) return false;
 
         if (this.cash >= u.cost && this.units.size() + this.deploymentQueue.size < Player.MAX_UNIT) {
             this.cash -= u.cost;
 
-            if (this.deploymentQueue.size == 0) this.deploymentDelay = u.GetDeploymentDelay();
+            if (this.deploymentQueue.size == 0) this.deploymentDelay = u.getDeploymentDelay();
 
             this.deploymentQueue.addLast(u);
 
@@ -59,37 +59,37 @@ public class Player {
         return false;
     }
 
-    public void SpawnUnit(final Unit u) {
+    public void spawnUnit(final Unit u) {
         if (u == null) return;
 
         this.units.add(u);
-        u.SpawnAt(this.SPAWN_POSITION_X, this.SPAWN_POSITION_Y);
+        u.spawnAt(this.SPAWN_POSITION_X, this.SPAWN_POSITION_Y);
 
-        AudioController.PlayAndSetVolume(Resources.unitCallSound, MainGame.AUDIO_VOLUME);
+        AudioController.playAndSetVolume(Resources.unitCallSound, MainGame.AUDIO_VOLUME);
     }
 
-    public void ProcessUnitDeployment() {
+    public void processUnitDeployment() {
         if (this.deploymentQueue.size == 0) return;
 
         if (this.deploymentDelay <= 0) {
             final Unit u = this.deploymentQueue.removeFirst();
 
-            this.SpawnUnit(u);
+            this.spawnUnit(u);
 
-            if (this.deploymentQueue.size > 0) this.deploymentDelay = this.deploymentQueue.first().GetDeploymentDelay();
+            if (this.deploymentQueue.size > 0) this.deploymentDelay = this.deploymentQueue.first().getDeploymentDelay();
         }
         else {
             this.deploymentDelay -= MainGame.deltaTime;
         }
     }
 
-    public boolean BuildTurret(final Turret t) {
+    public boolean buildTurret(final Turret t) {
         // check if can build
         if (t == null) {
-            boolean canBuildTurret = this.cash >= Turret.GetEra(this.era).cost && this.turrets.size() < 2;
+            boolean canBuildTurret = this.cash >= Turret.getEra(this.era).cost && this.turrets.size() < 2;
 
             for (final Turret at : this.turrets) {
-                if (at.era < this.era && this.cash >= Turret.GetEra(this.era).cost - at.cost) {
+                if (at.era < this.era && this.cash >= Turret.getEra(this.era).cost - at.cost) {
                     canBuildTurret = true;
                     break;
                 }
@@ -100,13 +100,13 @@ public class Player {
 
         // check buying contition from existing turrets
         for (final Turret at : this.turrets) {
-            if (at.era < this.era && this.cash >= Turret.GetEra(this.era).cost - at.cost) {
+            if (at.era < this.era && this.cash >= Turret.getEra(this.era).cost - at.cost) {
                 this.cash -= t.cost - at.cost;
 
                 // replace
-                at.ReplaceWith(t);
+                at.replaceWith(t);
 
-                AudioController.PlayAndSetVolume(Resources.unitCallSound, MainGame.AUDIO_VOLUME);
+                AudioController.playAndSetVolume(Resources.unitCallSound, MainGame.AUDIO_VOLUME);
 
                 return true;
             }
@@ -116,10 +116,10 @@ public class Player {
             this.cash -= t.cost;
             this.turrets.add(t);
 
-            t.image.SetPosition(65, this.turrets.size() == 1 ? 260 : 340);
-            Renderer.AddComponents(t.image);
+            t.image.setPosition(65, this.turrets.size() == 1 ? 260 : 340);
+            Renderer.addComponents(t.image);
 
-            AudioController.PlayAndSetVolume(Resources.unitCallSound, MainGame.AUDIO_VOLUME);
+            AudioController.playAndSetVolume(Resources.unitCallSound, MainGame.AUDIO_VOLUME);
 
             return true;
         }
@@ -127,13 +127,13 @@ public class Player {
         return false;
     }
 
-    public boolean UpgradeStronghold() {
-        if (this.era < 4 && this.xp >= Stronghold.GetRequiredXp(this.era)) {
+    public boolean upgradeStronghold() {
+        if (this.era < 4 && this.xp >= Stronghold.getRequiredXp(this.era)) {
             this.era++;
 
-            this.stronghold.UpgradeTo(this.era);
+            this.stronghold.upgradeTo(this.era);
 
-            AudioController.PlayAndSetVolume(Resources.newEraSound, MainGame.AUDIO_VOLUME);
+            AudioController.playAndSetVolume(Resources.newEraSound, MainGame.AUDIO_VOLUME);
 
             return true;
         }
@@ -141,7 +141,7 @@ public class Player {
         return false;
     }
 
-    public boolean UseUltimate(final Player target) {
+    public boolean useUltimate(final Player target) {
         if (target == null) return false;
 
         if (this.ultimateDelay <= 0) {
@@ -156,7 +156,7 @@ public class Player {
         return false;
     }
 
-    public boolean UseEmergencyUltimate(final Player target) {
+    public boolean useEmergencyUltimate(final Player target) {
         if (target == null) return false;
 
         if (this.era >= 4 && this.xp >= EmergencyUltimate.REQUIRED_XP) {
@@ -169,7 +169,7 @@ public class Player {
         return false;
     }
 
-    public void UpdateAfter(final int rawCost) {
+    public void updateAfter(final int rawCost) {
 
         switch (MainGame.foe.difficulty) {
             case 1:
@@ -181,14 +181,14 @@ public class Player {
     }
 
     // automation looping
-    public int UpdateUnits(final boolean isOverlapped) {
+    public int updateUnits(final boolean isOverlapped) {
         // update overall
-        this.ProcessUnitDeployment();
+        this.processUnitDeployment();
 
         if (this.ultimateDelay > 0) this.ultimateDelay -= MainGame.deltaTime;
 
-        if (this.ultimateCaller != null) this.ultimateCaller.Update();
-        if (this.emergencyUltimateCaller != null) this.emergencyUltimateCaller.Update();
+        if (this.ultimateCaller != null) this.ultimateCaller.update();
+        if (this.emergencyUltimateCaller != null) this.emergencyUltimateCaller.update();
 
         // check dead units
         int deadCost = 0;
@@ -200,7 +200,7 @@ public class Player {
                 deadCost += u.cost;
 
                 this.units.remove(u);
-                u.Die();
+                u.die();
             }
         }
 
@@ -209,24 +209,24 @@ public class Player {
             final Unit currentUnit = this.units.get(i);
             final Unit inFrontUnit = i == 0 ? null : this.units.get(i - 1);
 
-            currentUnit.UpdateHealthBar();
+            currentUnit.updateHealthBar();
 
             // the font most unit
             if (inFrontUnit == null) {
                 if (!isOverlapped) {
-                    currentUnit.Move();
+                    currentUnit.move();
                 }
             }
             // in queue units
             else {
                 if (currentUnit.moveX + currentUnit.image.naturalWidth < inFrontUnit.moveX) {
                     currentUnit.isMoving = true;
-                    currentUnit.Move();
+                    currentUnit.move();
                 }
                 else {
                     currentUnit.isMoving = false;
                     if (!((i == 1 || i == 2) && currentUnit instanceof RangedUnit)) {
-                        currentUnit.animator.SetAnimationFrameTo(1);
+                        currentUnit.animator.setAnimationFrameTo(1);
                     }
                 }
             }
@@ -235,13 +235,13 @@ public class Player {
         return deadCost;
     }
 
-    public void ClearAllUnits() {
+    public void clearAllUnits() {
         for (final Unit unit : this.units) {
-            Renderer.RemoveComponents(unit.image, unit.healthBar, unit.healthBarInner);
+            Renderer.removeComponents(unit.image, unit.healthBar, unit.healthBarInner);
         }
 
         for (final Turret turret : this.turrets) {
-            Renderer.RemoveComponents(turret.image);
+            Renderer.removeComponents(turret.image);
         }
 
         this.deploymentQueue.clear();
@@ -249,40 +249,40 @@ public class Player {
         this.turrets.clear();
     }
 
-    public void Setup() {
+    public void setup() {
         this.cash = 400;
         this.xp = 0;
         this.deploymentDelay = 0;
         this.ultimateDelay = Player.ULTIMATE_LOADING_DELAY;
-        this.stronghold.SetEra(this.era = 1);
+        this.stronghold.setEra(this.era = 1);
     }
 
     // static methods
-    private static void QueuedRangedUnitAttack(final Player player, final GameObject toAttackUnit) {
+    private static void queuedRangedUnitAttack(final Player player, final GameObject toAttackUnit) {
         final Unit u2 = player.units.size() > 1 ? player.units.get(1) : null;
         final Unit u3 = player.units.size() > 2 ? player.units.get(2) : null;
 
-        if (u2 instanceof RangedUnit && !u2.isMoving) u2.Attack(toAttackUnit);
-        if (u3 instanceof RangedUnit && !u3.isMoving) u3.Attack(toAttackUnit);
+        if (u2 instanceof RangedUnit && !u2.isMoving) u2.attack(toAttackUnit);
+        if (u3 instanceof RangedUnit && !u3.isMoving) u3.attack(toAttackUnit);
     }
 
     //refractor
-    public static void Update(final Player playerL, final Player playerR) {
+    public static void update(final Player playerL, final Player playerR) {
         // check overlapping
         boolean isOverlapped = false;
         if (playerL.units.size() > 0 && playerR.units.size() > 0) {
             final Unit ul1 = playerL.units.get(0);
             final Unit ur1 = playerR.units.get(0);
 
-            isOverlapped = ul1.image.GetTransform().x + ul1.image.naturalWidth > ur1.image.GetTransform().x;
+            isOverlapped = ul1.image.getTransform().x + ul1.image.naturalWidth > ur1.image.getTransform().x;
 
             // for front unit
             if (isOverlapped) {
-                ul1.Attack(ur1);
-                ur1.Attack(ul1);
+                ul1.attack(ur1);
+                ur1.attack(ul1);
 
-                Player.QueuedRangedUnitAttack(playerL, ur1);
-                Player.QueuedRangedUnitAttack(playerR, ul1);
+                Player.queuedRangedUnitAttack(playerL, ur1);
+                Player.queuedRangedUnitAttack(playerR, ul1);
             }
         }
         else if (playerL.units.size() != 0 || playerR.units.size() != 0) {
@@ -290,29 +290,29 @@ public class Player {
             final Player defender = playerL.units.size() != 0 ? playerR : playerL;
             final Unit u = attacker.units.get(0);
 
-            if (u.IsReachedMax()) {
-                if (u.Attack(defender.stronghold)) {
-                    attacker.xp += (int)(Stronghold.GetMaxHealth(defender.era) * Math.random() * 0.01f);
-                    attacker.cash += (int)(Stronghold.GetMaxHealth(defender.era) * Math.random() * 0.1f);
+            if (u.isReachedMax()) {
+                if (u.attack(defender.stronghold)) {
+                    attacker.xp += (int)(Stronghold.getMaxHealth(defender.era) * Math.random() * 0.01f);
+                    attacker.cash += (int)(Stronghold.getMaxHealth(defender.era) * Math.random() * 0.1f);
                 }
 
-                Player.QueuedRangedUnitAttack(attacker, defender.stronghold);
+                Player.queuedRangedUnitAttack(attacker, defender.stronghold);
             }
         }
 
         // turret firing
         for (final Turret turret : playerL.turrets) {
-            if (playerR.units.size() > 0) turret.Attack(playerR.units.get(0));
+            if (playerR.units.size() > 0) turret.attack(playerR.units.get(0));
         }
 
         for (final Turret turret : playerR.turrets) {
-            if (playerL.units.size() > 0) turret.Attack(playerL.units.get(0));
+            if (playerL.units.size() > 0) turret.attack(playerL.units.get(0));
         }
 
         // playerL
-        playerR.UpdateAfter(playerL.UpdateUnits(isOverlapped));
+        playerR.updateAfter(playerL.updateUnits(isOverlapped));
 
         // playerR
-        playerL.UpdateAfter(playerR.UpdateUnits(isOverlapped));
+        playerL.updateAfter(playerR.updateUnits(isOverlapped));
     }
 }

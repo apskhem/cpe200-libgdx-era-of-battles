@@ -13,11 +13,11 @@ final public class Intro {
 
     private static final float MAX_FADING = 100;
 
-    public static void Play() {
+    public static void play() {
         if (Intro.isDone) return;
 
         if (soundPlayDelay <= 0 && !isSoundPlayed) {
-            AudioController.PlayAndSetVolume(Resources.devLogoSound, MainGame.AUDIO_VOLUME);
+            AudioController.playAndSetVolume(Resources.devLogoSound, MainGame.AUDIO_VOLUME);
             soundPlayDelay -= MainGame.deltaTime;
             isSoundPlayed = true;
         }
@@ -36,7 +36,7 @@ final public class Intro {
         if (fadingTime <= 0) {
             Resources.devLogo.isVisible = false;
             Resources.themeMusic.play();
-            UIController.GetBoxModule("start-menu").SetVisibility(true);
+            UIController.getBoxModule("start-menu").setVisibility(true);
             Resources.musicBtn.isVisible = true;
 
             fadingTime -= MainGame.deltaTime;
@@ -44,7 +44,7 @@ final public class Intro {
         }
         else if (fadingTime > 0) {
             final float p = fadingTime / MAX_FADING;
-            Resources.devLogo.SetColorRGBA(p, p, p, 1);
+            Resources.devLogo.setColorRgba(p, p, p, 1);
             fadingTime -= MainGame.deltaTime;
         }
     }

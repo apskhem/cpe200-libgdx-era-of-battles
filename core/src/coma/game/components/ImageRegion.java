@@ -33,7 +33,7 @@ final public class ImageRegion extends Image {
         this.src.setBounds(0,0, width, height);
     }
 
-    public void NextRegion() {
+    public void nextRegion() {
         if (this.currentIRegionIndex + 1 == this.maxIRegionIndex) {
             this.currentJRegionIndex = (this.currentJRegionIndex + 1) % this.maxJRegionIndex;
         }
@@ -47,11 +47,11 @@ final public class ImageRegion extends Image {
                 this.regionHeight);
     }
 
-    public boolean IsAtTheEnd() {
+    public boolean isAtTheEnd() {
         return this.currentIRegionIndex + 1 == this.maxIRegionIndex && this.currentJRegionIndex + 1 == this.maxJRegionIndex;
     }
 
-    public ImageRegion Clone() {
+    public ImageRegion clone() {
         return  new ImageRegion(this, this.regionWidth, this.regionHeight, this.maxIRegionIndex, this.maxJRegionIndex);
     }
 }

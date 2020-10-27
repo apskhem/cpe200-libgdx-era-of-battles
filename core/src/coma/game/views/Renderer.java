@@ -9,12 +9,12 @@ import java.util.ArrayList;
 
 final public class Renderer {
 
-    private static final SpriteBatch b = Asset.LoadSpriteBatch();
+    private static final SpriteBatch b = Asset.loadSpriteBatch();
     private static final ArrayList<Image> renderObjects = new ArrayList<>();
     private static final ArrayList<Canvas> canvasObjects = new ArrayList<>();
     private static final ArrayList<TextBox> textObjects = new ArrayList<>();
 
-    public static void AddComponents(final Object ...renderObjects) {
+    public static void addComponents(final Object ...renderObjects) {
         for (final Object r : renderObjects) {
             if (r instanceof Canvas) {
                 Renderer.canvasObjects.add((Canvas) r);
@@ -26,18 +26,18 @@ final public class Renderer {
                 Renderer.textObjects.add((TextBox) r);
             }
             else if (r instanceof ArrayList) {
-                Renderer.AddComponents(((ArrayList<?>) r).toArray());
+                Renderer.addComponents(((ArrayList<?>) r).toArray());
             }
         }
     }
 
-    public static void RemoveComponents(final Image ...renderObjects) {
+    public static void removeComponents(final Image ...renderObjects) {
         for (final Image r : renderObjects) {
             Renderer.renderObjects.remove(r);
         }
     }
 
-    public static void Update() {
+    public static void update() {
         Renderer.b.begin();
 
         // camera
@@ -48,16 +48,16 @@ final public class Renderer {
 
         // images and canvas
         for (Image renderObject : Renderer.renderObjects) {
-            renderObject.Render(Renderer.b);
+            renderObject.render(Renderer.b);
         }
 
         for (Canvas canvas : Renderer.canvasObjects) {
-            canvas.Render(Renderer.b);
+            canvas.render(Renderer.b);
         }
 
         // textboxes
         for (TextBox textObject : Renderer.textObjects) {
-            textObject.Render(Renderer.b);
+            textObject.render(Renderer.b);
         }
 
         Renderer.b.end();

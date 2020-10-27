@@ -24,7 +24,7 @@ public class Animator {
 
     public void Continue() {
         if (this.nextFrameDelay < 0) {
-            this.NextAnimationFrame();
+            this.nextAnimationFrame();
 
             this.nextFrameDelay = this.maxNextFrameDelay;
         } else {
@@ -32,7 +32,7 @@ public class Animator {
         }
     }
 
-    public Image GetFrameImage(int frame) {
+    public Image getFrameImage(int frame) {
         return this.frameImages[frame];
     }
 
@@ -46,31 +46,31 @@ public class Animator {
         }
     }
 
-    public void NextAnimationFrame() {
+    public void nextAnimationFrame() {
         // this.SetAnimationFrameTo(this.currentState.NextFrame());
 
         switch (this.currentFrame) {
             case 1:
-                this.SetAnimationFrameTo(2);
+                this.setAnimationFrameTo(2);
                 break;
             case 2:
-                this.SetAnimationFrameTo(3);
+                this.setAnimationFrameTo(3);
                 break;
             case 3:
-                this.SetAnimationFrameTo(1);
+                this.setAnimationFrameTo(1);
                 break;
             case 4:
-                this.SetAnimationFrameTo(5);
+                this.setAnimationFrameTo(5);
                 break;
             case 5:
-                this.SetAnimationFrameTo(6);
+                this.setAnimationFrameTo(6);
                 break;
             case 6:
-                this.SetAnimationFrameTo(4);
+                this.setAnimationFrameTo(4);
         }
     }
 
-    public void AddState(final String state, final int fromFrame, final int toFrame) {
+    public void addState(final String state, final int fromFrame, final int toFrame) {
         final AnimationState a = new AnimationState(state, fromFrame, toFrame);
 
         if (this.states.size() == 0) this.currentState = a;
@@ -78,22 +78,22 @@ public class Animator {
         this.states.add(a);
     }
 
-    public void SetAnimationFrameTo(int frame) {
+    public void setAnimationFrameTo(int frame) {
         if (this.currentFrame == frame || refImage == null) return;
 
         this.currentFrame = (byte) frame;
 
         final Image i = this.frameImages[frame - 1];
-        this.refImage.SetTexture(i);
+        this.refImage.setTexture(i);
 
         // reset displacement
-        this.refImage.SetSize(Float.NaN, Float.NaN);
-        this.refImage.Move(-this.displacedTranslateX, 0);
+        this.refImage.setSize(Float.NaN, Float.NaN);
+        this.refImage.move(-this.displacedTranslateX, 0);
         this.displacedTranslateX = 0;
 
         // sync to new image
-        this.refImage.SetSize(i.naturalWidth, i.naturalHeight);
+        this.refImage.setSize(i.naturalWidth, i.naturalHeight);
 
-        if (this.refImage.isFlipped) this.refImage.Move(this.displacedTranslateX = (short)(this.refImage.naturalWidth - i.naturalWidth), 0);
+        if (this.refImage.isFlipped) this.refImage.move(this.displacedTranslateX = (short)(this.refImage.naturalWidth - i.naturalWidth), 0);
     }
 }

@@ -90,7 +90,7 @@ public class Resources {
     public static Sound ulPlaneSound;
     public static Sound emergencyUlSound;
 
-    public static void Load() {
+    public static void load() {
         // set ui position and group module
         bg = new Image("game-bg.png");
 
@@ -151,7 +151,7 @@ public class Resources {
         xpIcon = new Canvas("xp-icon.png");
 
         for (byte i = 0; i < unitQueueIcons.length; i++) {
-            unitQueueIcons[i] = new Canvas(unitQueueImages[0].Clone());
+            unitQueueIcons[i] = new Canvas(unitQueueImages[0].clone());
         }
 
         healthBar = new Canvas("health-bar.png");
@@ -163,9 +163,9 @@ public class Resources {
         victoryBanner = new Canvas("victory.png");
         defeatBanner = new Canvas("defeat.png");
 
-        bitmapFont = Asset.LoadBitmapFont("fonts/kefa.fnt", false);
-        bitmapFont2 = Asset.LoadBitmapFont("fonts/kefa.fnt", false);
-        bitmapFont3 = Asset.LoadBitmapFont("fonts/kefa.fnt", false);
+        bitmapFont = Asset.loadBitmapFont("fonts/kefa.fnt", false);
+        bitmapFont2 = Asset.loadBitmapFont("fonts/kefa.fnt", false);
+        bitmapFont3 = Asset.loadBitmapFont("fonts/kefa.fnt", false);
         cashText = new TextBox(bitmapFont);
         xpText = new TextBox(bitmapFont);
         unitCapText = new TextBox(bitmapFont);
@@ -174,128 +174,120 @@ public class Resources {
             unitTexts[i] = new TextBox(bitmapFont3);
         }
 
-        themeMusic = Asset.LoadMusic("audio/theme.mp3");
+        themeMusic = Asset.loadMusic("audio/theme.mp3");
 
-        devLogoSound = Asset.LoadSound("audio/dev-logo.mp3");
-        startSound = Asset.LoadSound("audio/start-game.mp3");
-        menuClickSound = Asset.LoadSound("audio/menu-click.mp3");
-        newEraSound = Asset.LoadSound("audio/new-era.mp3");
-        winSound = Asset.LoadSound("audio/win.mp3");
-        loseSound = Asset.LoadSound("audio/lose.mp3");
-        ulPlaneSound = Asset.LoadSound("audio/ul-plane.mp3");
-        emergencyUlSound = Asset.LoadSound("audio/emergency-ultimate.mp3");
+        devLogoSound = Asset.loadSound("audio/dev-logo.mp3");
+        startSound = Asset.loadSound("audio/start-game.mp3");
+        menuClickSound = Asset.loadSound("audio/menu-click.mp3");
+        newEraSound = Asset.loadSound("audio/new-era.mp3");
+        winSound = Asset.loadSound("audio/win.mp3");
+        loseSound = Asset.loadSound("audio/lose.mp3");
+        ulPlaneSound = Asset.loadSound("audio/ul-plane.mp3");
+        emergencyUlSound = Asset.loadSound("audio/emergency-ultimate.mp3");
 
         for (byte era = 0; era < meleeHitSounds.length; era++) {
-            meleeHitSounds[era] = Asset.LoadSound("audio/melee-hit-" + (era + 1) + ".mp3");
+            meleeHitSounds[era] = Asset.loadSound("audio/melee-hit-" + (era + 1) + ".mp3");
         }
 
         for (byte era = 0; era < rangedHitSounds.length; era++) {
-            rangedHitSounds[era] = Asset.LoadSound("audio/ranged-hit-" + (era + 1) + ".mp3");
+            rangedHitSounds[era] = Asset.loadSound("audio/ranged-hit-" + (era + 1) + ".mp3");
         }
 
         for (byte era = 0; era < cavalryHitSounds.length; era++) {
-            cavalryHitSounds[era] = Asset.LoadSound("audio/cavalry-hit-" + (era + 1) + ".mp3");
+            cavalryHitSounds[era] = Asset.loadSound("audio/cavalry-hit-" + (era + 1) + ".mp3");
         }
 
-        explosionSounds[0] = Asset.LoadSound("audio/explosion-1.mp3");
-        meleeDie1 = Asset.LoadSound("audio/melee-die-1.mp3");
-        cavalryDieSounds[0] = Asset.LoadSound("audio/cavalry-die-1.mp3");
-        cavalryDieSounds[1] = Asset.LoadSound("audio/cavalry-die-2.mp3");
-        cavalryDieSounds[2] = Asset.LoadSound("audio/cavalry-die-3.mp3");
-        unitCallSound = Asset.LoadSound("audio/call-unit.mp3");
+        explosionSounds[0] = Asset.loadSound("audio/explosion-1.mp3");
+        meleeDie1 = Asset.loadSound("audio/melee-die-1.mp3");
+        cavalryDieSounds[0] = Asset.loadSound("audio/cavalry-die-1.mp3");
+        cavalryDieSounds[1] = Asset.loadSound("audio/cavalry-die-2.mp3");
+        cavalryDieSounds[2] = Asset.loadSound("audio/cavalry-die-3.mp3");
+        unitCallSound = Asset.loadSound("audio/call-unit.mp3");
     }
 
-    public static void Setup() {
-        gameLogo.SetPosition("center", 400);
-        playBtn.SetPosition("center", 300);
-        creditBtn.SetPosition("center", 180);
-        how2playBtn.SetPosition("center", 60);
-        how2playBanner1.SetPosition("center", 0);
+    public static void setup() {
+
+        gameLogo.setPosition("center", 400);
+        playBtn.setPosition("center", 300);
+        creditBtn.setPosition("center", 180);
+        how2playBtn.setPosition("center", 60);
+        how2playBanner1.setPosition("center", 0);
         how2playBanner1.isVisible = false;
-        how2playBanner2.SetPosition("center", 0);
+        how2playBanner2.setPosition("center", 0);
         how2playBanner2.isVisible = false;
-        creditBanner.SetPosition("center", 5);
+        creditBanner.setPosition("center", 5);
         creditBanner.isVisible = false;
-        musicBtn.SetPosition(886, 14);
+        musicBtn.setPosition(886, 14);
         musicBtn.isVisible = false;
-        speedBtn.SetPosition(14, 14);
-        speedBtn.SetActive(false);
-        modeBanner.SetPosition("center", 440);
-        mode1.SetPosition(70, 200);
-        mode2.SetPosition("center", 200);
-        mode3.SetPosition(640, 200);
-        startBtn.SetPosition("center", 80);
+        speedBtn.setPosition(14, 14);
+        speedBtn.setActive(false);
+        modeBanner.setPosition("center", 440);
+        mode1.setPosition(70, 200);
+        mode2.setPosition("center", 200);
+        mode3.setPosition(640, 200);
+        startBtn.setPosition("center", 80);
         startBtn.x += -120;
-        menuBtn.SetPosition("center", 80);
+        menuBtn.setPosition("center", 80);
         menuBtn.x += 120;
-        restartBtn.SetPosition("center", 80);
+        restartBtn.setPosition("center", 80);
         restartBtn.x += -120;
-        unit1.SetPosition(566, 524);
-        unit2.SetPosition(646, 524);
-        unit3.SetPosition(726, 524);
-        unit4.SetPosition(806, 524);
-        unit5.SetPosition(886, 524);
-        unitUl.SetPosition(770, 420);
-        cashIcon.SetPosition(-28, 504);
-        cashIcon.SetScale(0.25f);
-        xpIcon.SetPosition(-28, 466);
-        xpIcon.SetScale(0.25f);
+        unit1.setPosition(566, 524);
+        unit2.setPosition(646, 524);
+        unit3.setPosition(726, 524);
+        unit4.setPosition(806, 524);
+        unit5.setPosition(886, 524);
+        unitUl.setPosition(770, 420);
+        cashIcon.setPosition(-28, 504);
+        cashIcon.setScale(0.25f);
+        xpIcon.setPosition(-28, 466);
+        xpIcon.setScale(0.25f);
         for (byte i = 0; i < unitQueueIcons.length; i++) {
-            unitQueueIcons[i].SetPosition(566 + 20 * i, 452);
+            unitQueueIcons[i].setPosition(566 + 20 * i, 452);
             unitQueueIcons[i].isVisible = false;
         }
-        healthBar.SetPosition("center", 14);
-        healthBarL.SetPosition(318, 18);
-        healthBarR.SetPosition(485, 18);
-        healthBarR.SetRotation(180);
-        queueBar.SetPosition(566, 482);
-        unitQueueBarInner.SetPosition(567, 490);
-        ultimateBarInner.SetPosition(567,483);
-        victoryBanner.SetPosition("center", 180);
-        defeatBanner.SetPosition("center", 180);
+        healthBar.setPosition("center", 14);
+        healthBarL.setPosition(318, 18);
+        healthBarR.setPosition(485, 18);
+        healthBarR.setRotation(180);
+        queueBar.setPosition(566, 482);
+        unitQueueBarInner.setPosition(567, 490);
+        ultimateBarInner.setPosition(567,483);
+        victoryBanner.setPosition("center", 180);
+        defeatBanner.setPosition("center", 180);
 
-        cashText.SetPosition(64, 580);
+        cashText.setPosition(64, 580);
         cashText.textContent = "0";
-        xpText.SetPosition(64, 540);
+        xpText.setPosition(64, 540);
         xpText.textContent = "0";
-        unitCapText.SetPosition(22, 500);
+        unitCapText.setPosition(22, 500);
         unitCapText.textContent = "0/NaN";
-        unitDescText.SetPosition(248, 580);
+        unitDescText.setPosition(248, 580);
         unitDescText.textContent = "";
 
         for (int i = 0; i < unitTexts.length; i++) {
-            unitTexts[i].SetPosition(576 + (i * 80), 516);
+            unitTexts[i].setPosition(576 + (i * 80), 516);
             unitTexts[i].textContent = "0";
         }
 
         bitmapFont2.getData().setScale(0.8f);
         bitmapFont3.getData().setScale(0.4f);
 
-        UIController.AddBoxModule("start-menu", gameLogo, playBtn, creditBtn, how2playBtn);
-        UIController.AddBoxModule("mode-selection-menu", modeBanner, mode1, mode2, mode3, startBtn, menuBtn);
-        UIController.AddBoxModule("in-game-menu", speedBtn, unit1, unit2, unit3, unit4, unit5, unitUl,
+        UIController.addBoxModule("start-menu", gameLogo, playBtn, creditBtn, how2playBtn);
+        UIController.getBoxModule("start-menu").setVisibility(false);
+        UIController.addBoxModule("mode-selection-menu", modeBanner, mode1, mode2, mode3, startBtn, menuBtn);
+        UIController.getBoxModule("mode-selection-menu").setVisibility(false);
+        UIController.addBoxModule("in-game-menu", speedBtn, unit1, unit2, unit3, unit4, unit5, unitUl,
                 cashIcon, xpIcon, cashText, xpText, unitCapText, unitDescText, unitTexts[0],
                 unitTexts[1], unitTexts[2], unitTexts[3], unitTexts[4], healthBar, healthBarL, healthBarR, queueBar,
                 unitQueueBarInner, ultimateBarInner, unitQueueIcons[0], unitQueueIcons[1], unitQueueIcons[2],
                 unitQueueIcons[3], unitQueueIcons[4], unitQueueIcons[5], unitQueueIcons[6], unitQueueIcons[7],
                 unitQueueIcons[8], unitQueueIcons[9]);
-        UIController.AddBoxModule("game-over-menu", restartBtn, menuBtn, victoryBanner, defeatBanner);
-        UIController.GetBoxModule("start-menu").SetVisibility(false);
-        UIController.GetBoxModule("game-over-menu").SetVisibility(false);
-        UIController.GetBoxModule("in-game-menu").SetVisibility(false);
-        UIController.GetBoxModule("mode-selection-menu").SetVisibility(false);
+        UIController.getBoxModule("in-game-menu").setVisibility(false);
+        UIController.addBoxModule("game-over-menu", restartBtn, menuBtn, victoryBanner, defeatBanner);
+        UIController.getBoxModule("game-over-menu").setVisibility(false);
 
         // set sounds and music
         themeMusic.setLooping(true);
         themeMusic.setVolume(MainGame.THEME_VOLUME);
-
-        // set ui
-        UIController.AddComponents(devLogo, gameLogo, playBtn, creditBtn, how2playBtn, how2playBanner1, how2playBanner2,
-                creditBanner, musicBtn, modeBanner, mode1, mode2, mode3, startBtn, restartBtn,
-                menuBtn, speedBtn, unit1, unit2, unit3, unit4, unit5, unitUl, cashIcon, xpIcon, healthBar, healthBarL, healthBarR, queueBar,
-                unitQueueBarInner, ultimateBarInner, victoryBanner, defeatBanner, unitQueueIcons[0], unitQueueIcons[1],
-                unitQueueIcons[2], unitQueueIcons[3], unitQueueIcons[4], unitQueueIcons[5], unitQueueIcons[6],
-                unitQueueIcons[7], unitQueueIcons[8], unitQueueIcons[9]);
-        UIController.AddComponents(cashText, xpText, unitCapText, unitDescText, unitTexts[0], unitTexts[1], unitTexts[2], unitTexts[3], unitTexts[4]);
     }
 }

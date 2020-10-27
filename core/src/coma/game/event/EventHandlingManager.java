@@ -15,7 +15,7 @@ public class EventHandlingManager {
 
     private static String previousKey;
 
-    public static void Update() {
+    public static void update() {
         // onclick
         if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
             final int clientX = Gdx.input.getX();
@@ -25,23 +25,23 @@ public class EventHandlingManager {
 
             // run all object on clicked position
             for (final EventTarget eventTarget : eventTargets) {
-                if (eventTarget instanceof Canvas && ((Canvas) eventTarget).IsInBound(clientX, clientY)) {
+                if (eventTarget instanceof Canvas && ((Canvas) eventTarget).isInBound(clientX, clientY)) {
                     // run all onclick function
                     for (final EventListener listener : eventTarget.listeners) {
-                        if (listener.type.equals("onclick")) {
-                            listener.fn.Call(e);
+                        if (listener.type.equals("click")) {
+                            listener.call(e);
                         }
                     }
 
-                    if (e.IsPropagationStopped()) break;
+                    if (e.isPropagationStopped()) break;
                 }
             }
 
             // global
-            if (!e.IsPropagationStopped()) {
+            if (!e.isPropagationStopped()) {
                 for (final EventListener listener : global.listeners) {
-                    if (listener.type.equals("onclick")) {
-                        listener.fn.Call(e);
+                    if (listener.type.equals("click")) {
+                        listener.call(e);
                     }
                 }
             }
@@ -64,19 +64,19 @@ public class EventHandlingManager {
             // global
             for (final EventListener listener : global.listeners) {
                 if (Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
-                    if (listener.type.equals("onkeyjustpressed")) {
-                        listener.fn.Call(e);
+                    if (listener.type.equals("keyjustpressed")) {
+                        listener.call(e);
                     }
                 }
 
-                if (listener.type.equals("onkeypress")) {
-                    listener.fn.Call(e);
+                if (listener.type.equals("keypress")) {
+                    listener.call(e);
                 }
             }
         }
     }
 
-    public static void AddEventTarget(final EventTarget eventTarget) {
+    public static void addEventTarget(final EventTarget eventTarget) {
         if (!eventTargets.contains(eventTarget)) {
             eventTargets.add(eventTarget);
         }

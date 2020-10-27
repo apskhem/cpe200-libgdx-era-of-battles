@@ -10,7 +10,7 @@ final public class UIBoxModule {
         this.moduleList = moduleList;
     }
 
-    public void SetVisibility(final boolean value) {
+    public void setVisibility(final boolean value) {
         for (final Renderable canvas : this.moduleList) {
             canvas.isVisible = value;
         }
@@ -18,7 +18,7 @@ final public class UIBoxModule {
         this.isVisible = value;
     }
 
-    public boolean IsVisible() {
+    public boolean isVisible() {
         return this.isVisible;
     }
 }

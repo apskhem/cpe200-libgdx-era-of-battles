@@ -24,7 +24,7 @@ final public class RangedUnit extends Unit {
         this.deadSound[0] = Resources.meleeDie1;
     }
 
-    public short GetDeploymentDelay() {
+    public short getDeploymentDelay() {
         return 130;
     }
 }

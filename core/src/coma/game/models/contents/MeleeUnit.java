@@ -24,7 +24,7 @@ final public class MeleeUnit extends Unit {
         this.deadSound[0] = Resources.meleeDie1;
     }
 
-    public short GetDeploymentDelay() {
+    public short getDeploymentDelay() {
         return 100;
     }
 }

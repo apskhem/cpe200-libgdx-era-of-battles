@@ -10,35 +10,35 @@ final public class GameStatus {
 
     public static boolean isGameStarted;
 
-    public static void CheckGameOver(final Player playerL, final GameBot playerR) {
+    public static void checkGameOver(final Player playerL, final GameBot playerR) {
         if (!GameStatus.isGameStarted) return;
 
         if (playerL.stronghold.health < 0 || playerR.stronghold.health < 0) {
-            GameStatus.GameOver(playerL.stronghold.health >= 0);
+            GameStatus.gameOver(playerL.stronghold.health >= 0);
 
-            playerL.ClearAllUnits();
-            playerR.ClearAllUnits();
-            Unit.ClearDeadUnitQueue();
+            playerL.clearAllUnits();
+            playerR.clearAllUnits();
+            Unit.clearDeadUnitQueue();
 
             // clear ultimate
-            if (playerL.emergencyUltimateCaller != null) playerL.emergencyUltimateCaller.RemoveImmidiate();
-            if (playerR.emergencyUltimateCaller != null) playerR.emergencyUltimateCaller.RemoveImmidiate();
+            if (playerL.emergencyUltimateCaller != null) playerL.emergencyUltimateCaller.removeImmidiate();
+            if (playerR.emergencyUltimateCaller != null) playerR.emergencyUltimateCaller.removeImmidiate();
 
-            playerR.Halt();
+            playerR.halt();
         }
     }
 
-    public static void GameOver(final boolean isWon) {
+    public static void gameOver(final boolean isWon) {
         GameStatus.isGameStarted = false;
 
-        UIController.GetBoxModule("in-game-menu").SetVisibility(false);
-        UIController.GetBoxModule("game-over-menu").SetVisibility(true);
+        UIController.getBoxModule("in-game-menu").setVisibility(false);
+        UIController.getBoxModule("game-over-menu").setVisibility(true);
 
         if (isWon) Resources.winSound.play();
         else Resources.loseSound.play();
 
         if (MainGame.gameSpeed != 1) {
-            Resources.speedBtn.Click();
+            Resources.speedBtn.click();
         }
 
         Resources.victoryBanner.isVisible = isWon;

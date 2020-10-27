@@ -35,22 +35,22 @@ public class Ultimate {
         int n;
         switch (this.era = era) {
             case -1: return;
-            case 1: n = Mathf.CalRange(10, 15); break;
-            case 2: n = Mathf.CalRange(80, 112); break;
+            case 1: n = Mathf.calRange(10, 15); break;
+            case 2: n = Mathf.calRange(80, 112); break;
             case 3: {
                 n = 14;
 
                 // set plane
-                this.plane = Resources.ulPlane.Clone();
+                this.plane = Resources.ulPlane.clone();
 
-                this.plane.SetPosition(this.isFlipped ? 4080 : -2000, 520);
-                if (isFlipped) this.plane.FlipHorizontal();
+                this.plane.setPosition(this.isFlipped ? 4080 : -2000, 520);
+                if (isFlipped) this.plane.flipHorizontal();
 
-                Renderer.AddComponents(this.plane);
+                Renderer.addComponents(this.plane);
 
-                AudioController.PlayAndSetVolume(Resources.ulPlaneSound, MainGame.AUDIO_VOLUME);
+                AudioController.playAndSetVolume(Resources.ulPlaneSound, MainGame.AUDIO_VOLUME);
             } break;
-            case 4: n = Mathf.CalRange(30, 35); break;
+            case 4: n = Mathf.calRange(30, 35); break;
             default: throw new RangeException((short) 0, "Wrong parameter input.");
         }
 
@@ -64,30 +64,30 @@ public class Ultimate {
 
             switch (era) {
                 case 1: {
-                    spawnX = this.isFlipped ? Mathf.CalRange(520f, 2180f) : Mathf.CalRange(-100, 1560f);
-                    spawnDelay = Mathf.CalRange(0, 90f);
-                    damage = Mathf.CalRange(60f, 180f);
+                    spawnX = this.isFlipped ? Mathf.calRange(520f, 2180f) : Mathf.calRange(-100, 1560f);
+                    spawnDelay = Mathf.calRange(0, 90f);
+                    damage = Mathf.calRange(60f, 180f);
                     moveSpeedX = this.isFlipped ? - 6.7f : 6.7f;
                     moveSpeedY = 12.4f;
                 } break;
                 case 2: {
-                    spawnX = Mathf.CalRange(220f, 1600f);
-                    spawnDelay = Mathf.CalRange(0, 90f);
-                    damage = Mathf.CalRange(130f, 270f);
-                    moveSpeedX = Mathf.CalRange(-2.3f, 2.3f);
+                    spawnX = Mathf.calRange(220f, 1600f);
+                    spawnDelay = Mathf.calRange(0, 90f);
+                    damage = Mathf.calRange(130f, 270f);
+                    moveSpeedX = Mathf.calRange(-2.3f, 2.3f);
                     moveSpeedY = 12.4f;
                 } break;
                 case 3: {
                     spawnX = (i * 120) + 240;
                     spawnDelay = this.isFlipped ? ((n - 1) - i) * 2.5f : i * 2.5f;
-                    damage = Mathf.CalRange(210f, 380f);
+                    damage = Mathf.calRange(210f, 380f);
                     moveSpeedY = 20.0f;
                     moveSpeedX = 0;
                 } break;
                 case 4: {
-                    spawnX = Mathf.CalRange(220f, 1600f);
-                    spawnDelay = Mathf.CalRange(0, 90f);
-                    damage = Mathf.CalRange(330f, 520f);
+                    spawnX = Mathf.calRange(220f, 1600f);
+                    spawnDelay = Mathf.calRange(0, 90f);
+                    damage = Mathf.calRange(330f, 520f);
                     moveSpeedY = 30f;
                     moveSpeedX = 0;
                 } break;
@@ -96,35 +96,35 @@ public class Ultimate {
 
             UltimateObj obj = new UltimateObj(era, spawnDelay, damage, moveSpeedX, moveSpeedY);
 
-            if (this.isFlipped) obj.image.FlipHorizontal();
-            obj.image.SetPosition(spawnX, SPAWN_POS_Y);
+            if (this.isFlipped) obj.image.flipHorizontal();
+            obj.image.setPosition(spawnX, SPAWN_POS_Y);
 
-            Renderer.AddComponents(obj.image);
+            Renderer.addComponents(obj.image);
 
             this.ultimateSpawnContainer.add(obj);
         }
     }
 
-    public void Update() {
+    public void update() {
         final ArrayList<UltimateObj> hitUltimateObjects = new ArrayList<>();
 
         // new distance calculation and checking explosion
         for (final UltimateObj obj : this.ultimateSpawnContainer) {
-            if (obj.image.GetTransform().y < Ultimate.EXPLODE_POS_Y) {
+            if (obj.image.getTransform().y < Ultimate.EXPLODE_POS_Y) {
                 obj.ultimateExplode(this.target.units);
 
-                Renderer.RemoveComponents(obj.image);
+                Renderer.removeComponents(obj.image);
 
                 if (this.era != 2) {
-                    final ImageRegion r = Resources.explosionImageRegion.Clone();
-                    r.SetPosition(obj.image.GetTransform().x, obj.image.GetTransform().y);
+                    final ImageRegion r = Resources.explosionImageRegion.clone();
+                    r.setPosition(obj.image.getTransform().x, obj.image.getTransform().y);
                     r.tempTimer = Ultimate.EXPLOSION_FRAME_ANIMATION_TIME;
 
-                    Renderer.AddComponents(r);
+                    Renderer.addComponents(r);
 
                     this.explodingObjectContainer.add(r);
 
-                    AudioController.PlayAndSetVolume(Resources.explosionSounds[0], MainGame.AUDIO_VOLUME);
+                    AudioController.playAndSetVolume(Resources.explosionSounds[0], MainGame.AUDIO_VOLUME);
                 }
 
                 hitUltimateObjects.add(obj);
@@ -134,10 +134,10 @@ public class Ultimate {
             }
         }
 
-        this.UpdateExplosion();
+        this.updateExplosion();
 
         // update plane
-        if (this.plane != null) this.plane.Move((this.isFlipped ? -15.5f : 15.5f) * MainGame.deltaTime, 0);
+        if (this.plane != null) this.plane.move((this.isFlipped ? -15.5f : 15.5f) * MainGame.deltaTime, 0);
 
         // remove all exploded obj
         this.ultimateSpawnContainer.removeAll(hitUltimateObjects);
@@ -145,9 +145,9 @@ public class Ultimate {
         // destroy ultimate caller zero objects are in container
         if (this.explodingObjectContainer.size() == 0) {
             if (this.era == 3 && this.plane != null) {
-                if (this.isFlipped ? this.plane.GetTransform().x < -2000 : this.plane.GetTransform().x > 2080) {
+                if (this.isFlipped ? this.plane.getTransform().x < -2000 : this.plane.getTransform().x > 2080) {
                     this.caller.ultimateCaller = null;
-                    Renderer.RemoveComponents(this.plane);
+                    Renderer.removeComponents(this.plane);
                 }
             }
             else {
@@ -156,16 +156,16 @@ public class Ultimate {
         }
     }
 
-    private void UpdateExplosion() {
+    private void updateExplosion() {
         final ArrayList<ImageRegion> endedExplosionImages = new ArrayList<>();
 
         for (final ImageRegion r : this.explodingObjectContainer) {
             if (r.tempTimer <= 0) {
-                if (r.IsAtTheEnd()) {
+                if (r.isAtTheEnd()) {
                     endedExplosionImages.add(r);
                 }
                 else {
-                    r.NextRegion();
+                    r.nextRegion();
                     r.tempTimer = Ultimate.EXPLOSION_FRAME_ANIMATION_TIME;
                 }
             }
@@ -176,7 +176,7 @@ public class Ultimate {
 
         // remove when ended
         for (final ImageRegion r : endedExplosionImages) {
-                Renderer.RemoveComponents(r);
+            Renderer.removeComponents(r);
         }
 
         this.explodingObjectContainer.removeAll(endedExplosionImages);

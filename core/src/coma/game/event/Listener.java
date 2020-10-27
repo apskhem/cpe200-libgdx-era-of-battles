@@ -2,9 +2,7 @@ package coma.game.event;
 
 public interface Listener<T extends UIEvent> {
 
-    void Call(T e);
+    void call(T e);
 
-    default void CallDefault(T e) {
-
-    }
+    default void callDefault(T e) { }
 }
