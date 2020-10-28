@@ -143,7 +143,7 @@ final public class GameBot extends Player {
             }
         }
 
-        this.xp += (int) (rawCost * Math.random() * (0.2f + 0.1f * this.difficulty) + rawCost * (0.05f + 0.01 * this.difficulty));
+        this.xp += (int) (rawCost * Math.random() * (0.2f + 0.05f * this.difficulty) + rawCost * (0.05f + 0.05 * this.difficulty));
     }
 
     @Override

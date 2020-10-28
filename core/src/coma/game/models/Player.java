@@ -174,7 +174,7 @@ public class Player {
         switch (MainGame.foe.difficulty) {
             case 1:
             case 2: this.cash += (int) (rawCost * 0.9); break;
-            case 3: this.cash += (int) (rawCost * 0.9 / (0.3 * this.time2end)); break;
+            case 3: this.cash += (int) ((rawCost * 0.9) - (0.15f * this.time2end)); break;
         }
 
         this.xp += (int)(rawCost * Math.random() * 0.3f + rawCost * 0.05f);
